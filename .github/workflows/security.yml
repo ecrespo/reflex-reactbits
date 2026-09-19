@@ -108,16 +108,17 @@ jobs:
     # repository; without it the action errors with "Dependency review is not
     # supported on this repository". That is a repository setting, not a
     # problem with the change under review, so it must not block a merge.
-    # Enable it at Settings -> Code security -> Dependency graph and drop this
-    # line to make the check binding. Vulnerable dependencies are caught by the
-    # pip-audit job either way; this job adds the introduced-by-this-PR diff.
-    continue-on-error: true
+    # Enable it at Settings -> Code security -> Dependency graph and drop the
+    # continue-on-error below to make the check binding. Vulnerable dependencies
+    # are caught by the pip-audit job either way; this job adds the diff of what
+    # a given pull request introduces.
     permissions:
       contents: read
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/dependency-review-action@v4
+        continue-on-error: true
         with:
           fail-on-severity: high
           comment-summary-in-pr: always
