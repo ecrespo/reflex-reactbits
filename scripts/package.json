@@ -1,0 +1,12 @@
+{
+  "name": "reflex-reactbits-codegen",
+  "private": true,
+  "type": "module",
+  "description": "Extracts React Bits metadata used to generate the Reflex wrappers.",
+  "scripts": {
+    "extract": "node extract_metadata.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,134 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Where to publish
+        type: choice
+        options: [pypi, testpypi]
+        default: pypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and verify
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install build tooling
+        run: pip install build twine
+
+      - name: Read the version from pyproject
+        id: version
+        run: |
+          version=$(python -c "import tomllib,pathlib; print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "pyproject version: $version"
+
+      - name: The tag must match the packaged version
+        # PyPI refuses a second upload of the same version, so a tag that does
+        # not match pyproject wastes a release and needs a new tag to fix.
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$tag" != "${{ steps.version.outputs.version }}" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match pyproject version ${{ steps.version.outputs.version }}."
+            echo "Bump the version in pyproject.toml, or retag."
+            exit 1
+          fi
+          echo "Tag matches version ${{ steps.version.outputs.version }}."
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: twine check
+        run: twine check dist/*
+
+      - name: No React Bits source may be redistributed
+        # React Bits is MIT + Commons Clause. Publishing its JSX/CSS would
+        # breach that licence, so this gate stands between us and PyPI.
+        run: |
+          python - <<'PY'
+          import sys, tarfile, zipfile
+          from pathlib import Path
+
+          BANNED = {".jsx", ".tsx", ".css", ".glb", ".js"}
+          offenders = []
+
+          for wheel in Path("dist").glob("*.whl"):
+              with zipfile.ZipFile(wheel) as zf:
+                  offenders += [f"{wheel.name}:{n}" for n in zf.namelist()
+                                if Path(n).suffix in BANNED]
+
+          for sdist in Path("dist").glob("*.tar.gz"):
+              with tarfile.open(sdist) as tf:
+                  offenders += [f"{sdist.name}:{n}" for n in tf.getnames()
+                                if Path(n).suffix in BANNED]
+
+          if offenders:
+              print("Vendored React Bits source found in the distribution:")
+              for o in offenders:
+                  print("  " + o)
+              sys.exit(1)
+          print("Clean: the distribution ships only the Python wrappers.")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  github-release:
+    name: GitHub release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          draft: false
+
+  pypi:
+    name: Publish to ${{ github.event.inputs.repository || 'pypi' }}
+    needs: build
+    runs-on: ubuntu-latest
+    # Trusted Publishing: PyPI verifies this workflow's OIDC identity, so the
+    # repository stores no API token. Configure the publisher on PyPI first —
+    # see "Publishing" in README.md.
+    environment:
+      name: ${{ github.event.inputs.repository || 'pypi' }}
+      url: https://pypi.org/p/reflex-reactbits
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ github.event.inputs.repository == 'testpypi' && 'https://test.pypi.org/legacy/' || '' }}

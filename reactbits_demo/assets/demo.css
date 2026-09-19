@@ -1,0 +1,20 @@
+body { background: #060010; }
+.preview-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid #271e37;
+  background: #060010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-box > * { max-width: 100%; }
+.hero-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; justify-content: center; color: #fff; margin: 0; }
+.hero-sub { font-size: 1.2rem; }
+.play-title { font-size: 2rem; font-weight: 700; justify-content: center; }
+.stat-value { font-size: 2.5rem; font-weight: 800; }
+.velocity-text { font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; }
+.preview-textanimations { font-size: 2.2rem; font-weight: 700; color: #fff; text-align: center; }
+.preview-textanimations p { margin: 0; }
