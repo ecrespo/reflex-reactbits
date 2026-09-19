@@ -1,0 +1,124 @@
+name: Security
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Dependency advisories land after a commit is merged, so re-run weekly.
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  dependencies:
+    name: Dependency audit (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install the package and pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pip-audit
+
+      # Audit the resolved dependency tree, not the environment: the project
+      # itself is installed editable from the checkout and has no release to
+      # look up, and --strict counts that as a collection failure. Freezing
+      # without editables leaves exactly the dependencies we care about.
+      - name: pip-audit
+        run: |
+          pip freeze --exclude-editable > /tmp/resolved-deps.txt
+          echo "Auditing $(wc -l < /tmp/resolved-deps.txt) resolved dependencies"
+          pip-audit --strict --progress-spinner off -r /tmp/resolved-deps.txt
+
+  code:
+    name: Static analysis (bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install bandit
+        run: pip install "bandit[toml]"
+
+      # The generated wrapper modules are data, not logic: they declare props.
+      - name: bandit
+        run: |
+          bandit -r \
+            custom_components/reflex_reactbits/base.py \
+            custom_components/reflex_reactbits/catalog.py \
+            custom_components/reflex_reactbits/cli.py \
+            custom_components/reflex_reactbits/source.py \
+            scripts/generate_wrappers.py \
+            reactbits_demo/reactbits_demo \
+            --severity-level medium --confidence-level medium
+
+  secrets:
+    name: Secret scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # gitleaks needs history to scan past commits, not just the tip.
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          queries: security-extended
+
+      - uses: github/codeql-action/analyze@v3
+
+  review:
+    name: Dependency review
+    # Only a pull request has a base to diff the dependency graph against.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    # This one needs GitHub's dependency graph to be provisioned for the
+    # repository; without it the action errors with "Dependency review is not
+    # supported on this repository". That is a repository setting, not a
+    # problem with the change under review, so it must not block a merge.
+    # Enable it at Settings -> Code security -> Dependency graph and drop the
+    # continue-on-error below to make the check binding. Vulnerable dependencies
+    # are caught by the pip-audit job either way; this job adds the diff of what
+    # a given pull request introduces.
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        continue-on-error: true
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always

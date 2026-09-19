@@ -1,0 +1,130 @@
+name: Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Nothing in CI compiles a frontend, so no component may phone home to
+  # GitHub for React Bits sources while the tests build component trees.
+  REFLEX_BACKEND_ONLY: "1"
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff==0.16.8
+
+      - name: ruff check
+        run: ruff check --no-cache --output-format github custom_components scripts tests reactbits_demo/reactbits_demo
+
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      # The sanitizer test drives the generated JS through node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install package and dev extras
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: pytest
+        run: pytest
+
+  package:
+    name: Build and inspect the distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install build tooling
+        run: pip install build twine
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: twine check
+        run: twine check dist/*
+
+      - name: No React Bits source may be redistributed
+        # React Bits is MIT + Commons Clause: the wrappers may be published but
+        # the components' own JSX/CSS/assets may not. They are fetched into the
+        # user's app at build time, so finding one in our artifacts is a bug.
+        run: |
+          python - <<'PY'
+          import sys, tarfile, zipfile
+          from pathlib import Path
+
+          BANNED = {".jsx", ".tsx", ".css", ".glb", ".js"}
+          offenders = []
+
+          for wheel in Path("dist").glob("*.whl"):
+              with zipfile.ZipFile(wheel) as zf:
+                  offenders += [f"{wheel.name}:{n}" for n in zf.namelist()
+                                if Path(n).suffix in BANNED]
+
+          for sdist in Path("dist").glob("*.tar.gz"):
+              with tarfile.open(sdist) as tf:
+                  offenders += [f"{sdist.name}:{n}" for n in tf.getnames()
+                                if Path(n).suffix in BANNED]
+
+          if offenders:
+              print("Vendored React Bits source found in the distribution:")
+              for o in offenders:
+                  print("  " + o)
+              sys.exit(1)
+          print("Clean: the distribution ships only the Python wrappers.")
+          PY
+
+      - name: The repository must not vendor React Bits either
+        run: |
+          tracked=$(git ls-files 'assets/reactbits/*' 'reactbits_demo/assets/reactbits/*')
+          if [ -n "$tracked" ]; then
+            echo "React Bits sources are tracked by git:"
+            echo "$tracked"
+            exit 1
+          fi
+          echo "Clean: no React Bits source is tracked."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/

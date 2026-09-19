@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reflex-reactbits"
+version = "0.1.0"
+description = "Reflex wrappers for React Bits: 200+ animated text effects, backgrounds, UI components and micro interactions."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Ernesto Crespo", email = "ecrespo@gmail.com" }]
+keywords = ["reflex", "reflex-custom-components", "react-bits", "reactbits", "animations", "ui"]
+dependencies = ["reflex>=0.9.0"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Reflex",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ecrespo/reflex-reactbits"
+Source = "https://github.com/ecrespo/reflex-reactbits"
+Issues = "https://github.com/ecrespo/reflex-reactbits/issues"
+"React Bits" = "https://reactbits.dev"
+
+[project.scripts]
+reactbits = "reflex_reactbits.cli:main"
+
+[project.optional-dependencies]
+dev = ["build", "twine", "pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["custom_components"]
+
+[tool.setuptools.package-data]
+reflex_reactbits = ["catalog.json", "py.typed", "*.pyi"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["*_demo/.web", "scripts/node_modules", "_to_delete"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+# Long lines are docstrings, URLs and prop tables; wrapping is `ruff format`'s job.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# The wrapper modules come from `python scripts/generate_wrappers.py` and the
+# stubs from `reflex component build`, so their style is the generator's
+# business. Pyflakes (F) stays on: it is what catches a generated module
+# referring to a name it never imports.
+"custom_components/reflex_reactbits/animations.py" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+"custom_components/reflex_reactbits/backgrounds.py" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+"custom_components/reflex_reactbits/components.py" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+"custom_components/reflex_reactbits/micro.py" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+"custom_components/reflex_reactbits/text_animations.py" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+"custom_components/reflex_reactbits/*.pyi" = ["E", "W", "I", "UP", "B", "C4", "SIM", "RUF", "S"]
+# Deliberately re-exports the whole generated API.
+"custom_components/reflex_reactbits/__init__.py" = ["F403", "F405"]
+# assert is how pytest works, and the JS sanitizer test shells out to node.
+"tests/**" = ["S101", "S603"]
+# `x: list[...] = []` on an rx.State subclass is how Reflex declares a state var.
+"reactbits_demo/reactbits_demo/state.py" = ["RUF012"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
