@@ -51,6 +51,28 @@ jobs:
           fi
           echo "Tag matches version ${{ steps.version.outputs.version }}."
 
+      - name: Classifiers must exist in the trove list
+        # PyPI rejects an unknown classifier with a 400 at upload time and
+        # `twine check` does not look at them, so an invalid one only shows up
+        # when the release is already tagged. Catch it here instead.
+        run: |
+          pip install trove-classifiers
+          python - <<'PY'
+          import sys, tomllib
+          from pathlib import Path
+          from trove_classifiers import classifiers as valid
+
+          declared = tomllib.loads(Path("pyproject.toml").read_text())["project"].get("classifiers", [])
+          unknown = [c for c in declared if c not in valid]
+          if unknown:
+              print("Not valid trove classifiers:")
+              for c in unknown:
+                  print("  " + c)
+              print("See https://pypi.org/classifiers/")
+              sys.exit(1)
+          print(f"All {len(declared)} classifiers are valid.")
+          PY
+
       - name: Build sdist and wheel
         run: python -m build
 

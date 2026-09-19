@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reflex-reactbits"
-version = "0.1.0"
+version = "0.1.1"
 description = "Reflex wrappers for React Bits: 200+ animated text effects, backgrounds, UI components and micro interactions."
 readme = "README.md"
 license = { text = "MIT" }
@@ -12,11 +12,21 @@ requires-python = ">=3.10"
 authors = [{ name = "Ernesto Crespo", email = "ecrespo@gmail.com" }]
 keywords = ["reflex", "reflex-custom-components", "react-bits", "reactbits", "animations", "ui"]
 dependencies = ["reflex>=0.9.0"]
+# Every entry must exist in the trove list or PyPI rejects the upload with a
+# 400; `twine check` does not validate them, so CI does (see quality.yml).
+# There is no "Framework :: Reflex" classifier - the keywords cover that.
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Framework :: Reflex",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Widget Sets",
+    "Typing :: Typed",
 ]
 
 [project.urls]

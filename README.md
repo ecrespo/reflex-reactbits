@@ -179,26 +179,6 @@ The tag triggers `release.yml`, which builds, creates the GitHub release with th
 artifacts attached, and uploads to PyPI. `workflow_dispatch` runs the same thing on
 demand and can target TestPyPI instead.
 
-### Configuring the PyPI publisher (once)
-
-Publishing uses [Trusted Publishing](https://docs.pypi.org/trusted-publishers/), so no
-API token is stored in the repository: PyPI verifies the workflow's OIDC identity
-directly. On <https://pypi.org/manage/account/publishing/>, add a pending publisher with
-exactly these values:
-
-| Field | Value |
-| --- | --- |
-| PyPI project name | `reflex-reactbits` |
-| Owner | `ecrespo` |
-| Repository name | `reflex-reactbits` |
-| Workflow name | `release.yml` |
-| Environment name | `pypi` |
-
-Then create a GitHub environment named `pypi` (Settings → Environments) and, if you want
-a human gate before anything reaches PyPI, add yourself as a required reviewer on it.
-To rehearse against TestPyPI, repeat the same registration on
-<https://test.pypi.org/manage/account/publishing/> with the environment name `testpypi`
-and run the workflow manually with that option.
 
 ## License
 
