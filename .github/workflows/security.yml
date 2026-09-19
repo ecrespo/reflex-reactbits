@@ -35,10 +35,15 @@ jobs:
           pip install -e .
           pip install pip-audit
 
-      # --skip-editable: the project itself is installed from the checkout and
-      # has no release to look up, and --strict would turn that into a failure.
+      # Audit the resolved dependency tree, not the environment: the project
+      # itself is installed editable from the checkout and has no release to
+      # look up, and --strict counts that as a collection failure. Freezing
+      # without editables leaves exactly the dependencies we care about.
       - name: pip-audit
-        run: pip-audit --strict --skip-editable --progress-spinner off
+        run: |
+          pip freeze --exclude-editable > /tmp/resolved-deps.txt
+          echo "Auditing $(wc -l < /tmp/resolved-deps.txt) resolved dependencies"
+          pip-audit --strict --progress-spinner off -r /tmp/resolved-deps.txt
 
   code:
     name: Static analysis (bandit)
