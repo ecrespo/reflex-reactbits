@@ -156,6 +156,13 @@ Three workflows run in `.github/workflows/`:
 | --- | --- | --- |
 | `quality.yml` | push and PR to `main`/`develop` | `ruff check`; `pytest` on Python 3.10-3.13; builds the sdist and wheel, runs `twine check`, and fails if any React Bits source slipped into the distribution or into git |
 | `security.yml` | push, PR, and weekly | `pip-audit` on the dependency tree, `bandit` over the hand-written modules, `gitleaks` over the full history, CodeQL, and a dependency review on PRs |
+
+The dependency-review job needs GitHub's dependency graph to be provisioned for the
+repository, which it is not yet: until you enable it at *Settings → Code security →
+Dependency graph*, that job reports "not supported on this repository" and is marked
+`continue-on-error` so it cannot block a merge. Drop that line once it is on. Vulnerable
+dependencies are caught by `pip-audit` regardless; the job only adds the diff of what a
+given pull request introduces.
 | `release.yml` | a `v*` tag, or manually | Rebuilds, refuses a tag that disagrees with the version in `pyproject.toml`, publishes a GitHub release and uploads to PyPI |
 
 ## Releasing
