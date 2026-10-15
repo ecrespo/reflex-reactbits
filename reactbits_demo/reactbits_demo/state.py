@@ -67,7 +67,9 @@ class Playground(rx.State):
     aurora_b: str = "#7cff67"
     aurora_c: str = "#5227FF"
     amplitude: float = 1.0
-    preset: str = "one"
+    curve: str = "winding"
+    boosting: bool = False
+    boosts: int = 0
     switch_on: bool = False
     rating: int = 3
     segment: str = "week"
@@ -112,8 +114,16 @@ class Playground(rx.State):
         self.amplitude = float(value[0])
 
     @rx.event
-    def set_preset(self, value: str):
-        self.preset = value
+    def set_curve(self, value: str):
+        self.curve = value
+
+    @rx.event
+    def set_boosting(self, value: bool):
+        self.boosting = value
+
+    @rx.event
+    def on_boost_start(self):
+        self.boosts += 1
 
     @rx.event
     def on_switch(self, value: bool):
@@ -175,3 +185,31 @@ class Playground(rx.State):
     @rx.var
     def aurora_stops(self) -> list[str]:
         return [self.aurora_a, self.aurora_b, self.aurora_c]
+
+
+SHRED_FILES = [
+    {"id": "harbour", "title": "Harbour at dusk", "meta": "Edited yesterday · 4.1 MB"},
+    {"id": "studio", "title": "Studio, take two", "meta": "Edited 2 days ago · 2.8 MB"},
+    {"id": "fog", "title": "Fog over the bay", "meta": "Edited last week · 3.2 MB"},
+    {"id": "market", "title": "Sunday market", "meta": "Edited 12 Mar · 3.5 MB"},
+]
+
+
+class ShredderDemo(rx.State):
+    """Rows of the Shredder preview: shredding one deletes it on the backend."""
+
+    items: list[dict[str, str]] = SHRED_FILES
+    shredded: list[str] = []
+    generation: int = 0
+
+    @rx.event
+    def shred(self, item: dict[str, Any]):
+        self.items = [row for row in self.items if row["id"] != item.get("id")]
+        self.shredded = [*self.shredded, str(item.get("title"))]
+
+    @rx.event
+    def refill(self):
+        self.items = SHRED_FILES
+        self.shredded = []
+        # Remount: Shredder keeps its own row order, seeded from the first items.
+        self.generation += 1
