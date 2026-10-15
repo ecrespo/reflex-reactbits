@@ -43,27 +43,27 @@ RESERVED = {
     "is_default", "key", "lib_dependencies", "library", "ref", "special_props", "style",
     "tag", "create", "render", "get_fields", "add_style", "add_imports", "add_hooks",
     "add_custom_code", "transpile_packages",
+    # Names the generated annotations use: a prop called `float` would shadow the
+    # builtin for every `int | float` annotation after it in the class body.
+    "str", "int", "float", "bool", "list", "dict", "rx", "Any", "Literal", "field", "safe",
 }
 DEFAULT_TRIGGERS = {
     "on_blur", "on_click", "on_context_menu", "on_double_click", "on_focus", "on_mount",
     "on_mouse_down", "on_mouse_enter", "on_mouse_leave", "on_mouse_move", "on_mouse_out",
     "on_mouse_over", "on_mouse_up", "on_scroll", "on_scroll_end", "on_unmount",
 }
-SKIP_PROPS = {"className", "style", "children", "'aria-label'", "aria-label",
+SKIP_PROPS = {"className", "style", "children", "ref", "'aria-label'", "aria-label",
               # typos / sub-components that only exist in the docs prop tables
-              "dissappearAfter", "imgageSrc", "WarmTooltipGroup"}
+              "dissappearAfter", "imgageSrc", "WarmTooltipGroup", "TiltedCardLayer"}
 
-# npm imports removed by the source patches in reflex_reactbits/source.py, plus
-# lucide-react, which is declared unpinned by EXTRA_DEPS below (pinning React
-# Bits' older copy would break rx.icon).
-DROPPED_DEPS = {"react-router-dom", "@chakra-ui/react", "lucide-react"}
+# npm imports removed by the source patches in reflex_reactbits/source.py.
+# React Bits 2.0 dropped react-router, Chakra UI and lucide-react, so nothing
+# needs dropping today; the hook stays for the next patch that removes an import.
+DROPPED_DEPS: set[str] = set()
 
 # Packages a component imports that the docs' dependency table does not list.
-# Declared without a version so they resolve against whatever Reflex installs:
-# ReflectiveCard imports lucide-react, which only reaches package.json when the
-# app happens to use rx.icon somewhere, so an app using just this component
-# fails to build with "Failed to resolve import lucide-react".
-EXTRA_DEPS = {"ReflectiveCard": ["lucide-react"]}
+# Declared without a version so they resolve against whatever Reflex installs.
+EXTRA_DEPS: dict[str, list[str]] = {}
 
 # Props that start with "on" but are plain values, not callbacks.
 NOT_EVENTS = {("BellToggle", "onLabel"), ("BellToggle", "onColor"), ("BellToggle", "onBackground"),
@@ -71,7 +71,16 @@ NOT_EVENTS = {("BellToggle", "onLabel"), ("BellToggle", "onColor"), ("BellToggle
 
 # Extra exported sub-components: (parent, js export, python class, docs, props)
 SUBCOMPONENTS = {
-    "Stepper": [("Step", "Step", "A single step inside a Stepper; wrap the step content with it.", [])],
+    "Stepper": [("Step", "Step", "A single step inside a Stepper; wrap the step content with it.",
+                 [("title", "rx.Component | str",
+                   "Label shown under the indicator, or beside it in the vertical layout.", "undefined"),
+                  ("description", "rx.Component | str",
+                   "Second line shown beside the indicator in the vertical layout.", "undefined"),
+                  ("icon", "rx.Component | str",
+                   "Icon shown inside the indicator instead of the number.", "undefined")])],
+    "TiltedCard": [("TiltedCardLayer", "TiltedCardLayer",
+                    "Content floating above (positive depth) or sinking behind (negative) a TiltedCard's face.",
+                    [("depth", "int | float", "How far the layer floats above the card face.", "20")])],
     "ScrollStack": [("ScrollStackItem", "ScrollStackItem", "A card inside a ScrollStack.",
                      [("itemClassName", "str", "Extra class name for the card.", "''")])],
     "CardSwap": [("Card", "CardSwapCard", "A card inside a CardSwap.",
@@ -105,42 +114,15 @@ EVENT_ARGS: dict[tuple[str, str], list[str]] = {
     ("DepthCarousel", "onChange"): ["index", "item"],
     ("PixelSwap", "onComplete"): ["active"],
     ("PixelSwap", "onActiveChange"): ["active"],
+    ("FluidGlass", "onShapeChange"): ["shape"],
 }
 NO_ARG_EVENTS = {("BlurText", "onAnimationComplete"), ("ModelViewer", "onModelLoaded")}
 
-EXTRA_CODE: dict[str, str] = {
-    "Hyperspeed": '''
-    @classmethod
-    def create(cls, *children, preset: str | None = None, **props):
-        """Create the component.
-
-        Args:
-            *children: Children (unused).
-            preset: Name of a built-in React Bits preset ("one" .. "six"). Ignored if
-                ``effect_options`` is given.
-            **props: Component props.
-
-        Returns:
-            The component.
-        """
-        if preset is not None and "effect_options" not in props:
-            ensure_component_source(cls._rb_category, cls._rb_name, cls._rb_files)
-            props["effect_options"] = rx.Var(
-                f"hyperspeedPresets[{json.dumps(preset)}]",
-                _var_data=VarData(
-                    imports={
-                        f"$/public/{ASSETS_SUBDIR}/Backgrounds/Hyperspeed/HyperSpeedPresets.js": [
-                            ImportVar(tag="hyperspeedPresets")
-                        ]
-                    }
-                ),
-            )
-        return super().create(*children, **props)
-''',
-}
-EXTRA_IMPORTS: dict[str, str] = {
-    "backgrounds": "import json\n\nfrom reflex.utils.imports import ImportVar\nfrom reflex.vars.base import VarData\n\nfrom .source import ASSETS_SUBDIR, ensure_component_source\n",
-}
+# Extra class body per component, and extra imports per module, for wrappers
+# that need more than props. React Bits 2.0 removed the only user (Hyperspeed's
+# preset table), but the hook is kept for future hand-written additions.
+EXTRA_CODE: dict[str, str] = {}
+EXTRA_IMPORTS: dict[str, str] = {}
 
 
 def snake(name: str) -> str:
@@ -240,7 +222,8 @@ NUMBER = "int | float"
 def py_type(js_type: str | None, kind: str | None) -> str:
     """Like ``_py_type`` but lets every numeric prop accept ints and floats."""
     t = _py_type(js_type, kind)
-    return re.sub(r"\bfloat\b", NUMBER, t)
+    # Skip quoted Literal members: ScrollFloat's effect accepts the string "float".
+    return re.sub(r'"[^"]*"|\bfloat\b', lambda m: m.group() if m.group().startswith('"') else NUMBER, t)
 
 
 def widen_for_example(typ: str, value) -> str:
@@ -319,7 +302,10 @@ def build_component(c: dict) -> tuple[str, list[dict]]:
             continue
         # Documented props missing from the destructuring are kept only when the
         # component actually reads them (rest props / props.foo / config merge).
-        if c["rest"] or name == "GradualBlur" or re.search(rf"\b{re.escape(tname)}\b", c.get("_src", "")):
+        # Rows such as "Step title" or "items[].menu" document shapes, not props.
+        if not re.fullmatch(r"[A-Za-z_$][\w$]*", tname):
+            continue
+        if c["rest"] or re.search(rf"\b{re.escape(tname)}\b", c.get("_src", "")):
             names.append(tname)
     lines: list[str] = []
     events: list[str] = []
@@ -446,22 +432,30 @@ def main(meta_path: str, react_bits_root: str | None = None):
             # Only some modules declare a callback that takes no arguments.
             + ("from reflex.event import no_args_event_spec\n"
                if "no_args_event_spec]" in "".join(chunks) else "")
-            + "from reflex_base.components.component import field\n"
+            # Annotations name Component directly (not rx.Component): the .pyi
+            # generator only keeps imports the module itself has, so this is
+            # what gives the stubs their `Component` import.
+            + "from reflex_base.components.component import Component, field\n"
             + (EXTRA_IMPORTS.get(module, ""))
             + "\nfrom .base import ReactBitsComponent, safe\n\n"
             f"__all__ = {sorted(names)!r}\n\n\n"
         )
-        (PKG / f"{module}.py").write_text(header + "\n\n".join(chunks) + "\n\n" + factories)
+        body = re.sub(r"\brx\.Component\b", "Component", "\n\n".join(chunks))
+        (PKG / f"{module}.py").write_text(header + body + "\n\n" + factories)
         exports[module] = names
         print(f"{module}: {len(items)} components")
     (PKG / "catalog.json").write_text(json.dumps(catalog, indent=1))
-    init = ['"""Reflex wrappers for React Bits (https://reactbits.dev)."""\n\n']
-    for module in exports:
-        init.append(f"from .{module} import *  # noqa: F403\n")
-    init.append("from .base import ReactBitsComponent\n")
-    init.append("from .catalog import CATALOG, find_component\n")
-    init.append("from .source import ensure_component_source\n\n")
-    all_names = sorted({n for v in exports.values() for n in v} | {"ReactBitsComponent", "CATALOG", "find_component", "ensure_component_source"})
+    # Written already sorted the way ruff's isort (I001) and RUF022 want it;
+    # pyproject ignores F403/F405 for this file.
+    lines = [f"from .{module} import *\n" for module in exports]
+    lines += ["from .base import ReactBitsComponent\n", "from .catalog import CATALOG, find_component\n",
+              "from .source import ensure_component_source\n"]
+    init = ['"""Reflex wrappers for React Bits (https://reactbits.dev)."""\n\n', *sorted(lines), "\n"]
+
+    def isort_key(name: str) -> tuple[int, str]:
+        return (0 if name.isupper() else 1 if name[0].isupper() else 2, name)
+
+    all_names = sorted({n for v in exports.values() for n in v} | {"ReactBitsComponent", "CATALOG", "find_component", "ensure_component_source"}, key=isort_key)
     init.append(f"__all__ = {all_names!r}\n")
     (PKG / "__init__.py").write_text("".join(init))
 

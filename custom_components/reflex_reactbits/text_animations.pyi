@@ -10,8 +10,8 @@ from reflex_base.event import (
     EventType,
     PointerEventInfo,
 )
-from reflex_base.components.component import Component
 from reflex_base.vars.base import Var
+from reflex_base.components.component import Component
 from .base import ReactBitsComponent
 
 __all__ = [
@@ -40,6 +40,7 @@ __all__ = [
     "SplitFlapText",
     "SplitText",
     "StrokeText",
+    "TechText",
     "TextCursor",
     "TextLoop",
     "TextPressure",
@@ -72,6 +73,7 @@ __all__ = [
     "split_flap_text",
     "split_text",
     "stroke_text",
+    "tech_text",
     "text_cursor",
     "text_loop",
     "text_pressure",
@@ -88,10 +90,24 @@ class ASCIIText(ReactBitsComponent):
         *children,
         text: Var[str] | str | None = None,
         ascii_font_size: Var[float | int] | float | int | None = None,
-        text_font_size: Var[float | int] | float | int | None = None,
+        charset: Var[str] | str | None = None,
+        font_family: Var[str] | str | None = None,
+        font_weight: Var[float | int] | float | int | None = None,
         text_color: Var[str] | str | None = None,
-        plane_base_height: Var[float | int] | float | int | None = None,
-        enable_waves: Var[bool] | bool | None = None,
+        colors: Var[list[str]] | list[str] | None = None,
+        text_scale: Var[float | int] | float | int | None = None,
+        blocks: Var[float | int] | float | int | None = None,
+        waves: Var[float | int] | float | int | None = None,
+        wave_speed: Var[float | int] | float | int | None = None,
+        chroma: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        hue_shift: Var[float | int] | float | int | None = None,
+        scramble: Var[float | int] | float | int | None = None,
+        click_ripple: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        idle: Var[bool] | bool | None = None,
+        interactive: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -130,14 +146,32 @@ class BlurText(ReactBitsComponent):
         *children,
         text: Var[str] | str | None = None,
         delay: Var[float | int] | float | int | None = None,
-        animate_by: Var[str] | str | None = None,
-        direction: Var[str] | str | None = None,
+        animate_by: Literal["letters", "words"] | Var[Literal["letters", "words"]] | None = None,
+        direction: Literal["bottom", "left", "right", "top"]
+        | Var[Literal["bottom", "left", "right", "top"]]
+        | None = None,
         threshold: Var[float | int] | float | int | None = None,
         root_margin: Var[str] | str | None = None,
-        animation_from: Any | Var[Any] | None = None,
-        animation_to: Any | Var[Any] | None = None,
-        easing: Any | Var[Any] | None = None,
+        animation_from: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        animation_to: Var[list[Any]] | list[Any] | None = None,
+        easing: Var[list[Any]] | list[Any] | None = None,
         step_duration: Var[float | int] | float | int | None = None,
+        blur: Var[float | int] | float | int | None = None,
+        distance: Var[float | int] | float | int | None = None,
+        effect: Literal["blur", "drift", "focus", "tilt", "zoom"]
+        | Var[Literal["blur", "drift", "focus", "tilt", "zoom"]]
+        | None = None,
+        stagger_from: Literal["center", "end", "random", "start"]
+        | Var[Literal["center", "end", "random", "start"]]
+        | None = None,
+        trigger: Literal["click", "hover", "load", "view"]
+        | Var[Literal["click", "hover", "load", "view"]]
+        | None = None,
+        loop: Var[bool] | bool | None = None,
+        loop_delay: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        from_color: Var[str] | str | None = None,
+        focus_on_hover: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -180,6 +214,22 @@ class CircularText(ReactBitsComponent):
         on_hover: Literal["goBonkers", "pause", "slowDown", "speedUp"]
         | Var[Literal["goBonkers", "pause", "slowDown", "speedUp"]]
         | None = None,
+        direction: Literal["clockwise", "counterclockwise"]
+        | Var[Literal["clockwise", "counterclockwise"]]
+        | None = None,
+        size: Var[float | int] | float | int | None = None,
+        font_size: Var[float | int] | float | int | None = None,
+        font_weight: Var[float | int] | float | int | None = None,
+        letter_spacing: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        start_angle: Var[float | int] | float | int | None = None,
+        fill: Var[bool] | bool | None = None,
+        repeat: Var[float | int] | float | int | None = None,
+        ring: Var[bool] | bool | None = None,
+        ring_color: Var[str] | str | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        hover_tilt: Var[float | int] | float | int | None = None,
+        draggable: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -223,6 +273,16 @@ class CountUp(ReactBitsComponent):
         duration: Var[float | int] | float | int | None = None,
         start_when: Var[bool] | bool | None = None,
         separator: Var[str] | str | None = None,
+        prefix: Var[str] | str | None = None,
+        suffix: Var[str] | str | None = None,
+        mode: Literal["count", "roll"] | Var[Literal["count", "roll"]] | None = None,
+        easing: Literal["easeOut", "expo", "linear", "spring"]
+        | Var[Literal["easeOut", "expo", "linear", "spring"]]
+        | None = None,
+        decimals: Var[float | int] | float | int | None = None,
+        format: Literal["compact", "standard"] | Var[Literal["compact", "standard"]] | None = None,
+        trigger: Literal["load", "view"] | Var[Literal["load", "view"]] | None = None,
+        replay_on_hover: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -266,6 +326,19 @@ class CurvedLoop(ReactBitsComponent):
         curve_amount: Var[float | int] | float | int | None = None,
         direction: Literal["left", "right"] | Var[Literal["left", "right"]] | None = None,
         interactive: Var[bool] | bool | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        color: Var[str] | str | None = None,
+        edge_fade: Var[float | int] | float | int | None = None,
+        shape: Literal["arc", "circle", "line", "wave"]
+        | Var[Literal["arc", "circle", "line", "wave"]]
+        | None = None,
+        font_size: Var[float | int] | float | int | None = None,
+        font_weight: Var[float | int | str] | float | int | str | None = None,
+        letter_spacing: Var[float | int] | float | int | None = None,
+        outline: Var[bool] | bool | None = None,
+        separator: Var[str] | str | None = None,
+        separator_color: Var[str] | str | None = None,
+        scroll_boost: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -306,8 +379,8 @@ class DecryptedText(ReactBitsComponent):
         speed: Var[float | int] | float | int | None = None,
         max_iterations: Var[float | int] | float | int | None = None,
         sequential: Var[bool] | bool | None = None,
-        reveal_direction: Literal["center", "end", "start"]
-        | Var[Literal["center", "end", "start"]]
+        reveal_direction: Literal["center", "end", "random", "start"]
+        | Var[Literal["center", "end", "random", "start"]]
         | None = None,
         use_original_chars_only: Var[bool] | bool | None = None,
         characters: Var[str] | str | None = None,
@@ -317,6 +390,13 @@ class DecryptedText(ReactBitsComponent):
         | Var[Literal["click", "hover", "inViewHover", "view"]]
         | None = None,
         click_mode: Literal["once", "toggle"] | Var[Literal["once", "toggle"]] | None = None,
+        effect: Literal["fade", "flip", "scramble"]
+        | Var[Literal["fade", "flip", "scramble"]]
+        | None = None,
+        scramble_color: Var[str] | str | None = None,
+        loop: Var[bool] | bool | None = None,
+        loop_delay: Var[float | int] | float | int | None = None,
+        hover_radius: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -358,15 +438,20 @@ class DepthText(ReactBitsComponent):
         depth: Var[float | int] | float | int | None = None,
         face_color: Var[str] | str | None = None,
         depth_color: Var[str] | str | None = None,
+        gradient_depth: Var[bool] | bool | None = None,
         tilt: Var[float | int] | float | int | None = None,
         pointer_tracking: Var[bool] | bool | None = None,
         smoothing: Var[float | int] | float | int | None = None,
         perspective: Var[float | int] | float | int | None = None,
         auto_orbit: Var[bool] | bool | None = None,
         orbit_speed: Var[float | int] | float | int | None = None,
+        hover_push: Var[float | int] | float | int | None = None,
+        float_: Var[bool] | bool | None = None,
         font_size: Var[str] | str | None = None,
         font_weight: Var[float | int | str] | float | int | str | None = None,
         shadow: Var[bool] | bool | None = None,
+        outline: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -413,9 +498,16 @@ class EchoText(ReactBitsComponent):
         fade: Var[float | int] | float | int | None = None,
         blur: Var[float | int] | float | int | None = None,
         tint: Var[bool | str] | bool | str | None = None,
+        echo_colors: Var[list[str]] | list[str] | None = None,
+        echo_style: Literal["outline", "solid"] | Var[Literal["outline", "solid"]] | None = None,
+        echo_scale: Var[float | int] | float | int | None = None,
         mode: Literal["both", "entrance", "pointer"]
         | Var[Literal["both", "entrance", "pointer"]]
         | None = None,
+        trail: Literal["auto", "pointer", "scroll"]
+        | Var[Literal["auto", "pointer", "scroll"]]
+        | None = None,
+        click_burst: Var[bool] | bool | None = None,
         cursor_radius: Var[float | int] | float | int | None = None,
         duration: Var[float | int] | float | int | None = None,
         ease: Literal["ease-in-out", "ease-out", "linear", "snappy"]
@@ -466,11 +558,24 @@ class FallingText(ReactBitsComponent):
         trigger: Literal["auto", "click", "hover", "scroll"]
         | Var[Literal["auto", "click", "hover", "scroll"]]
         | None = None,
+        variant: Literal["text", "tiles"] | Var[Literal["text", "tiles"]] | None = None,
+        split: Literal["letters", "words"] | Var[Literal["letters", "words"]] | None = None,
+        gravity: Var[float | int] | float | int | None = None,
+        bounciness: Var[float | int] | float | int | None = None,
+        scatter: Var[float | int] | float | int | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        order: Literal["center", "random", "sequence", "together"]
+        | Var[Literal["center", "random", "sequence", "together"]]
+        | None = None,
+        draggable: Var[bool] | bool | None = None,
+        mouse_constraint_stiffness: Var[float | int] | float | int | None = None,
+        cursor_push: Var[float | int] | float | int | None = None,
+        restore_delay: Var[float | int] | float | int | None = None,
+        font_size: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         background_color: Var[str] | str | None = None,
         wireframes: Var[bool] | bool | None = None,
-        gravity: Var[float | int] | float | int | None = None,
-        mouse_constraint_stiffness: Var[float | int] | float | int | None = None,
-        font_size: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -514,14 +619,25 @@ class FoldText(ReactBitsComponent):
         hinge: Literal["bottom", "left", "right", "top"]
         | Var[Literal["bottom", "left", "right", "top"]]
         | None = None,
+        fold_style: Literal["blinds", "flip", "paper"]
+        | Var[Literal["blinds", "flip", "paper"]]
+        | None = None,
         duration: Var[float | int] | float | int | None = None,
         stagger: Var[float | int] | float | int | None = None,
+        stagger_from: Literal["center", "edges", "end", "random", "start"]
+        | Var[Literal["center", "edges", "end", "random", "start"]]
+        | None = None,
+        fold_angle: Var[float | int] | float | int | None = None,
         ease: Var[str] | str | None = None,
         perspective: Var[float | int] | float | int | None = None,
         crease_shading: Var[float | int] | float | int | None = None,
         trigger: Literal["hover", "loop", "mount", "scroll"]
         | Var[Literal["hover", "loop", "mount", "scroll"]]
         | None = None,
+        loop_delay: Var[float | int] | float | int | None = None,
+        hover_refold: Var[bool] | bool | None = None,
+        refold_radius: Var[float | int] | float | int | None = None,
+        refold_angle: Var[float | int] | float | int | None = None,
         font_size: Var[float | int | str] | float | int | str | None = None,
         font_weight: Var[float | int | str] | float | int | str | None = None,
         color: Var[str] | str | None = None,
@@ -580,6 +696,13 @@ class FuzzyText(ReactBitsComponent):
         glitch_duration: Var[float | int] | float | int | None = None,
         gradient: Var[list[str]] | list[str] | None = None,
         letter_spacing: Var[float | int] | float | int | None = None,
+        slice_size: Var[float | int] | float | int | None = None,
+        trigger: Literal["always", "click", "hover"]
+        | Var[Literal["always", "click", "hover"]]
+        | None = None,
+        intro: Var[bool] | bool | None = None,
+        intro_duration: Var[float | int] | float | int | None = None,
+        color_split: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -619,6 +742,21 @@ class GlitchText(ReactBitsComponent):
         speed: Var[float | int] | float | int | None = None,
         enable_shadows: Var[bool] | bool | None = None,
         enable_on_hover: Var[bool] | bool | None = None,
+        offset: Var[float | int] | float | int | None = None,
+        shadow_colors: Var[list[str]] | list[str] | None = None,
+        mode: Literal["noise", "rgb", "scan", "slices"]
+        | Var[Literal["noise", "rgb", "scan", "slices"]]
+        | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        skew: Var[float | int] | float | int | None = None,
+        flicker: Var[bool] | bool | None = None,
+        trigger: Literal["always", "click", "hover"]
+        | Var[Literal["always", "click", "hover"]]
+        | None = None,
+        burst_duration: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        font_size: Var[float | int | str] | float | int | str | None = None,
+        font_weight: Var[float | int | str] | float | int | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -657,12 +795,18 @@ class GradientText(ReactBitsComponent):
         *children,
         colors: Var[list[str]] | list[str] | None = None,
         animation_speed: Var[float | int] | float | int | None = None,
-        show_border: Var[bool] | bool | None = None,
-        direction: Literal["diagonal", "horizontal", "vertical"]
-        | Var[Literal["diagonal", "horizontal", "vertical"]]
+        variant: Literal["conic", "flow", "linear"]
+        | Var[Literal["conic", "flow", "linear"]]
         | None = None,
-        pause_on_hover: Var[bool] | bool | None = None,
+        angle: Var[float | int] | float | int | None = None,
+        direction: Any | Var[Any] | None = None,
+        scale: Var[float | int] | float | int | None = None,
         yoyo: Var[bool] | bool | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        show_border: Var[bool] | bool | None = None,
+        border_width: Var[float | int] | float | int | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        follow_pointer: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -707,11 +851,18 @@ class MaskedHeading(ReactBitsComponent):
         fill_scale: Var[float | int] | float | int | None = None,
         parallax: Var[float | int] | float | int | None = None,
         drift: Var[float | int] | float | int | None = None,
+        hover_zoom: Var[float | int] | float | int | None = None,
         brightness: Var[float | int] | float | int | None = None,
         saturation: Var[float | int] | float | int | None = None,
         grayscale: Var[bool] | bool | None = None,
-        reveal: Literal["fade", "none", "rise", "wipe"]
-        | Var[Literal["fade", "none", "rise", "wipe"]]
+        tint: Var[str] | str | None = None,
+        spotlight: Var[bool] | bool | None = None,
+        spotlight_radius: Var[float | int] | float | int | None = None,
+        outline: Var[bool] | bool | None = None,
+        outline_color: Var[str] | str | None = None,
+        outline_width: Var[float | int] | float | int | None = None,
+        reveal: Literal["blur", "fade", "none", "rise", "scale", "wipe"]
+        | Var[Literal["blur", "fade", "none", "rise", "scale", "wipe"]]
         | None = None,
         duration: Var[float | int] | float | int | None = None,
         stagger: Var[float | int] | float | int | None = None,
@@ -766,9 +917,20 @@ class ParticleText(ReactBitsComponent):
         density: Var[float | int] | float | int | None = None,
         color: Var[str] | str | None = None,
         highlight_color: Var[str] | str | None = None,
+        highlight_mode: Literal["gradient", "motion"]
+        | Var[Literal["gradient", "motion"]]
+        | None = None,
+        shape: Literal["circle", "line", "square"]
+        | Var[Literal["circle", "line", "square"]]
+        | None = None,
+        intro: Literal["gather", "rain", "scan", "spiral"]
+        | Var[Literal["gather", "rain", "scan", "spiral"]]
+        | None = None,
         scatter: Var[float | int] | float | int | None = None,
         gather_duration: Var[float | int] | float | int | None = None,
         stagger: Var[float | int] | float | int | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        burst_strength: Var[float | int] | float | int | None = None,
         pointer_repel: Var[float | int] | float | int | None = None,
         repel_radius: Var[float | int] | float | int | None = None,
         idle_drift: Var[float | int] | float | int | None = None,
@@ -820,13 +982,21 @@ class RotatingText(ReactBitsComponent):
         initial: Var[dict[str, Any]] | dict[str, Any] | None = None,
         animate: Var[dict[str, Any]] | dict[str, Any] | None = None,
         exit: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        animate_presence_mode: Var[str] | str | None = None,
+        effect: Literal["blur", "drop", "flip", "scale", "slide"]
+        | Var[Literal["blur", "drop", "flip", "scale", "slide"]]
+        | None = None,
+        direction: Literal["down", "up"] | Var[Literal["down", "up"]] | None = None,
+        highlight: Var[bool] | bool | None = None,
+        highlight_color: Var[str] | str | None = None,
+        animate_presence_mode: Literal["sync", "wait"] | Var[Literal["sync", "wait"]] | None = None,
         animate_presence_initial: Var[bool] | bool | None = None,
         rotation_interval: Var[float | int] | float | int | None = None,
         stagger_duration: Var[float | int] | float | int | None = None,
         stagger_from: Var[str] | str | None = None,
         loop: Var[bool] | bool | None = None,
         auto: Var[bool] | bool | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        blur: Var[float | int] | float | int | None = None,
         split_by: Var[str] | str | None = None,
         main_class_name: Var[str] | str | None = None,
         split_level_class_name: Var[str] | str | None = None,
@@ -872,6 +1042,16 @@ class ScrambledText(ReactBitsComponent):
         duration: Var[float | int] | float | int | None = None,
         speed: Var[float | int] | float | int | None = None,
         scramble_chars: Var[str] | str | None = None,
+        scramble_color: Var[str] | str | None = None,
+        effect: Literal["blur", "lift", "magnify", "scramble"]
+        | Var[Literal["blur", "lift", "magnify", "scramble"]]
+        | None = None,
+        strength: Var[float | int] | float | int | None = None,
+        trail: Var[float | int] | float | int | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        font_family: Var[str] | str | None = None,
+        color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -911,11 +1091,23 @@ class ScrollFloat(ReactBitsComponent):
         scroll_container_ref: Any | Var[Any] | None = None,
         container_class_name: Var[str] | str | None = None,
         text_class_name: Var[str] | str | None = None,
+        effect: Literal["blur", "flip", "float", "scatter", "wave"]
+        | Var[Literal["blur", "flip", "float", "scatter", "wave"]]
+        | None = None,
+        split_by: Literal["chars", "words"] | Var[Literal["chars", "words"]] | None = None,
+        direction: Literal["down", "up"] | Var[Literal["down", "up"]] | None = None,
+        order: Literal["center", "edges", "end", "random", "start"]
+        | Var[Literal["center", "edges", "end", "random", "start"]]
+        | None = None,
+        from_color: Var[str] | str | None = None,
         animation_duration: Var[float | int] | float | int | None = None,
         ease: Var[str] | str | None = None,
         scroll_start: Var[str] | str | None = None,
         scroll_end: Var[str] | str | None = None,
         stagger: Var[float | int] | float | int | None = None,
+        distance: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -957,6 +1149,18 @@ class ScrollReveal(ReactBitsComponent):
         base_opacity: Var[float | int] | float | int | None = None,
         base_rotation: Var[float | int] | float | int | None = None,
         blur_strength: Var[float | int] | float | int | None = None,
+        base_offset: Var[float | int] | float | int | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        split_by: Literal["chars", "lines", "words"]
+        | Var[Literal["chars", "lines", "words"]]
+        | None = None,
+        effect: Literal["fade", "flip", "rise", "scale"]
+        | Var[Literal["fade", "flip", "rise", "scale"]]
+        | None = None,
+        mode: Literal["enter", "scrub"] | Var[Literal["enter", "scrub"]] | None = None,
+        duration: Var[float | int] | float | int | None = None,
+        highlight_color: Var[str] | str | None = None,
         container_class_name: Var[str] | str | None = None,
         text_class_name: Var[str] | str | None = None,
         rotation_end: Var[str] | str | None = None,
@@ -1008,6 +1212,17 @@ class ScrollVelocity(ReactBitsComponent):
         scroller_class_name: Var[str] | str | None = None,
         parallax_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
         scroller_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        separator: Component | Var[Component | str] | str | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        fade_edges: Var[bool] | bool | None = None,
+        skew_with_velocity: Var[float | int] | float | int | None = None,
+        scale_with_velocity: Var[float | int] | float | int | None = None,
+        outline_alternate: Var[bool] | bool | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        font_size: Var[float | int | str] | float | int | str | None = None,
+        font_weight: Var[float | int | str] | float | int | str | None = None,
+        color: Var[str] | str | None = None,
+        draggable: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1045,15 +1260,26 @@ class ShinyText(ReactBitsComponent):
         cls,
         *children,
         text: Var[str] | str | None = None,
-        disabled: Var[bool] | bool | None = None,
-        speed: Var[float | int] | float | int | None = None,
         color: Var[str] | str | None = None,
         shine_color: Var[str] | str | None = None,
-        spread: Var[float | int] | float | int | None = None,
-        yoyo: Var[bool] | bool | None = None,
-        pause_on_hover: Var[bool] | bool | None = None,
-        direction: Literal["left", "right"] | Var[Literal["left", "right"]] | None = None,
+        speed: Var[float | int] | float | int | None = None,
         delay: Var[float | int] | float | int | None = None,
+        angle: Var[float | int] | float | int | None = None,
+        shine_width: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        bands: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        direction: Literal["left", "right"] | Var[Literal["left", "right"]] | None = None,
+        easing: Literal["linear", "smooth", "snappy"]
+        | Var[Literal["linear", "smooth", "snappy"]]
+        | None = None,
+        trigger: Literal["hover", "loop", "view"]
+        | Var[Literal["hover", "loop", "view"]]
+        | None = None,
+        yoyo: Var[bool] | bool | None = None,
+        follow_pointer: Var[bool] | bool | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        disabled: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1104,8 +1330,8 @@ class Shuffle(ReactBitsComponent):
         | None = None,
         text_align: Var[str] | str | None = None,
         shuffle_times: Var[float | int] | float | int | None = None,
-        animation_mode: Literal["evenodd", "random"]
-        | Var[Literal["evenodd", "random"]]
+        animation_mode: Literal["center", "evenodd", "random", "sequence"]
+        | Var[Literal["center", "evenodd", "random", "sequence"]]
         | None = None,
         loop: Var[bool] | bool | None = None,
         loop_delay: Var[float | int] | float | int | None = None,
@@ -1116,6 +1342,13 @@ class Shuffle(ReactBitsComponent):
         trigger_once: Var[bool] | bool | None = None,
         respect_reduced_motion: Var[bool] | bool | None = None,
         trigger_on_hover: Var[bool] | bool | None = None,
+        effect: Literal["blur", "flip", "slide"]
+        | Var[Literal["blur", "flip", "slide"]]
+        | None = None,
+        hover_radius: Var[float | int] | float | int | None = None,
+        motion_blur: Var[bool] | bool | None = None,
+        color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1167,6 +1400,16 @@ class SplitFlapText(ReactBitsComponent):
         font_size: Var[float | int | str] | float | int | str | None = None,
         loop: Var[bool] | bool | None = None,
         pad_to: Var[float | int] | float | int | None = None,
+        align: Literal["center", "left", "right"]
+        | Var[Literal["center", "left", "right"]]
+        | None = None,
+        intro: Var[bool] | bool | None = None,
+        glare: Var[float | int] | float | int | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        order: Literal["center", "left", "random", "right"]
+        | Var[Literal["center", "left", "random", "right"]]
+        | None = None,
+        tile_style: Literal["board", "minimal"] | Var[Literal["board", "minimal"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1206,7 +1449,7 @@ class SplitText(ReactBitsComponent):
         text: Var[str] | str | None = None,
         delay: Var[float | int] | float | int | None = None,
         duration: Var[float | int] | float | int | None = None,
-        ease: Var[str] | str | None = None,
+        ease: Any | Var[Any] | None = None,
         split_type: Var[str] | str | None = None,
         from_: Var[dict[str, Any]] | dict[str, Any] | None = None,
         to: Var[dict[str, Any]] | dict[str, Any] | None = None,
@@ -1214,6 +1457,23 @@ class SplitText(ReactBitsComponent):
         root_margin: Var[str] | str | None = None,
         text_align: Var[str] | str | None = None,
         tag_: Var[str] | str | None = None,
+        stagger_from: Literal["center", "edges", "end", "random", "start"]
+        | Var[Literal["center", "edges", "end", "random", "start"]]
+        | None = None,
+        mask: Var[bool] | bool | None = None,
+        effect: Literal["blur", "fade", "flip", "pop", "rise", "skew", "wave"]
+        | Var[Literal["blur", "fade", "flip", "pop", "rise", "skew", "wave"]]
+        | None = None,
+        trigger: Literal["click", "hover", "load", "view"]
+        | Var[Literal["click", "hover", "load", "view"]]
+        | None = None,
+        loop: Var[bool] | bool | None = None,
+        loop_delay: Var[float | int] | float | int | None = None,
+        hover_effect: Literal["lift", "none", "wave"]
+        | Var[Literal["lift", "none", "wave"]]
+        | None = None,
+        color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1265,10 +1525,22 @@ class StrokeText(ReactBitsComponent):
         fill_mode: Literal["fade", "none", "wipe"]
         | Var[Literal["fade", "none", "wipe"]]
         | None = None,
-        font_size: Var[float | int | str] | float | int | str | None = None,
+        wipe_from: Literal["bottom", "left", "right", "top"]
+        | Var[Literal["bottom", "left", "right", "top"]]
+        | None = None,
+        font_size: Var[float | int] | float | int | None = None,
         font_weight: Var[float | int | str] | float | int | str | None = None,
-        letter_spacing: Var[float | int | str] | float | int | str | None = None,
+        font_family: Var[str] | str | None = None,
+        letter_spacing: Var[float | int] | float | int | None = None,
         reverse: Var[bool] | bool | None = None,
+        stroke_style: Literal["dashed", "dotted", "solid"]
+        | Var[Literal["dashed", "dotted", "solid"]]
+        | None = None,
+        dash_length: Var[float | int] | float | int | None = None,
+        marching: Var[bool] | bool | None = None,
+        hover_redraw: Var[bool] | bool | None = None,
+        shadow: Var[bool] | bool | None = None,
+        shadow_color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1300,18 +1572,99 @@ class StrokeText(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class TechText(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        text: Var[str] | str | None = None,
+        font_family: Var[str] | str | None = None,
+        font_weight: Var[float | int] | float | int | None = None,
+        font_size: Var[float | int] | float | int | None = None,
+        letter_spacing: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
+        align: Literal["center", "left", "right"]
+        | Var[Literal["center", "left", "right"]]
+        | None = None,
+        reach: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        dash_length: Var[float | int] | float | int | None = None,
+        dash_gap: Var[float | int] | float | int | None = None,
+        stroke_width: Var[float | int] | float | int | None = None,
+        line_style: Literal["dashed", "solid"] | Var[Literal["dashed", "solid"]] | None = None,
+        reveal: Literal["area", "letter", "off"]
+        | Var[Literal["area", "letter", "off"]]
+        | None = None,
+        specks: Var[float | int] | float | int | None = None,
+        selection: Var[bool] | bool | None = None,
+        labels: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        sweep: Var[bool] | bool | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        click_kick: Var[bool] | bool | None = None,
+        intro: Literal["assemble", "metrics", "none", "type"]
+        | Var[Literal["assemble", "metrics", "none", "type"]]
+        | None = None,
+        intro_duration: Var[float | int] | float | int | None = None,
+        guides: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "TechText":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class TextCursor(ReactBitsComponent):
     @classmethod
     def create(
         cls,
         *children,
         text: Var[str] | str | None = None,
+        mode: Literal["chain", "ribbon", "stamp"]
+        | Var[Literal["chain", "ribbon", "stamp"]]
+        | None = None,
         spacing: Var[float | int] | float | int | None = None,
+        max_points: Var[float | int] | float | int | None = None,
         follow_mouse_direction: Var[bool] | bool | None = None,
         random_float: Var[bool] | bool | None = None,
         exit_duration: Var[float | int] | float | int | None = None,
         removal_interval: Var[float | int] | float | int | None = None,
-        max_points: Var[float | int] | float | int | None = None,
+        shrink: Var[float | int] | float | int | None = None,
+        fade: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        pop_in: Var[bool] | bool | None = None,
+        keep_upright: Var[bool] | bool | None = None,
+        hide_cursor: Var[bool] | bool | None = None,
+        color: Var[str] | str | None = None,
+        font_size: Var[float | int] | float | int | None = None,
+        font_weight: Var[float | int | str] | float | int | str | None = None,
+        font_family: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1357,6 +1710,7 @@ class TextLoop(ReactBitsComponent):
         direction: Literal["forward", "reverse"] | Var[Literal["forward", "reverse"]] | None = None,
         separator: Var[str] | str | None = None,
         curviness: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
         font_size: Var[float | int] | float | int | None = None,
         font_weight: Var[float | int] | float | int | None = None,
         letter_spacing: Var[float | int] | float | int | None = None,
@@ -1365,7 +1719,15 @@ class TextLoop(ReactBitsComponent):
         ribbon: Var[bool] | bool | None = None,
         ribbon_color: Var[str] | str | None = None,
         ribbon_width: Var[float | int] | float | int | None = None,
+        edge_fade: Var[float | int] | float | int | None = None,
         pause_on_hover: Var[bool] | bool | None = None,
+        cross: Var[bool] | bool | None = None,
+        cross_color: Var[str] | str | None = None,
+        cross_angle: Var[float | int] | float | int | None = None,
+        draggable: Var[bool] | bool | None = None,
+        scroll_boost: Var[float | int] | float | int | None = None,
+        outline: Var[bool] | bool | None = None,
+        outline_width: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1412,8 +1774,17 @@ class TextPressure(ReactBitsComponent):
         flex: Var[bool] | bool | None = None,
         stroke: Var[bool] | bool | None = None,
         scale: Var[bool] | bool | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        idle: Literal["none", "pulse", "wave"]
+        | Var[Literal["none", "pulse", "wave"]]
+        | None = None,
+        idle_speed: Var[float | int] | float | int | None = None,
+        click_ripple: Var[bool] | bool | None = None,
         text_color: Var[str] | str | None = None,
+        pressure_color: Var[str] | str | None = None,
         stroke_color: Var[str] | str | None = None,
+        stroke_width: Var[float | int] | float | int | None = None,
         min_font_size: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
@@ -1457,12 +1828,26 @@ class TextType(ReactBitsComponent):
         initial_delay: Var[float | int] | float | int | None = None,
         pause_duration: Var[float | int] | float | int | None = None,
         deleting_speed: Var[float | int] | float | int | None = None,
+        delete_mode: Literal["backspace", "select"]
+        | Var[Literal["backspace", "select"]]
+        | None = None,
         loop: Var[bool] | bool | None = None,
         show_cursor: Var[bool] | bool | None = None,
         hide_cursor_while_typing: Var[bool] | bool | None = None,
+        cursor_style: Literal["bar", "block", "character", "underscore"]
+        | Var[Literal["bar", "block", "character", "underscore"]]
+        | None = None,
         cursor_character: Component | Var[Component | str] | str | None = None,
+        cursor_color: Var[str] | str | None = None,
         cursor_class_name: Var[str] | str | None = None,
         cursor_blink_duration: Var[float | int] | float | int | None = None,
+        cursor_glide: Var[bool] | bool | None = None,
+        type_effect: Literal["blur", "fade", "none", "rise"]
+        | Var[Literal["blur", "fade", "none", "rise"]]
+        | None = None,
+        mistakes: Var[float | int] | float | int | None = None,
+        prefix: Var[str] | str | None = None,
+        prefix_color: Var[str] | str | None = None,
         text_colors: Var[list[str]] | list[str] | None = None,
         variable_speed: Var[dict[str, Any]] | dict[str, Any] | None = None,
         start_on_visible: Var[bool] | bool | None = None,
@@ -1507,11 +1892,21 @@ class TrueFocus(ReactBitsComponent):
         sentence: Var[str] | str | None = None,
         separator: Var[str] | str | None = None,
         manual_mode: Var[bool] | bool | None = None,
+        focus_style: Literal["box", "brackets", "highlight", "underline"]
+        | Var[Literal["box", "brackets", "highlight", "underline"]]
+        | None = None,
+        order: Literal["random", "sequential"] | Var[Literal["random", "sequential"]] | None = None,
+        easing: Literal["smooth", "spring"] | Var[Literal["smooth", "spring"]] | None = None,
         blur_amount: Var[float | int] | float | int | None = None,
+        focus_scale: Var[float | int] | float | int | None = None,
         border_color: Var[str] | str | None = None,
+        highlight_color: Var[str] | str | None = None,
         glow_color: Var[str] | str | None = None,
         animation_duration: Var[float | int] | float | int | None = None,
         pause_between_animations: Var[float | int] | float | int | None = None,
+        corner_size: Var[float | int] | float | int | None = None,
+        border_width: Var[float | int] | float | int | None = None,
+        unfocused_opacity: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1556,6 +1951,13 @@ class VariableProximity(ReactBitsComponent):
         falloff: Literal["exponential", "gaussian", "linear"]
         | Var[Literal["exponential", "gaussian", "linear"]]
         | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        from_color: Var[str] | str | None = None,
+        to_color: Var[str] | str | None = None,
+        scale: Var[float | int] | float | int | None = None,
+        lift: Var[float | int] | float | int | None = None,
+        idle_wave: Var[bool] | bool | None = None,
+        font_size: Var[float | int | str] | float | int | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1600,7 +2002,14 @@ class WarpText(ReactBitsComponent):
         pointer_influence: Var[float | int] | float | int | None = None,
         pointer_strength: Var[float | int] | float | int | None = None,
         refraction: Var[float | int] | float | int | None = None,
+        chromatic: Var[float | int] | float | int | None = None,
         ripple: Var[bool] | bool | None = None,
+        click_ripple: Var[bool] | bool | None = None,
+        idle_drift: Var[float | int] | float | int | None = None,
+        lens: Literal["bulge", "pinch", "swirl"]
+        | Var[Literal["bulge", "pinch", "swirl"]]
+        | None = None,
+        intro: Var[bool] | bool | None = None,
         font_size: Var[float | int | str] | float | int | str | None = None,
         font_weight: Var[float | int | str] | float | int | str | None = None,
         font_family: Var[str] | str | None = None,
@@ -1662,6 +2071,7 @@ shuffle = Shuffle.create
 split_flap_text = SplitFlapText.create
 split_text = SplitText.create
 stroke_text = StrokeText.create
+tech_text = TechText.create
 text_cursor = TextCursor.create
 text_loop = TextLoop.create
 text_pressure = TextPressure.create

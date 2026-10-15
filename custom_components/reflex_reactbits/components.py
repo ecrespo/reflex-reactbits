@@ -10,11 +10,11 @@ from typing import Any, Literal
 
 import reflex as rx
 from reflex.event import no_args_event_spec
-from reflex_base.components.component import field
+from reflex_base.components.component import Component, field
 
 from .base import ReactBitsComponent, safe
 
-__all__ = ['AccordionGallery', 'AnimatedList', 'BorderGlow', 'BounceCards', 'BubbleMenu', 'CardNav', 'CardSwap', 'CardSwapCard', 'Carousel', 'ChromaGrid', 'CircularGallery', 'Counter', 'CurvedInput', 'DecayCard', 'DepthCarousel', 'Dock', 'DomeGallery', 'DriftWall', 'ElasticSlider', 'FlowingMenu', 'FluidGlass', 'FlyingPosters', 'Folder', 'GlassIcons', 'GlassSurface', 'GooeyNav', 'InfiniteMenu', 'InfiniteSpiral', 'Lanyard', 'LineSidebar', 'MagicBento', 'Masonry', 'ModelViewer', 'MorphSlider', 'OptionWheel', 'PillNav', 'PixelCard', 'ProfileCard', 'ReflectiveCard', 'ScrollStack', 'ScrollStackItem', 'SpecularButton', 'SpotlightCard', 'Stack', 'StaggeredMenu', 'Step', 'Stepper', 'TiltedCard', 'accordion_gallery', 'animated_list', 'border_glow', 'bounce_cards', 'bubble_menu', 'card_nav', 'card_swap', 'card_swap_card', 'carousel', 'chroma_grid', 'circular_gallery', 'counter', 'curved_input', 'decay_card', 'depth_carousel', 'dock', 'dome_gallery', 'drift_wall', 'elastic_slider', 'flowing_menu', 'fluid_glass', 'flying_posters', 'folder', 'glass_icons', 'glass_surface', 'gooey_nav', 'infinite_menu', 'infinite_spiral', 'lanyard', 'line_sidebar', 'magic_bento', 'masonry', 'model_viewer', 'morph_slider', 'option_wheel', 'pill_nav', 'pixel_card', 'profile_card', 'reflective_card', 'scroll_stack', 'scroll_stack_item', 'specular_button', 'spotlight_card', 'stack', 'staggered_menu', 'step', 'stepper', 'tilted_card']
+__all__ = ['AccordionGallery', 'AnimatedList', 'BorderGlow', 'BounceCards', 'BubbleMenu', 'CardNav', 'CardSwap', 'CardSwapCard', 'Carousel', 'ChromaGrid', 'CircularCarousel', 'CircularGallery', 'Counter', 'CurvedInput', 'DecayCard', 'DepthCarousel', 'Dock', 'DomeGallery', 'DriftWall', 'ElasticSlider', 'FlexCarousel', 'FlowingMenu', 'FluidGlass', 'FlyingPosters', 'Folder', 'GlassIcons', 'GlassSurface', 'GooeyNav', 'HoloCard', 'InfiniteMenu', 'InfiniteSpiral', 'Lanyard', 'LineSidebar', 'MagicBento', 'Masonry', 'ModelViewer', 'MorphSlider', 'OptionWheel', 'PillNav', 'PixelCard', 'ProfileCard', 'ReflectiveCard', 'ScrollStack', 'ScrollStackItem', 'SpecularButton', 'SpotlightCard', 'Stack', 'StaggeredMenu', 'Step', 'Stepper', 'TiltedCard', 'TiltedCardLayer', 'accordion_gallery', 'animated_list', 'border_glow', 'bounce_cards', 'bubble_menu', 'card_nav', 'card_swap', 'card_swap_card', 'carousel', 'chroma_grid', 'circular_carousel', 'circular_gallery', 'counter', 'curved_input', 'decay_card', 'depth_carousel', 'dock', 'dome_gallery', 'drift_wall', 'elastic_slider', 'flex_carousel', 'flowing_menu', 'fluid_glass', 'flying_posters', 'folder', 'glass_icons', 'glass_surface', 'gooey_nav', 'holo_card', 'infinite_menu', 'infinite_spiral', 'lanyard', 'line_sidebar', 'magic_bento', 'masonry', 'model_viewer', 'morph_slider', 'option_wheel', 'pill_nav', 'pixel_card', 'profile_card', 'reflective_card', 'scroll_stack', 'scroll_stack_item', 'specular_button', 'spotlight_card', 'stack', 'staggered_menu', 'step', 'stepper', 'tilted_card', 'tilted_card_layer']
 
 
 class AccordionGallery(ReactBitsComponent):
@@ -88,7 +88,7 @@ class AccordionGallery(ReactBitsComponent):
 
 
 class AnimatedList(ReactBitsComponent):
-    """List items enter with staggered motion variants for polished reveals.
+    """A scrolling list whose rows spring into view, with a gliding selection and arrow keys.
 
     Docs: https://reactbits.dev/components/animated-list
     """
@@ -99,28 +99,70 @@ class AnimatedList(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "AnimatedList"
     _rb_files = ('AnimatedList.css', 'AnimatedList.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    items: rx.Var[list[str]] = field(
-        doc="An array of items to display in the scrollable list. Default: [ 'Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item...."
+    items: rx.Var[list[Any]] = field(
+        doc="The rows to show. Strings become plain rows. Objects can add an icon or image, a description and a label on the right. Default: DEFAULT_ITEMS."
     )
-    show_gradients: rx.Var[bool] = field(
-        doc="Toggle to display the top and bottom gradient overlays. Default: true."
-    )
-    enable_arrow_navigation: rx.Var[bool] = field(
-        doc="Toggle to enable keyboard navigation via arrow and tab keys. Default: true."
-    )
-    item_class_name: rx.Var[str] = field(
-        doc="Additional CSS class names for each list item."
-    )
-    display_scrollbar: rx.Var[bool] = field(
-        doc="Toggle to display or hide the custom scrollbar. Default: true."
+    render_item: rx.Var[Any] = field(
+        doc="Renders your own content inside each row instead of the built-in layout. Default: -. Pass a JS function with rx.Var('(...) => ...')."
     )
     initial_selected_index: rx.Var[int | float] = field(
-        doc="Initial index of the selected item. Set to -1 for no selection. Default: -1."
+        doc="Which row starts selected. Use -1 for none. Default: -1."
+    )
+    select_on_hover: rx.Var[bool] = field(
+        doc="Moves the selection to the row under the cursor. Default: true."
+    )
+    enable_arrow_navigation: rx.Var[bool] = field(
+        doc="Arrow keys, Home and End move the selection while the list is hovered or focused. Default: true."
+    )
+    loop: rx.Var[bool] = field(
+        doc="Wraps keyboard navigation from the last row back to the first. Default: false."
+    )
+    animation: rx.Var[Literal["pop", "slide", "fade", "none"]] = field(
+        doc="How rows animate in as they scroll into view. Default: 'pop'."
+    )
+    animate_once: rx.Var[bool] = field(
+        doc="Animates each row only the first time it appears. Default: false."
+    )
+    stagger: rx.Var[int | float] = field(
+        doc="Delay between rows when the list first appears, in seconds. Default: 0.05."
+    )
+    show_gradients: rx.Var[bool] = field(
+        doc="Fades rows out at the top and bottom edges while there is more to scroll. Default: true."
+    )
+    fade_size: rx.Var[int | float] = field(
+        doc="Height of the edge fades, in px. Default: 56."
+    )
+    display_scrollbar: rx.Var[bool] = field(
+        doc="Shows a thin scrollbar when the list overflows. Default: true."
+    )
+    frame: rx.Var[bool] = field(
+        doc="Shows the frosted panel around the list. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the panel and rows. Default: 'dark'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of the selection outline. Uses a soft tint of the text color when not set. Default: -."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the rows, in px. Default: 14."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between rows, in px. Default: 8."
+    )
+    width: rx.Var[int | float | str] = field(
+        doc="Maximum width of the list. Default: 420."
+    )
+    max_height: rx.Var[int | float | str] = field(
+        doc="Height at which the list starts to scroll. Default: 440."
+    )
+    item_class_name: rx.Var[str] = field(
+        doc="Extra class names for each row."
     )
     on_item_select: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
-        doc="Callback function triggered when an item is selected. Receives the selected item and its index. Handler receives: item, index."
+        doc="Called when a row is clicked, or when Enter is pressed on the selected row. Handler receives: item, index."
     )
 
 
@@ -170,7 +212,7 @@ class BorderGlow(ReactBitsComponent):
 
 
 class BounceCards(ReactBitsComponent):
-    """Cards bounce that bounce in on mount.
+    """A fan of photo cards that bounce in, then spread apart and straighten the one you hover.
 
     Docs: https://reactbits.dev/components/bounce-cards
     """
@@ -181,31 +223,63 @@ class BounceCards(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "BounceCards"
     _rb_files = ('BounceCards.css', 'BounceCards.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
-    images: rx.Var[list[str]] = field(
-        doc="Array of image URLs to display. Default: []."
+    images: rx.Var[list[Any]] = field(
+        doc="Images for the cards, from left to right. Default: []."
     )
     container_width: rx.Var[int | float] = field(
-        doc="Width of the container (px). Default: 400."
+        doc="Width of the container in pixels. Default: 400."
     )
     container_height: rx.Var[int | float] = field(
-        doc="Height of the container (px). Default: 400."
+        doc="Height of the container in pixels. Default: 400."
+    )
+    card_size: rx.Var[int | float] = field(
+        doc="Width and height of each card in pixels. Default: 200."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="Horizontal distance between cards in pixels. Default: 85."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Largest tilt in degrees. Each card leans by a different share of it, like a loose pile. Default: 10."
+    )
+    arc: rx.Var[int | float] = field(
+        doc="Drops the outer cards by this many pixels so the fan curves. Negative values curve it up. Default: 0."
     )
     animation_delay: rx.Var[int | float] = field(
-        doc="Delay (in seconds) before the animation starts. Default: 0.5."
+        doc="Seconds before the first card pops in. Default: 0.5."
     )
     animation_stagger: rx.Var[int | float] = field(
-        doc="Time (in seconds) between each card's animation. Default: 0.06."
+        doc="Seconds between cards popping in. Default: 0.06."
     )
-    ease_type: rx.Var[str] = field(
-        doc="Easing function for the bounce. Default: 'elastic.out(1, 0.8)'."
-    )
-    transform_styles: rx.Var[list[str]] = field(
-        doc="Custom transforms for each card position. Default: [ 'rotate(10deg) translate(-170px)', 'rotate(5deg) transl...."
+    bounciness: rx.Var[int | float] = field(
+        doc="How much the cards overshoot as they pop in, from 0 to 1. Default: 0.6."
     )
     enable_hover: rx.Var[bool] = field(
-        doc="If true, hovering pushes siblings aside and flattens the hovered card's rotation. Default: false."
+        doc="Spreads the cards apart on hover. Default: true."
+    )
+    push_distance: rx.Var[int | float] = field(
+        doc="How far the other cards slide away from the hovered one, in pixels. Default: 160."
+    )
+    hover_scale: rx.Var[int | float] = field(
+        doc="Scale of the hovered card as it straightens and comes to the front. Default: 1.06."
+    )
+    border_width: rx.Var[int | float] = field(
+        doc="Width of the card border in pixels. Default: 5."
+    )
+    border_color: rx.Var[str] = field(
+        doc="Color of the card border. Default: '#ffffff'."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards in pixels. Default: 25."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Soft drop shadow that deepens on hover. Default: true."
+    )
+    transform_styles: rx.Var[list[str]] = field(
+        doc="Optional custom positions such as \"rotate(5deg) translate(-150px)\". Overrides spread, rotation and arc. Default: -."
+    )
+    on_card_click: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called with the card index on click or Enter. Cards become focusable buttons when it is set. Handler receives: index."
     )
 
 
@@ -223,7 +297,7 @@ class BubbleMenu(ReactBitsComponent):
     _rb_files = ('BubbleMenu.css', 'BubbleMenu.jsx')
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
-    logo: rx.Var[rx.Component | str] = field(
+    logo: rx.Var[Component | str] = field(
         doc="Logo content shown in the central bubble (string src or JSX). Default: \u2014."
     )
     menu_aria_label: rx.Var[str] = field(
@@ -256,7 +330,7 @@ class BubbleMenu(ReactBitsComponent):
 
 
 class CardNav(ReactBitsComponent):
-    """Expandable navigation bar with card panels revealing nested links.
+    """A navigation bar that springs open into a row of cards, each with its own links.
 
     Docs: https://reactbits.dev/components/card-nav
     """
@@ -267,36 +341,81 @@ class CardNav(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "CardNav"
     _rb_files = ('CardNav.css', 'CardNav.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0', 'react-icons@5.5.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    logo: rx.Var[str] = field(
-        doc="URL for the logo image. Default: -."
+    logo: rx.Var[Component | str] = field(
+        doc="Image URL or element shown in the middle of the bar. Default: -."
     )
     logo_alt: rx.Var[str] = field(
-        doc="Alt text for the logo image. Default: 'Logo'."
+        doc="Accessible label for the logo link. Default: 'Logo'."
+    )
+    logo_href: rx.Var[str] = field(
+        doc="Where the logo links to. Default: '#'."
     )
     items: rx.Var[list[Any]] = field(
-        doc="Array of navigation items with label, bgColor, textColor, and links. Default: -."
+        doc="The cards in the menu. Give a card a bgColor to tint it, and links without an href render as buttons. Default: DEFAULT_ITEMS."
     )
-    ease: rx.Var[str] = field(
-        doc="GSAP easing function for animations. Default: 'power3.out'."
+    cta: rx.Var[Any] = field(
+        doc="Button on the right of the bar. On narrow screens it moves to the bottom of the menu. Default: -. Pass a JS function with rx.Var('(...) => ...')."
     )
-    base_color: rx.Var[str] = field(
-        doc="Background color for the navigation container. Default: '#fff'."
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color scheme of the bar, cards and button. Default: 'dark'."
     )
-    menu_color: rx.Var[str] = field(
-        doc="Color for the hamburger menu lines."
+    surface: rx.Var[Literal["glass", "solid"]] = field(
+        doc="Frosted glass that blurs what is behind the bar, or an opaque fill. Default: 'glass'."
     )
-    button_bg_color: rx.Var[str] = field(
-        doc="Background color for the CTA button. Default: #111."
+    open_on: rx.Var[Literal["click", "hover"]] = field(
+        doc="Opens the menu from the button, or as soon as the pointer moves over the bar. Default: 'click'."
     )
-    button_text_color: rx.Var[str] = field(
-        doc="Text color for the CTA button. Default: white."
+    card_effect: rx.Var[Literal["rise", "unfold", "fade"]] = field(
+        doc="How the cards arrive: rising into place, folding down from the bar, or fading in from a soft blur. Default: 'rise'."
+    )
+    stagger: rx.Var[int | float] = field(
+        doc="How far each card trails the one before it, from 0 to 0.3. Default: 0.12."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the menu overshoots as it opens, from 0 to 1. Default: 0.2."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the open and close animation. Default: 1."
+    )
+    card_height: rx.Var[int | float] = field(
+        doc="Minimum height of the cards in px. Default: 176."
+    )
+    max_width: rx.Var[int | float] = field(
+        doc="Maximum width of the bar in px. Default: 800."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of the button. Its label picks black or white for contrast. Default: -."
+    )
+    menu_label: rx.Var[bool] = field(
+        doc="Shows Menu and Close next to the menu icon, rolling between them. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Unrolls the bar from its center on mount. Default: true."
+    )
+    default_open: rx.Var[bool] = field(
+        doc="Starts with the menu open. Default: false."
+    )
+    open: rx.Var[bool] = field(
+        doc="Controls the menu from outside. Pair it with onOpenChange. Default: -."
+    )
+    link_component: rx.Var[Component | str] = field(
+        doc="Renders the links, so you can pass your router's link. It receives href, className and children. Default: 'a'."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name of the nav landmark. Default: 'Main'."
+    )
+    on_open_change: rx.EventHandler[lambda open: [safe(open)]] = field(
+        doc="Called when the menu opens or closes. Handler receives: open."
+    )
+    on_link_click: rx.EventHandler[lambda link, item, event: [safe(link), safe(item), safe(event)]] = field(
+        doc="Called when a link is clicked. The menu closes afterwards. Handler receives: link, item, event."
     )
 
 
 class CardSwap(ReactBitsComponent):
-    """Cards animate position swapping with smooth layout transitions.
+    """A 3D stack of cards that sends the front card to the back on a timer, or when you fling it.
 
     Docs: https://reactbits.dev/components/card-swap
     """
@@ -307,34 +426,73 @@ class CardSwap(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "CardSwap"
     _rb_files = ('CardSwap.css', 'CardSwap.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    width: rx.Var[int | float | str] = field(
-        doc="Width of the card container. Default: 500."
+    items: rx.Var[list[Any]] = field(
+        doc="Cards to show when no children are passed. Each item takes title, image, icon and alt. Default: Sample cards."
     )
-    height: rx.Var[int | float | str] = field(
-        doc="Height of the card container. Default: 400."
+    width: rx.Var[int | float] = field(
+        doc="Width of each card, in px. Default: 460."
+    )
+    height: rx.Var[int | float] = field(
+        doc="Height of each card, in px. Default: 340."
     )
     card_distance: rx.Var[int | float] = field(
-        doc="X-axis spacing between cards. Default: 60."
+        doc="Horizontal step between stacked cards, in px. Default: 60."
     )
     vertical_distance: rx.Var[int | float] = field(
-        doc="Y-axis spacing between cards. Default: 70."
+        doc="Vertical step between stacked cards, in px. Default: 70."
     )
-    delay: rx.Var[int | float] = field(
-        doc="Milliseconds between card swaps. Default: 5000."
-    )
-    pause_on_hover: rx.Var[bool] = field(
-        doc="Whether to pause animation on hover. Default: false."
+    depth: rx.Var[int | float] = field(
+        doc="How far back each card sits, in px. More depth makes the cards behind smaller. Default: 90."
     )
     skew_amount: rx.Var[int | float] = field(
-        doc="Degree of slope for top/bottom edges. Default: 6."
+        doc="Slant of the cards, in degrees. Default: 6."
     )
-    easing: rx.Var[Literal["linear", "elastic"]] = field(
-        doc="Animation easing type. Default: 'elastic'."
+    visible_cards: rx.Var[int | float] = field(
+        doc="How many cards show in the stack. Extra cards wait hidden at the back. Default: 4."
     )
-    on_card_click: rx.EventHandler[lambda idx: [safe(idx)]] = field(
-        doc="Callback function when a card is clicked Handler receives: idx."
+    delay: rx.Var[int | float] = field(
+        doc="Time between swaps, in ms. Default: 4000."
+    )
+    autoplay: rx.Var[bool] = field(
+        doc="Sends the front card to the back on a timer. Default: true."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Pauses the timer while the cursor is over a card. Default: true."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets people drag or fling the front card to send it to the back. Default: true."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the swap animation. Default: 1."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the cards overshoot as they settle, from 0 to 1. Default: 0.35."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How much the stack shifts in depth as the cursor moves, from 0 to 1. Default: 0.5."
+    )
+    hover_spread: rx.Var[int | float] = field(
+        doc="How much the stack fans out while hovered. Default: 0.12."
+    )
+    dim: rx.Var[int | float] = field(
+        doc="How much the cards behind fade back, from 0 to 1. Default: 0.5."
+    )
+    card_radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards, in px. Default: 18."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fans the cards out from the front one on mount. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the cards. Default: 'dark'."
+    )
+    on_card_click: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called when a card is clicked. Clicking a card behind also brings it to the front. Handler receives: index."
+    )
+    on_change: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called with the index of the new front card after each swap. Handler receives: index."
     )
 
 
@@ -347,13 +505,13 @@ class CardSwapCard(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "CardSwap"
     _rb_files = ('CardSwap.css', 'CardSwap.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
     custom_class: rx.Var[str] = field(doc="Extra class name for the card.")
 
 
 class Carousel(ReactBitsComponent):
-    """Responsive carousel with touch gestures, looping and transitions.
+    """Swipeable cards for feature tours, stories and galleries, with five transitions and an autoplay timer.
 
     Docs: https://reactbits.dev/components/carousel
     """
@@ -364,33 +522,69 @@ class Carousel(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Carousel"
     _rb_files = ('Carousel.css', 'Carousel.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21', 'react-icons@5.5.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    items: rx.Var[list[Any]] = field(
-        doc="An array of carousel items. Each item must include title, description, id, and icon. Default: DEFAULT_ITEMS."
+    items: rx.Var[Component | str | list[Any]] = field(
+        doc="Cards to show. Objects with image, icon, title, description and alt get the built-in card, strings are used as image URLs and React elements are rendered as they are. Default: DEFAULT_ITEMS."
     )
-    base_width: rx.Var[int | float] = field(
-        doc="Total width (in px) of the carousel container. Effective item width is baseWidth minus padding. Default: 300."
+    base_width: rx.Var[int | float | str] = field(
+        doc="Width of the carousel in px, or any CSS width. It never grows past its container. Default: 300."
+    )
+    aspect_ratio: rx.Var[int | float] = field(
+        doc="Width of a card divided by its height. Default: 1.25."
+    )
+    peek: rx.Var[int | float] = field(
+        doc="Space on each side of the active card where the neighbours show, in px. Works with slide and scale. Default: 0."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between the cards in px. Default: 16."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards in px. Default: 12."
+    )
+    frame: rx.Var[bool] = field(
+        doc="Holds the cards and controls in a panel that masks the cards as they slide out. Without it the cards fade out at the edges. Default: true."
+    )
+    effect: rx.Var[Literal["tilt", "slide", "scale", "fade", "cube"]] = field(
+        doc="How the cards move from one to the next. Default: 'tilt'."
+    )
+    indicator: rx.Var[Literal["dots", "bars", "counter", "none"]] = field(
+        doc="Navigation under the cards. Bars fill up with the autoplay timer. Default: 'dots'."
+    )
+    arrows: rx.Var[bool] = field(
+        doc="Shows previous and next buttons. Default: false."
     )
     autoplay: rx.Var[bool] = field(
-        doc="Enables automatic scrolling to the next item at a fixed interval. Default: false."
+        doc="Moves to the next card on a timer. Default: false."
     )
     autoplay_delay: rx.Var[int | float] = field(
-        doc="Delay in milliseconds between automatic scrolls when autoplay is enabled. Default: 3000."
+        doc="Time on each card in ms while autoplay is on. Default: 3000."
     )
     pause_on_hover: rx.Var[bool] = field(
-        doc="Pauses the autoplay functionality when the carousel is hovered. Default: false."
+        doc="Pauses autoplay while the pointer is over the carousel. Default: false."
     )
     loop: rx.Var[bool] = field(
-        doc="When true, the carousel loops seamlessly from the last item back to the first. Default: false."
+        doc="Wraps around from the last card to the first and back. Default: false."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets people drag, swipe or scroll sideways through the cards. Default: true."
     )
     round: rx.Var[bool] = field(
-        doc="When true, the carousel is rendered with a 1:1 aspect ratio and circular container/items. Default: false."
+        doc="Turns the cards into circles. Default: false."
+    )
+    initial_index: rx.Var[int | float] = field(
+        doc="Card shown first. Default: 0."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color scheme of the cards, frame and controls. Default: 'dark'."
+    )
+    on_change: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called with the index of the new card whenever it changes. Handler receives: index."
     )
 
 
 class ChromaGrid(ReactBitsComponent):
-    """A responsive grid of grayscale tiles. Hovering the grid reaveals their colors.
+    """A grid of grayscale photo cards where a spotlight follows the cursor and brings back color.
 
     Docs: https://reactbits.dev/components/chroma-grid
     """
@@ -401,33 +595,161 @@ class ChromaGrid(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "ChromaGrid"
     _rb_files = ('ChromaGrid.css', 'ChromaGrid.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
     items: rx.Var[list[Any]] = field(
-        doc="Array of ChromaItem objects to display in the grid. Default: Demo []."
-    )
-    radius: rx.Var[int | float] = field(
-        doc="Size of the spotlight effect in pixels. Default: 300."
+        doc="The cards to show. Each item takes image, title, subtitle, accent and url. With a url the whole card becomes a link. Default: Sample photos."
     )
     columns: rx.Var[int | float] = field(
-        doc="The `columns` prop. Default: 3."
+        doc="The most columns the grid shows. Default: 3."
     )
-    rows: rx.Var[int | float] = field(
-        doc="The `rows` prop. Default: 2."
+    min_card_width: rx.Var[int | float] = field(
+        doc="Narrowest a card can get, in px. The grid drops columns to keep cards at least this wide. Default: 180."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between cards, in px. Default: 12."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Size of the color spotlight, in px. Default: 260."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How gradually the spotlight fades at its edge, from 0 for a crisp circle to 1 for a soft glow. Default: 0.6."
     )
     damping: rx.Var[int | float] = field(
-        doc="Cursor follow animation duration in seconds. Default: 0.45."
+        doc="How smoothly the spotlight trails the cursor. 0 follows it exactly. Default: 0.45."
     )
     fade_out: rx.Var[int | float] = field(
-        doc="Fade-out animation duration in seconds when mouse leaves. Default: 0.6."
+        doc="How long the colors take to fade back to gray after the cursor leaves, in seconds. Default: 0.6."
     )
-    ease: rx.Var[str] = field(
-        doc="GSAP easing function for animations. Default: 'power3.out'."
+    grayscale: rx.Var[int | float] = field(
+        doc="How much color is drained outside the spotlight, from 0 to 1. Default: 1."
+    )
+    dim: rx.Var[int | float] = field(
+        doc="How much images darken outside the spotlight. Default: 0.12."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of each card's accent color glowing up from the bottom as it is revealed. Default: 0.5."
+    )
+    border_glow: rx.Var[int | float] = field(
+        doc="Strength of each card's border lighting up in its accent color near the cursor. Default: 1."
+    )
+    reveal: rx.Var[Literal["spotlight", "card"]] = field(
+        doc="Reveal color in a soft spotlight that follows the cursor, or one whole card at a time on hover. Default: 'spotlight'."
+    )
+    aspect_ratio: rx.Var[str] = field(
+        doc="Aspect ratio of the images, as a CSS aspect-ratio value. Default: '3 / 2'."
+    )
+    card_radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards, in px. Default: 22."
+    )
+    show_info: rx.Var[bool] = field(
+        doc="Shows the title and subtitle under each image. Default: true."
+    )
+    frame: rx.Var[bool] = field(
+        doc="Wraps the grid in a frosted glass panel. Default: false."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the cards. Default: 'dark'."
+    )
+
+
+class CircularCarousel(ReactBitsComponent):
+    """A 3D ring of images with bendable cards, momentum drag, snapping and click to focus.
+
+    Docs: https://reactbits.dev/components/circular-carousel
+    """
+
+    tag = "CircularCarousel"
+    alias = "ReactBitsCircularCarousel"
+    is_default = True
+    _rb_category = "Components"
+    _rb_name = "CircularCarousel"
+    _rb_files = ('CircularCarousel.css', 'CircularCarousel.jsx')
+
+    items: rx.Var[list[Any]] = field(
+        doc="Images placed around the ring. The alt text is announced to screen readers, the title and optional subtitle are shown by captions. Passing a new list of the same length crossfades each card to its new image. Default: DEFAULT_ITEMS."
+    )
+    preset: rx.Var[Literal["cylinder", "orbit", "wheel", "panorama"]] = field(
+        doc="Shape of the ring. Cylinder faces the cards outward, orbit keeps every card turned toward you, wheel spins top to bottom, and panorama puts the camera inside the ring. Default: 'cylinder'."
+    )
+    intro: rx.Var[Literal["assemble", "rise", "spin", "none"]] = field(
+        doc="Entrance once the images load. Assemble glides the cards in from a wider ring, rise slides them in one by one from the edge of the frame, and spin lands a fast turn. Default: 'rise'."
+    )
+    card_width: rx.Var[int | float] = field(
+        doc="Card width in px. The whole ring scales down to fit its container when it needs to. Default: 220."
+    )
+    aspect_ratio: rx.Var[int | float] = field(
+        doc="Card width divided by its height. Images are cropped to fill the card. Default: 1."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between neighbouring cards, in px. Default: 25."
+    )
+    curve: rx.Var[int | float] = field(
+        doc="How far the cards bend to follow the ring, from flat at 0 to fully wrapped at 1. Ignored by orbit. Default: from preset."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Camera angle in degrees. Negative values look down onto the ring. Default: from preset."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="Camera distance in px. Lower values exaggerate depth. Panorama sets its own, since the camera sits at the centre. Default: from preset."
+    )
+    autoplay: rx.Var[Literal["drift", "step", "off"]] = field(
+        doc="Drift turns the ring continuously, step moves one card at a time and settles on it, off only moves when you do. Default: 'drift'."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Drift speed in degrees per second. Default: 14."
+    )
+    interval: rx.Var[int | float] = field(
+        doc="Seconds between moves in step mode. Default: 3."
+    )
+    direction: rx.Var[Literal["left", "right"]] = field(
+        doc="Which way the front cards travel. A flick changes it to the way you threw the ring. On the wheel, left means up. Default: 'left'."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets you grab and throw the ring with a mouse, finger or horizontal trackpad scroll. Default: true."
+    )
+    momentum: rx.Var[int | float] = field(
+        doc="How long a throw keeps gliding before it blends back into the autoplay speed, from 0 to 1. Default: 0.6."
+    )
+    snap: rx.Var[bool] = field(
+        doc="Settles on a card whenever the ring comes to rest. Default: true."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Eases the ring to a stop while the pointer is over it. Default: true."
+    )
+    focus_on_click: rx.Var[bool] = field(
+        doc="Clicking a card turns it to the front. Default: true."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How much the camera leans toward the pointer, from 0 to 1. Default: 0.3."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much the ring swells outward when it spins fast, from 0 to 1. Default: 0.5."
+    )
+    depth_fade: rx.Var[int | float] = field(
+        doc="How strongly cards fade into fadeColor as they turn away, from 0 to 1. Default: 0.55."
+    )
+    fade_color: rx.Var[str] = field(
+        doc="Color distant cards fade toward. Match it to the background behind the carousel. Default: '#000000'."
+    )
+    inner_shade: rx.Var[int | float] = field(
+        doc="Brightness of the inside faces seen through the back of the ring, from 0 to 1. Default: 0.6."
+    )
+    corner_radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards, in px. Default: 12."
+    )
+    captions: rx.Var[bool] = field(
+        doc="Shows the front card title, subtitle and position under the ring. Default: false."
+    )
+    on_change: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called when a different card reaches the front. Handler receives: index."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when a card is clicked, or when Enter is pressed on the carousel. Handler receives: item, index."
     )
 
 
 class CircularGallery(ReactBitsComponent):
-    """Circular orbit gallery rotating images.
+    """A curved image gallery you can drag, scroll or tab through, with cards that open to the full image.
 
     Docs: https://reactbits.dev/components/circular-gallery
     """
@@ -438,36 +760,80 @@ class CircularGallery(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "CircularGallery"
     _rb_files = ('CircularGallery.css', 'CircularGallery.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     items: rx.Var[list[Any]] = field(
-        doc="List of items to display in the gallery. Each item should have an image URL and a text label."
+        doc="Images to show. `text` is the title under each card, `description` appears under the title when a card is open and `alt` names the image for screen readers. Default: 12 sample photos."
     )
     bend: rx.Var[int | float] = field(
-        doc="Determines the curvature of the gallery layout. A negative value bends in one direction, a positive value in the opposite. Default: 3."
+        doc="Curvature of the arc. Positive values arch the cards down at the edges, negative values lift them, 0 lays them flat. Default: 3."
     )
     text_color: rx.Var[str] = field(
-        doc="Specifies the color of the text labels. Default: '#ffffff'."
+        doc="Color of the titles, the keyboard focus ring and the placeholder shown while images load. Default: '#ffffff'."
     )
     border_radius: rx.Var[int | float] = field(
-        doc="Sets the border radius for the media items to achieve rounded corners. Default: 0.05."
+        doc="Corner radius as a fraction of the card size, from 0 (square) to 0.5 (fully round). Default: 0.05."
     )
     font: rx.Var[str] = field(
-        doc="CSS font shorthand (style, weight, size, family) used for the text labels below each card. Default: 'bold 30px Figtree'."
+        doc="CSS font shorthand for the titles. The size scales with the cards, so 30px means the default size and larger values make the titles bigger. Default: DEFAULT_FONT."
     )
     font_url: rx.Var[str] = field(
-        doc="URL of a font to load for the labels. Accepts a stylesheet URL (e.g. a Google Fonts link) or a direct font file (.woff2, .woff, .ttf, .otf). The loaded family overrides the family in `font`."
+        doc="Font to load for the titles. Accepts a stylesheet URL (e.g. a Google Fonts link) or a font file (.woff2, .woff, .ttf, .otf). The loaded family replaces the family in `font`."
     )
     scroll_speed: rx.Var[int | float] = field(
-        doc="Controls how much the gallery moves per scroll event. Lower values result in slower scrolling, higher values in faster scrolling. Default: 2."
+        doc="How far the gallery travels per drag or wheel movement. Default: 2."
     )
     scroll_ease: rx.Var[int | float] = field(
-        doc="Controls the smoothness of scroll transitions. Lower values create smoother, more fluid motion, while higher values make it more responsive. Default: 0.05."
+        doc="How quickly the gallery catches up with the input, from 0.001 (floaty) to 1 (instant). Default: 0.05."
+    )
+    item_size: rx.Var[int | float] = field(
+        doc="Card height relative to the container, from 0.2 to 2. Default: 1."
+    )
+    item_aspect: rx.Var[int | float] = field(
+        doc="Card width divided by height. Images are cropped to fill the card. Default: 0.78."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between cards as a fraction of the card width. Default: 0.26."
+    )
+    wave: rx.Var[int | float] = field(
+        doc="How much the cards ripple while the gallery moves. 0 keeps them flat. Default: 1."
+    )
+    fade_edges: rx.Var[int | float] = field(
+        doc="Fades the cards out toward the left and right edges, from 0 to 0.5 of the width. Default: 0.12."
+    )
+    shadow: rx.Var[int | float] = field(
+        doc="Strength of the soft shadow under each card. Default: 0.25."
+    )
+    grayscale: rx.Var[bool] = field(
+        doc="Shows the images in grayscale and brings the color back on hover, focus or when opened. Default: false."
+    )
+    show_titles: rx.Var[bool] = field(
+        doc="Shows the title of each card underneath it. Default: true."
+    )
+    snap: rx.Var[bool] = field(
+        doc="Settles on the nearest card after dragging or scrolling. Default: true."
+    )
+    auto_scroll: rx.Var[int | float] = field(
+        doc="Speed of an automatic drift, where 1 moves about one card every four seconds and negative values drift the other way. It pauses on hover, while dragging, while a card is open and briefly after any input. Default: 0."
+    )
+    open_on_click: rx.Var[bool] = field(
+        doc="Clicking a card opens it to its full image. Click it again, click outside it, press Escape or use the close button to return. When off, clicking a card centers it. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Glides the cards in when the gallery mounts. Default: true."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when a card is clicked. Handler receives: item, index."
+    )
+    on_active_change: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called when a different card becomes the centered one. Handler receives: index."
     )
 
 
 class Counter(ReactBitsComponent):
-    """Flexible animated counter supporting increments + easing.
+    """An odometer-style number whose digits roll to every new value, with currency, separators and locales.
 
     Docs: https://reactbits.dev/components/counter
     """
@@ -478,58 +844,69 @@ class Counter(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Counter"
     _rb_files = ('Counter.css', 'Counter.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     value: rx.Var[int | float] = field(
-        doc="The numeric value to display in the counter. Default: N/A (required)."
+        doc="The number to show. Digits roll to every new value. Default: 0."
     )
-    font_size: rx.Var[int | float] = field(
-        doc="The base font size used for the counter digits. Default: 100."
+    locale: rx.Var[str] = field(
+        doc="Locale used for separators, symbols and numerals. Default: 'en-US'."
     )
-    padding: rx.Var[int | float] = field(
-        doc="Additional padding added to the digit height. Default: 0."
+    format: rx.Var[Any] = field(
+        doc="Formatting options such as currency, percent, units or compact notation. Default: -."
     )
-    places: rx.Var[list[int | float]] = field(
-        doc="Defines which digit positions to display. Include whole number and decimal place values (use \".\" for the decimal point). If omitted, place values will be detected automatically. Default: [...value.toString()].map((ch, i, a) => { ch == '.'; if (...."
+    decimals: rx.Var[int | float] = field(
+        doc="Fixed number of decimal places. Leave it out to use the format defaults. Default: -."
     )
-    gap: rx.Var[int | float] = field(
-        doc="The gap (in pixels) between each digit. Default: 8."
+    min_digits: rx.Var[int | float] = field(
+        doc="Pads the whole part with leading zeros. Default: 1."
     )
-    border_radius: rx.Var[int | float] = field(
-        doc="The border radius (in pixels) for the counter container. Default: 4."
+    prefix: rx.Var[Component | str] = field(
+        doc="Content shown before the number. Default: -."
     )
-    horizontal_padding: rx.Var[int | float] = field(
-        doc="The horizontal padding (in pixels) for the counter container. Default: 8."
+    suffix: rx.Var[Component | str] = field(
+        doc="Content shown after the number. Default: -."
     )
-    text_color: rx.Var[str] = field(
-        doc="The text color for the counter digits. Default: 'inherit'."
+    direction: rx.Var[Literal["auto", "up", "down", "shortest"]] = field(
+        doc="Which way digits roll. Auto rolls up as the number grows and down as it shrinks. Default: 'auto'."
+    )
+    duration: rx.Var[int | float] = field(
+        doc="Roughly how long a roll takes, in seconds. Default: 0.7."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much digits overshoot before settling, from 0 to 0.9. Default: 0.2."
+    )
+    stagger: rx.Var[int | float] = field(
+        doc="Delay in seconds between neighbouring digits, so changes ripple from the right. Default: 0.04."
+    )
+    motion_blur: rx.Var[bool] = field(
+        doc="Blurs digits along their path while they spin fast. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Spins every digit once and lands it when the counter first scrolls into view. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="How far in em digits roll beyond the text before fading out. 0 clips them at the edge. Default: 0.3."
+    )
+    font_size: rx.Var[int | float | str] = field(
+        doc="Font size in px, or any CSS size such as inherit. Default: 100."
     )
     font_weight: rx.Var[int | float | str] = field(
-        doc="The font weight of the counter digits. Default: 'inherit'."
+        doc="Font weight of the number. Default: 'inherit'."
     )
-    container_style: rx.Var[dict[str, Any]] = field(
-        doc="Custom inline styles for the outer container. Default: {}."
+    text_color: rx.Var[str] = field(
+        doc="Color of the number. Default: 'inherit'."
     )
-    counter_style: rx.Var[dict[str, Any]] = field(
-        doc="Custom inline styles for the counter element. Default: {}."
+    gap: rx.Var[int | float] = field(
+        doc="Space between digits and symbols in px. Default: 0."
+    )
+    padding: rx.Var[int | float] = field(
+        doc="Extra height in px added to each digit, which also spaces out rolling digits. Default: 0."
+    )
+    tabular: rx.Var[bool] = field(
+        doc="Keeps every digit the same width. When off, widths ease between digits as they roll. Default: true."
     )
     digit_style: rx.Var[dict[str, Any]] = field(
-        doc="Custom inline styles for each digit container. Default: {}."
-    )
-    gradient_height: rx.Var[int | float] = field(
-        doc="The height (in pixels) of the gradient overlays. Default: 16."
-    )
-    gradient_from: rx.Var[str] = field(
-        doc="The starting color for the gradient overlays. Default: 'black'."
-    )
-    gradient_to: rx.Var[str] = field(
-        doc="The ending color for the gradient overlays. Default: 'transparent'."
-    )
-    top_gradient_style: rx.Var[dict[str, Any]] = field(
-        doc="Custom inline styles for the top gradient overlay."
-    )
-    bottom_gradient_style: rx.Var[dict[str, Any]] = field(
-        doc="Custom inline styles for the bottom gradient overlay."
+        doc="Styles for each digit box, for example a tile background with padding and radius. Default: -."
     )
 
 
@@ -621,7 +998,7 @@ class CurvedInput(ReactBitsComponent):
     show_icon: rx.Var[bool] = field(
         doc="Render the leading icon chip. Default: true."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Custom SVG content for the icon, centered at the origin; replaces the default envelope chip."
     )
     on_change: rx.EventHandler[lambda value: [safe(value)]] = field(
@@ -633,7 +1010,7 @@ class CurvedInput(ReactBitsComponent):
 
 
 class DecayCard(ReactBitsComponent):
-    """Hover parallax effect that disintegrates the content of a card.
+    """An image card that tears and melts as the pointer moves, then pulls itself back together.
 
     Docs: https://reactbits.dev/components/decay-card
     """
@@ -644,31 +1021,60 @@ class DecayCard(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "DecayCard"
     _rb_files = ('DecayCard.css', 'DecayCard.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
+    image: rx.Var[str] = field(
+        doc="Image URL. It fills the card like a cover. Default: 'https://images.unsplash.com/photo-1762846818262-33c19785...."
+    )
     width: rx.Var[int | float] = field(
-        doc="The width of the card in pixels. Default: 300."
+        doc="Card width in pixels. Default: 300."
     )
     height: rx.Var[int | float] = field(
-        doc="The height of the card in pixels. Default: 400."
+        doc="Card height in pixels. Default: 400."
     )
-    image: rx.Var[str] = field(
-        doc="Allows setting the background image of the card. Default: 'https://picsum.photos/300/400?grayscale'."
+    intensity: rx.Var[int | float] = field(
+        doc="How far the image tears apart at full decay, from 0 to 2. The edges tear the most so the photo stays readable. Default: 0.5."
     )
-    base_frequency: rx.Var[int | float] = field(
-        doc="Base frequency for the turbulence filter. Lower values create larger, smoother patterns. Default: 0.015."
+    sensitivity: rx.Var[int | float] = field(
+        doc="How little pointer movement it takes to reach full decay, from 0 to 1. Default: 0.5."
     )
-    num_octaves: rx.Var[int | float] = field(
-        doc="Number of octaves for the turbulence filter. Higher values add finer detail. Default: 5."
+    hover_decay: rx.Var[int | float] = field(
+        doc="Decay that stays while the pointer rests on the card, from 0 to 1. Default: 0.05."
     )
-    seed: rx.Var[int | float] = field(
-        doc="Seed value for the turbulence random number generator. Default: 4."
+    recovery: rx.Var[int | float] = field(
+        doc="Seconds the image takes to pull itself back together once the pointer slows down. Default: 0.6."
     )
-    max_displacement: rx.Var[int | float] = field(
-        doc="Maximum displacement scale applied when the cursor moves. Controls the intensity of the decay effect. Default: 400."
+    grain: rx.Var[int | float] = field(
+        doc="Size of the tears, from broad melting shapes at 0 to fine shards at 1. Default: 0.25."
     )
-    movement_bound: rx.Var[int | float] = field(
-        doc="Maximum pixel distance the card can translate from its origin when following the cursor. Default: 50."
+    detail: rx.Var[int | float] = field(
+        doc="Layers of noise in the tears, from 1 to 8. More layers give rougher edges. Default: 5."
+    )
+    pattern: rx.Var[int | float] = field(
+        doc="Picks a different tear pattern. Default: 4."
+    )
+    idle: rx.Var[int | float] = field(
+        doc="Keeps the edges slowly fraying and soft patches drifting while nobody interacts, from 0 to 1. Default: 0.35."
+    )
+    flow: rx.Var[int | float] = field(
+        doc="Lets the tears churn while the card is decaying. 0 keeps them still. Default: 0."
+    )
+    chroma: rx.Var[int | float] = field(
+        doc="Splits the color channels apart inside the tears. Default: 0."
+    )
+    travel: rx.Var[int | float] = field(
+        doc="How far in pixels the card drifts toward the pointer before it slows down. Default: 50."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="How far in degrees the card rotates as the pointer moves sideways. Default: 10."
+    )
+    scope: rx.Var[Literal["window", "card"]] = field(
+        doc="Window follows the pointer anywhere on the page. Card only reacts while it is hovered. Default: 'window'."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the image in pixels. Default: 0."
+    )
+    grayscale: rx.Var[bool] = field(
+        doc="Shows the image in grayscale. Default: false."
     )
 
 
@@ -752,7 +1158,7 @@ class DepthCarousel(ReactBitsComponent):
 
 
 class Dock(ReactBitsComponent):
-    """macOS style magnifying dock with proximity scaling of icons.
+    """macOS style dock with smooth magnification, launch bounce, badges and context menus.
 
     Docs: https://reactbits.dev/components/dock
     """
@@ -763,28 +1169,60 @@ class Dock(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Dock"
     _rb_files = ('Dock.css', 'Dock.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     items: rx.Var[list[Any]] = field(
-        doc="Array of dock items. Each item should include an icon, label, onClick handler, and an optional className. Default: []."
+        doc="The apps in the dock. Each item takes an icon, label and onClick, plus optional className, active (an open app, shown with a dot), badge (a number, text, or true for a plain dot) and menu. Add { separator: true } to divide groups. Default: []."
     )
-    spring: rx.Var[dict[str, Any]] = field(
-        doc="Configuration options for the spring animation. Default: { mass: 0.1, stiffness: 150, damping: 12 }."
+    position: rx.Var[Literal["bottom", "top", "left", "right"]] = field(
+        doc="The edge of the nearest positioned parent the dock sits on. Icons grow away from that edge and the dock stands vertically on the left and right. Default: 'bottom'."
     )
-    magnification: rx.Var[int | float] = field(
-        doc="The magnified size (in pixels) applied to a dock item when hovered. Default: 70."
-    )
-    distance: rx.Var[int | float] = field(
-        doc="Pixel distance used to calculate the magnification effect based on mouse proximity. Default: 200."
-    )
-    panel_height: rx.Var[int | float] = field(
-        doc="Height (in pixels) of the dock panel. Default: 68."
-    )
-    dock_height: rx.Var[int | float] = field(
-        doc="Maximum height (in pixels) of the dock container. Default: 256."
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Colors of the panel, tiles, labels and menus, made for dark or light pages. Default: 'dark'."
     )
     base_item_size: rx.Var[int | float] = field(
-        doc="The base size (in pixels) for each dock item. Default: 50."
+        doc="Size of each icon at rest, in px. The dock shrinks everything evenly when its parent is too small to fit it. Default: 50."
+    )
+    magnification: rx.Var[int | float] = field(
+        doc="Size of the icon right under the pointer, in px. Set it to baseItemSize to turn magnifying off. Default: 70."
+    )
+    distance: rx.Var[int | float] = field(
+        doc="How far from the pointer icons still grow, in px. Larger values spread the swell over more icons. Default: 200."
+    )
+    panel_height: rx.Var[int | float] = field(
+        doc="Thickness of the dock bar, in px. Icons rise out of it as they grow. Default: 68."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between icons, in px. Default: 10."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Corner rounding of the tiles and the bar, from square at 0 to circles at 1. Default: 0.5."
+    )
+    spring: rx.Var[dict[str, Any]] = field(
+        doc="The spring icons grow and shrink with. Higher stiffness is faster, and low damping lets icons overshoot and wobble. Default: { mass: 0.1, stiffness: 150, damping: 12 }."
+    )
+    bounce: rx.Var[bool] = field(
+        doc="Icons hop when clicked, like apps launching on macOS. Default: true."
+    )
+    auto_hide: rx.Var[bool] = field(
+        doc="Slides the dock off its edge until the pointer comes near that edge of the parent. It stays out while hovered, focused or showing a menu. Default: false."
+    )
+    tiles: rx.Var[bool] = field(
+        doc="Draws a rounded tile behind each icon. Turn it off for bare glyphs, or when your icons are full app artwork. Default: true."
+    )
+    show_labels: rx.Var[bool] = field(
+        doc="Shows the label of the hovered or focused icon in a tooltip. Default: true."
+    )
+    show_indicators: rx.Var[bool] = field(
+        doc="Shows a dot next to items marked active, like open apps on macOS. Default: true."
+    )
+    show_badges: rx.Var[bool] = field(
+        doc="Shows the notification badges set on items. Default: true."
+    )
+    badge_color: rx.Var[str] = field(
+        doc="Fill color of the notification badges. Default: '#ff453a'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of the highlighted row in menus and of the keyboard focus ring. Default: '#0a84ff'."
     )
 
 
@@ -934,7 +1372,7 @@ class DriftWall(ReactBitsComponent):
 
 
 class ElasticSlider(ReactBitsComponent):
-    """Slider handle stretches elastically then snaps with spring physics.
+    """A slider that grows under your cursor and stretches like rubber when pulled past either end, then springs back.
 
     Docs: https://reactbits.dev/components/elastic-slider
     """
@@ -945,33 +1383,205 @@ class ElasticSlider(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "ElasticSlider"
     _rb_files = ('ElasticSlider.css', 'ElasticSlider.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21', 'react-icons@5.5.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
+    value: rx.Var[int | float] = field(
+        doc="Controlled value. Pair it with onChange. Default: -."
+    )
     default_value: rx.Var[int | float] = field(
-        doc="The initial value of the slider. It can be less than startingValue or greater than maxValue. Default: 50."
+        doc="Starting value when uncontrolled. Default: 50."
     )
     starting_value: rx.Var[int | float] = field(
-        doc="The starting point for the slider's range, e.g., startingValue=100 allows the slider to start at 100. Default: 0."
+        doc="Lowest value of the range. Default: 0."
     )
     max_value: rx.Var[int | float] = field(
-        doc="The maximum value the slider can reach. Default: 100."
+        doc="Highest value of the range. Default: 100."
     )
     is_stepped: rx.Var[bool] = field(
-        doc="Enables or disables stepped increments on the slider. Default: false."
+        doc="Snaps the value to stepSize increments. Default: false."
     )
     step_size: rx.Var[int | float] = field(
-        doc="The size of the increments for the slider when isStepped is enabled. Default: 1."
+        doc="Size of each step when isStepped is on. Default: 1."
     )
-    left_icon: rx.Var[rx.Component | str] = field(
-        doc="Custom JSX or HTML code to display on the left side of the slider. Default: <Icon as={RiVolumeDownFill} />."
+    orientation: rx.Var[Literal["horizontal", "vertical"]] = field(
+        doc="Direction of the track. Vertical sliders fill from the bottom. Default: 'horizontal'."
     )
-    right_icon: rx.Var[rx.Component | str] = field(
-        doc="Custom JSX or HTML code to display on the right side of the slider. Default: <Icon as={RiVolumeUpFill} />."
+    left_icon: rx.Var[Component | str] = field(
+        doc="Icon at the start of the track. Pass null to hide it. Default: <HugeiconsIcon icon={VolumeLowIcon} size={20} strokeWidth...."
+    )
+    right_icon: rx.Var[Component | str] = field(
+        doc="Icon at the end of the track. Pass null to hide it. Default: <HugeiconsIcon icon={VolumeHighIcon} size={20} strokeWidt...."
+    )
+    icon_placement: rx.Var[Literal["outside", "inside"]] = field(
+        doc="Puts the icons beside the track, or inside it once the track is thick enough to hold them. Default: 'outside'."
+    )
+    value_position: rx.Var[Literal["top", "bubble", "inside", "none"]] = field(
+        doc="Where the value shows. Bubble rides above the fill while the slider is active. Default: 'top'."
+    )
+    format_value: rx.Var[Any] = field(
+        doc="Formats the shown value and the value read by screen readers. Default: -. Pass a JS function with rx.Var('(...) => ...')."
+    )
+    ticks: rx.Var[list[Any]] = field(
+        doc="Marks along the track. True marks every step, or every tenth when not stepped. An array marks those values. Default: false."
+    )
+    thumb: rx.Var[bool] = field(
+        doc="Shows a round handle at the end of the fill. Default: false."
+    )
+    fill_from: rx.Var[int | float] = field(
+        doc="Value the fill grows from. Set it to the middle of the range for a centered, two-way fill. Default: startingValue."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Track thickness in px at rest. Default: 6."
+    )
+    active_thickness: rx.Var[int | float] = field(
+        doc="Track thickness in px while hovered, focused or dragged. Default: 12."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the track in px. Fully round when left out. Default: -."
+    )
+    rest_opacity: rx.Var[int | float] = field(
+        doc="Opacity while idle. The slider brightens to full when active. Default: 0.7."
+    )
+    grow_on_hover: rx.Var[bool] = field(
+        doc="Hovering activates the slider. When off it only grows while pressed or focused. Default: true."
+    )
+    max_stretch: rx.Var[int | float] = field(
+        doc="Furthest the track stretches in px when pulled past an end. 0 turns the stretch off. Default: 50."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the track wobbles as it springs back, from 0 to 0.95. Default: 0.5."
+    )
+    jump_to_click: rx.Var[bool] = field(
+        doc="Pressing the track jumps to the pointer. When off, dragging moves the value from where it was. Default: true."
+    )
+    wheel: rx.Var[bool] = field(
+        doc="Lets the scroll wheel change the value. Default: false."
+    )
+    track_color: rx.Var[str] = field(
+        doc="Color of the empty track. Default: 'color-mix(in srgb, currentColor 18%, transparent)'."
+    )
+    range_color: rx.Var[str] = field(
+        doc="Color of the fill. Default: 'currentColor'."
+    )
+    icon_color: rx.Var[str] = field(
+        doc="Color of the outside icons. Default: 'currentColor'."
+    )
+    content_color: rx.Var[str] = field(
+        doc="Color of icons, values and ticks over the empty track. Default: 'currentColor'."
+    )
+    fill_content_color: rx.Var[str] = field(
+        doc="Color of icons, values and ticks over the fill. Auto picks light or dark from the fill color. Default: 'auto'."
+    )
+    thumb_color: rx.Var[str] = field(
+        doc="Color of the handle. Default: '#ffffff'."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Turns off interaction and dims the slider. Default: false."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name of the slider. Default: 'Slider'."
+    )
+    on_change: rx.EventHandler[lambda value: [safe(value)]] = field(
+        doc="Called as the value changes. Handler receives: value."
+    )
+    on_change_end: rx.EventHandler[lambda value: [safe(value)]] = field(
+        doc="Called when a drag, key press or scroll finishes. Handler receives: value."
+    )
+
+
+class FlexCarousel(ReactBitsComponent):
+    """An infinite image row that flows through invisible liquid glass at its edges.
+
+    Docs: https://reactbits.dev/components/flex-carousel
+    """
+
+    tag = "FlexCarousel"
+    alias = "ReactBitsFlexCarousel"
+    is_default = True
+    _rb_category = "Components"
+    _rb_name = "FlexCarousel"
+    _rb_files = ('FlexCarousel.css', 'FlexCarousel.jsx')
+    lib_dependencies: list[str] = ['ogl@1.0.11']
+
+    items: rx.Var[list[Any]] = field(
+        doc="Images shown in the row. Each keeps its natural aspect ratio unless fit is set. The alt text is announced to screen readers, the title and optional subtitle are shown above the row. Default: DEFAULT_ITEMS."
+    )
+    preset: rx.Var[Literal["liquid", "ribbon", "vortex", "arch"]] = field(
+        doc="A starting shape for the invisible glass. Every lens prop below overrides the preset value when you pass it. Default: 'liquid'."
+    )
+    intro: rx.Var[Literal["rise", "bloom", "spin", "deal", "none"]] = field(
+        doc="Entrance once the images load. Rise lifts the cards in from below, bloom fades them in while the bend forms, spin lands a fast flick, deal spreads the cards from the middle. Any input skips it. Default: 'rise'."
+    )
+    card_height: rx.Var[int | float] = field(
+        doc="Card height as a fraction of the container height. Default: 0.5."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between cards, in px. Default: 12."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards, in px. Default: 0."
+    )
+    fit: rx.Var[Literal["natural", "portrait", "square", "landscape"]] = field(
+        doc="Card shape. Natural keeps each image uncropped, the others crop every card to the same shape. Default: 'natural'."
+    )
+    lens_width: rx.Var[int | float] = field(
+        doc="Width of the invisible glass as a fraction of the container width. Default: from preset."
+    )
+    lens_height: rx.Var[int | float] = field(
+        doc="Height of the invisible glass as a fraction of the container width, so the bend keeps its shape at any size. Default: from preset."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Rotation of the glass in degrees. It decides where its edge crosses the row. Default: from preset."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Shape of the glass, from a rounded rectangle at 0 to a perfect ellipse at 1. Default: from preset."
+    )
+    bend: rx.Var[int | float] = field(
+        doc="How far the row flexes where it passes the edge of the glass. The glass itself is never drawn and the images always stay connected. Default: from preset."
+    )
+    reach: rx.Var[int | float] = field(
+        doc="Width of the curved edge of the glass. Small values give a tight kink, large values a long smooth bend. Default: from preset."
+    )
+    curl: rx.Var[Literal["twist", "rise", "fall"]] = field(
+        doc="Which way the ends of the row flex. Twist sends the left end down and the right end up, rise lifts both, fall drops both. Default: from preset."
+    )
+    dispersion: rx.Var[int | float] = field(
+        doc="Rainbow splitting of light, only where the edge of the glass bends the images. Default: from preset."
+    )
+    liquid: rx.Var[int | float] = field(
+        doc="How much the glass stretches and wobbles like a liquid when the row moves. Off in every preset. Default: from preset."
+    )
+    follow_cursor: rx.Var[bool] = field(
+        doc="Let the lens drift after the cursor like a loupe, and return to the center when it leaves. Default: from preset."
+    )
+    squeeze: rx.Var[int | float] = field(
+        doc="How much the cards shrink while the row moves fast. 0 keeps them at full size. Default: 0.2."
+    )
+    focus_on_click: rx.Var[bool] = field(
+        doc="Clicking a card centers it and opens it: the others part, the bend melts away and the card grows. Click, drag, scroll or Escape closes it. Default: true."
+    )
+    autoplay: rx.Var[bool] = field(
+        doc="Advance one card at a time. Pauses on hover, focus and interaction, and when reduced motion is on. Default: false."
+    )
+    interval: rx.Var[int | float] = field(
+        doc="Seconds between autoplay steps. Default: 4."
+    )
+    captions: rx.Var[bool] = field(
+        doc="Show the title of the centered card above the row and a counter below it. Default: true."
+    )
+    capture_wheel: rx.Var[bool] = field(
+        doc="Let a vertical mouse wheel scroll the carousel while hovering. Horizontal wheels and trackpads always scroll it. Default: true."
+    )
+    on_change: rx.EventHandler[lambda index, item: [safe(index), safe(item)]] = field(
+        doc="Called whenever a different card reaches the center. Handler receives: index, item."
+    )
+    on_select: rx.EventHandler[lambda index, item: [safe(index), safe(item)]] = field(
+        doc="Called when the centered card is clicked or Enter is pressed. Clicking a side card centers it first. Handler receives: index, item."
     )
 
 
 class FlowingMenu(ReactBitsComponent):
-    """Liquid flowing active indicator glides between menu items.
+    """A full-height menu with a liquid band that glides between rows and reveals a scrolling marquee of each item.
 
     Docs: https://reactbits.dev/components/flowing-menu
     """
@@ -982,33 +1592,87 @@ class FlowingMenu(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "FlowingMenu"
     _rb_files = ('FlowingMenu.css', 'FlowingMenu.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
     items: rx.Var[list[Any]] = field(
-        doc="An array of objects containing: link, text, image. Default: []."
+        doc="Menu rows. marquee changes the text that scrolls in the band and meta adds a note at the end of the row. Default: []."
     )
     speed: rx.Var[int | float] = field(
-        doc="Duration of the marquee animation in seconds (lower = faster). Default: 15."
+        doc="Marquee speed in px per second. Default: 60."
+    )
+    direction: rx.Var[Literal["left", "right", "alternate"]] = field(
+        doc="Which way the marquee runs. Alternate flips every other row. Default: 'left'."
+    )
+    follow_cursor: rx.Var[int | float] = field(
+        doc="How much moving the cursor sideways speeds up or reverses the marquee, from 0 to 1. Default: 0.4."
+    )
+    duration: rx.Var[int | float] = field(
+        doc="Time in seconds the band takes to glide to a row. Default: 0.5."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much the band stretches like liquid while it moves, from 0 for rigid to 1. Default: 0.6."
+    )
+    magnet: rx.Var[int | float] = field(
+        doc="How much the band leans toward the cursor inside a row, from 0 to 1. Default: 0.25."
+    )
+    band_inset: rx.Var[int | float] = field(
+        doc="Gap in px between the band and the row edges. Default: 0."
+    )
+    band_radius: rx.Var[int | float] = field(
+        doc="Corner radius of the band in px. Use a large value for a pill. Default: 0."
+    )
+    carry_content: rx.Var[bool] = field(
+        doc="Moves the marquee with the band instead of keeping it fixed in each row. Default: false."
     )
     text_color: rx.Var[str] = field(
-        doc="Color of the static menu text. Default: '#fff'."
+        doc="Color of the menu text. Default: '#ffffff'."
     )
     bg_color: rx.Var[str] = field(
-        doc="Background color of the menu container. Default: '#120F17'."
+        doc="Background color of the menu. Default: '#120F17'."
     )
     marquee_bg_color: rx.Var[str] = field(
-        doc="Background color of the marquee overlay. Default: '#fff'."
+        doc="Background color of the band. Default: '#ffffff'."
     )
     marquee_text_color: rx.Var[str] = field(
-        doc="Text color inside the marquee. Default: '#120F17'."
+        doc="Text color inside the band. Default: '#120F17'."
     )
     border_color: rx.Var[str] = field(
-        doc="Color of the dividing lines between menu items. Default: '#fff'."
+        doc="Color of the lines between rows. Default: 'rgba(255, 255, 255, 0.14)'."
+    )
+    dividers: rx.Var[bool] = field(
+        doc="Draws lines between rows. Default: true."
+    )
+    dim_inactive: rx.Var[bool] = field(
+        doc="Fades the other rows while the band is on one. Default: false."
+    )
+    align: rx.Var[Literal["center", "left"]] = field(
+        doc="Alignment of the row labels. Default: 'center'."
+    )
+    show_index: rx.Var[bool] = field(
+        doc="Numbers each row. Default: false."
+    )
+    show_arrow: rx.Var[bool] = field(
+        doc="Adds an arrow to the end of each row. Default: false."
+    )
+    image_shape: rx.Var[Literal["pill", "rounded", "circle"]] = field(
+        doc="Shape of the images in the band. Default: 'pill'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Rows rise in, the lines draw and the band sweeps once down the menu on mount. Default: true."
+    )
+    active_index: rx.Var[int | float] = field(
+        doc="Marks the current page row. Default: -."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name of the navigation. Default: 'Menu'."
+    )
+    on_item_click: rx.EventHandler[lambda item, index, event: [safe(item), safe(index), safe(event)]] = field(
+        doc="Called when a row is clicked. Handler receives: item, index, event."
     )
 
 
 class FluidGlass(ReactBitsComponent):
-    """Glassmorphism container with animated liquid distortion refraction.
+    """A 3D glass object that refracts your headline, image or video, follows the cursor and melts between shapes.
 
     Docs: https://reactbits.dev/components/fluid-glass
     """
@@ -1018,31 +1682,99 @@ class FluidGlass(ReactBitsComponent):
     is_default = True
     _rb_category = "Components"
     _rb_name = "FluidGlass"
-    _rb_files = ('FluidGlass.jsx',)
-    lib_dependencies: list[str] = ['@react-three/drei@10.7.6', '@react-three/fiber@9.3.0', 'maath@0.10.8', 'three@0.180.0']
+    _rb_files = ('FluidGlass.css', 'FluidGlass.jsx')
 
-    mode: rx.Var[str] = field(
-        doc="Display mode of the fluid glass effect. Options: 'lens', 'bar', 'cube'. Default: 'lens'."
-    )
-    lens_props: rx.Var[dict[str, Any]] = field(
-        doc="Props specific to lens mode including material properties like ior, thickness, transmission. Default: {}."
-    )
-    bar_props: rx.Var[dict[str, Any]] = field(
-        doc="Props specific to bar mode including navItems array and material properties. Default: {}."
-    )
-    cube_props: rx.Var[dict[str, Any]] = field(
-        doc="Props specific to cube mode including material properties and interaction settings. Default: {}."
-    )
-    background_color: rx.Var[str] = field(
-        doc="Background color rendered behind the glass scene. Default: '#120F17'."
+    text: rx.Var[str] = field(
+        doc="Headline drawn behind the glass, so the glass can bend it. Use \\n for line breaks. It takes the font and color of the container unless you set them. Default: 'Look closer.'."
     )
     text_color: rx.Var[str] = field(
-        doc="Color used for the scene title and navigation labels. Default: '#ffffff'."
+        doc="Color of the text. Defaults to the CSS color. Default: Inherited."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Font of the text. Defaults to the font of the container. Default: Inherited."
+    )
+    font_weight: rx.Var[int | float | str] = field(
+        doc="Weight of the text. Default: 600."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Size of the text in px. By default it scales to fill the width. Default: Auto."
+    )
+    src: rx.Var[str] = field(
+        doc="Image or video behind the glass. Videos (.mp4, .webm, .mov) play muted on a loop. Files from another site need CORS headers. Default: -."
+    )
+    fit: rx.Var[Literal["cover", "contain"]] = field(
+        doc="How the image or video fills the area. Default: 'cover'."
+    )
+    background: rx.Var[str] = field(
+        doc="Color behind the text and media. Transparent lets your page show through. Default: 'transparent'."
+    )
+    shape: rx.Var[Literal["torus", "lens", "blob", "pill", "cube", "prism", "diamond"]] = field(
+        doc="Shape of the glass. The blob is a drop of liquid glass that keeps rippling. Changing the shape melts the glass smoothly into the new one. Default: 'torus'."
+    )
+    shapes: rx.Var[list[str]] = field(
+        doc="Shapes the glass cycles through when clicked. Default: All shapes."
+    )
+    size: rx.Var[int | float] = field(
+        doc="Diameter of the glass in px. It shrinks to fit small areas. Default: 260."
+    )
+    refraction: rx.Var[int | float] = field(
+        doc="How strongly the glass bends light, from 0 to 2. Around 0.66 behaves like water. Default: 1."
+    )
+    dispersion: rx.Var[int | float] = field(
+        doc="How much light splits into rainbow fringes at the edges, from 0 to 1. Default: 0.35."
+    )
+    reflection: rx.Var[int | float] = field(
+        doc="Strength of the highlights and reflections on the surface, from 0 to 2. Default: 1."
+    )
+    frost: rx.Var[int | float] = field(
+        doc="Frosts the glass so what is behind it blurs, from 0 to 1. Default: 0."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the glass. Default: '#ffffff'."
+    )
+    tint: rx.Var[int | float] = field(
+        doc="How strongly the glass takes on its color. Thicker parts look deeper, like real colored glass. Default: 0."
+    )
+    shadow: rx.Var[int | float] = field(
+        doc="Strength of the shadow and the focused light the glass casts below it, from 0 to 1. Default: 0.5."
+    )
+    elevation: rx.Var[int | float] = field(
+        doc="How high the glass floats above the content. Higher magnifies more, until the image flips. Default: 0.4."
+    )
+    interaction: rx.Var[Literal["follow", "drag", "static"]] = field(
+        doc="How the glass responds: it glides after the cursor, it can be picked up and thrown around, or it stays in place. Default: 'follow'."
+    )
+    smoothness: rx.Var[int | float] = field(
+        doc="How lazily the glass follows, from 0 (snappy) to 1 (floaty). Default: 0.5."
+    )
+    wobble: rx.Var[int | float] = field(
+        doc="How much the glass stretches when it moves and wobbles when it stops, like a liquid. 0 keeps it rigid. Default: 0.5."
+    )
+    spin: rx.Var[int | float] = field(
+        doc="Idle rotation speed for shapes like the cube and the torus. Negative values spin the other way. Default: 0.3."
+    )
+    idle: rx.Var[bool] = field(
+        doc="The glass drifts gently around its resting place while nobody interacts. Default: true."
+    )
+    morph_on_click: rx.Var[bool] = field(
+        doc="Clicking the glass melts it into the next shape. Default: true."
+    )
+    position: rx.Var[list[int | float]] = field(
+        doc="Where the glass rests, as fractions of the width and height. Default: [0.5, 0.5]."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The glass pops into place on mount. Default: true."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
+    )
+    on_shape_change: rx.EventHandler[lambda shape: [safe(shape)]] = field(
+        doc="Fired by the component's onShapeChange callback. Handler receives: shape."
     )
 
 
 class FlyingPosters(ReactBitsComponent):
-    """3D posters rotate on scroll infinitely.
+    """3D posters that twist and flip as you scroll or drag through an endless column.
 
     Docs: https://reactbits.dev/components/flying-posters
     """
@@ -1053,33 +1785,77 @@ class FlyingPosters(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "FlyingPosters"
     _rb_files = ('FlyingPosters.css', 'FlyingPosters.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    items: rx.Var[list[str]] = field(
-        doc="An array of image URLs to be displayed as flying posters. Default: []."
+    items: rx.Var[list[Any]] = field(
+        doc="Images for the posters. Each one is cropped to fill its poster, and they repeat to fill the view. Default: []."
     )
     plane_width: rx.Var[int | float] = field(
-        doc="The width of each poster plane in pixels. Default: 320."
+        doc="Width of each poster in pixels at the default camera. Default: 320."
     )
     plane_height: rx.Var[int | float] = field(
-        doc="The height of each poster plane in pixels. Default: 320."
+        doc="Height of each poster in pixels at the default camera. Default: 320."
     )
     distortion: rx.Var[int | float] = field(
-        doc="The amount of distortion applied to the posters' movement. Default: 3."
+        doc="How far one corner of a poster turns ahead of the other, which gives the twist. Default: 3."
     )
     scroll_ease: rx.Var[int | float] = field(
-        doc="The easing factor for smooth scrolling interactions. Default: 0.01."
+        doc="How quickly the posters catch up with the wheel and drag. Lower values glide longer. Default: 0.01."
     )
     camera_fov: rx.Var[int | float] = field(
-        doc="The field of view for the camera in degrees. Default: 45."
+        doc="Field of view of the camera in degrees. Wider angles zoom out. Default: 45."
     )
     camera_z: rx.Var[int | float] = field(
-        doc="The Z position of the camera, affecting zoom and perspective. Default: 20."
+        doc="Distance of the camera from the posters. Higher values show them smaller and flatter, lower values bring them close with stronger perspective. Default: 20."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between posters in pixels. Defaults to the original spacing, which follows the camera. Default: -."
+    )
+    columns: rx.Var[int | float] = field(
+        doc="Number of poster columns. Default: 1."
+    )
+    column_gap: rx.Var[int | float] = field(
+        doc="Space between columns in pixels. Default: 40."
+    )
+    alternate: rx.Var[bool] = field(
+        doc="Moves every other column in the opposite direction. Default: true."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the posters in pixels. Default: 0."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="How far each poster turns while it crosses the view, in degrees. Default: 180."
+    )
+    axis: rx.Var[Literal["vertical", "horizontal", "diagonal"]] = field(
+        doc="Axis the posters turn around. Default: 'vertical'."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Drift in pixels per second while nobody scrolls. Negative values drift down. Default: 0."
+    )
+    lean: rx.Var[int | float] = field(
+        doc="How far the posters lean back with fast scrolling. Default: 0."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the posters out toward the top and bottom edges, from 0 to 1. Default: 0."
+    )
+    shading: rx.Var[int | float] = field(
+        doc="Darkens the posters as they turn away, from 0 to 1. Default: 0."
+    )
+    wheel: rx.Var[bool] = field(
+        doc="Scrolls the posters with the mouse wheel while hovered. Default: true."
+    )
+    drag: rx.Var[bool] = field(
+        doc="Scrolls the posters by dragging them. Default: true."
+    )
+    page_scroll: rx.Var[int | float] = field(
+        doc="Moves the posters along with the page scroll, as a multiplier. 0 turns it off. Default: 0."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when a poster is clicked or tapped. Handler receives: item, index."
     )
 
 
 class Folder(ReactBitsComponent):
-    """Interactive folder opens to reveal nested content smooth motion.
+    """Folder that drops its flap open or swings open like a book, with pages you can pick.
 
     Docs: https://reactbits.dev/components/folder
     """
@@ -1091,19 +1867,85 @@ class Folder(ReactBitsComponent):
     _rb_name = "Folder"
     _rb_files = ('Folder.css', 'Folder.jsx')
 
+    items: rx.Var[list[Any]] = field(
+        doc="What the folder holds, up to 6. Each item can be a string, { title, description }, { image, title, alt }, { content } or a React element. Default: Three sample documents."
+    )
+    label: rx.Var[str] = field(
+        doc="Text on the tab. The tab grows to fit it."
+    )
+    mode: rx.Var[Literal["flap", "book"]] = field(
+        doc="flap stands the folder up and drops the front flap open. book lays it flat and swings the cover over like a book. Default: 'flap'."
+    )
+    variant: rx.Var[Literal["solid", "glass", "matte"]] = field(
+        doc="Material of the folder. glass turns the front into refracting glass that shows the pages inside. Default: 'solid'."
+    )
     color: rx.Var[str] = field(
-        doc="The primary color of the folder. Default: '#5227FF'."
+        doc="Color of the folder. Shades are derived from it. Default: '#3d8bff'."
+    )
+    paper_color: rx.Var[str] = field(
+        doc="Color of the pages. Default: '#ffffff'."
+    )
+    tab_position: rx.Var[Literal["left", "center", "right"]] = field(
+        doc="Where the tab sits along the top edge. Default: 'right'."
+    )
+    layout: rx.Var[Literal["spread", "stack", "row"]] = field(
+        doc="How the items are laid out once the folder is open. Default: 'spread'."
     )
     size: rx.Var[int | float] = field(
-        doc="Scale factor for the folder size. Default: 1."
+        doc="Scale of the whole folder. Default: 1."
     )
-    items: rx.Var[list[Any]] = field(
-        doc="An array of up to 3 items rendered as papers in the folder. Default: []."
+    open_on: rx.Var[Literal["click", "hover"]] = field(
+        doc="Opens the folder on click, or while the cursor is over it. Default: 'click'."
+    )
+    open: rx.Var[bool] = field(
+        doc="Controls the folder from outside. Leave it out to let the folder manage itself."
+    )
+    default_open: rx.Var[bool] = field(
+        doc="Starts the folder open. Default: false."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets people drag items out of the folder, leave them anywhere and drop them back in. Default: true."
+    )
+    zoom_on_click: rx.Var[bool] = field(
+        doc="Clicking an item brings it up close. Click it again, press Escape or click away to put it back. Default: true."
+    )
+    peek: rx.Var[bool] = field(
+        doc="Teases the items out on hover. In flap mode the page under the cursor rises highest. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Plays an entrance when the folder scrolls into view: the pages drop in and the folder closes over them. Default: true."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="How much the folder tilts toward the cursor, from 0 to 1.5. Default: 0.5."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the flap, cover and pages overshoot as they settle, from 0 to 1. Default: 0.4."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of every animation. Default: 1."
+    )
+    frost: rx.Var[int | float] = field(
+        doc="How much the glass front blurs what is behind it, from 0 for clear glass to 1. Used by the glass variant. Default: 0.25."
+    )
+    close_on_outside_click: rx.Var[bool] = field(
+        doc="Closes the folder on a click outside it or on Escape. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Tunes the shadows for dark or light pages. Default: 'dark'."
+    )
+    on_open_change: rx.EventHandler[lambda open: [safe(open)]] = field(
+        doc="Called when the folder opens or closes. Handler receives: open."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when an item is clicked while the folder is open or after it was dragged out. Handler receives: item, index."
+    )
+    on_item_drop: rx.EventHandler[lambda item, index, inside: [safe(item), safe(index), safe(inside)]] = field(
+        doc="Called when a dragged item is let go, with whether it landed back in the folder. Handler receives: item, index, inside."
     )
 
 
 class GlassIcons(ReactBitsComponent):
-    """Icon set styled with frosted glass blur.
+    """Liquid glass icons that bend the color behind them, for app grids, docks and social links.
 
     Docs: https://reactbits.dev/components/glass-icons
     """
@@ -1116,12 +1958,72 @@ class GlassIcons(ReactBitsComponent):
     _rb_files = ('GlassIcons.css', 'GlassIcons.jsx')
 
     items: rx.Var[list[Any]] = field(
-        doc="Array of items to render. Each item should include: an icon (React.ReactElement), a color (string), a label (string), and an optional customClass (string). Default: []."
+        doc="Icons to show. Each item takes an icon, a label and a color, plus an optional href, target, onClick, id and className. Color is a preset name (blue, purple, red, indigo, orange, green, teal, pink, graphite, silver) or any CSS color or gradient. Default: []."
+    )
+    size: rx.Var[int | float] = field(
+        doc="Width and height of each icon in px. Default: 82."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between the icons in px. Default: 66."
+    )
+    columns: rx.Var[int | float] = field(
+        doc="Icons per row. They wrap to fewer columns when there is not enough room. Default: 3."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Corner rounding, from 0 for square to 1 for a circle. Default: 0.6."
+    )
+    refraction: rx.Var[int | float] = field(
+        doc="How strongly the glass bends what is behind it around its edge. Works in Chromium browsers. Default: 0.8."
+    )
+    bevel: rx.Var[int | float] = field(
+        doc="Width of the curved glass edge, from 0 to 1. Default: 0.6."
+    )
+    dispersion: rx.Var[int | float] = field(
+        doc="Rainbow fringing where the edge bends the light, from 0 to 1. Default: 0."
+    )
+    frost: rx.Var[int | float] = field(
+        doc="How much the glass blurs what is behind it, from 0 to 1. Default: 0.2."
+    )
+    shine: rx.Var[int | float] = field(
+        doc="Strength of the light catching the glass edge, from 0 to 1. Default: 0.85."
+    )
+    tint: rx.Var[str] = field(
+        doc="Color of the glass. Default: '#dfdfdf'."
+    )
+    tint_opacity: rx.Var[int | float] = field(
+        doc="How strongly the tint colors the glass, from 0 to 1. Default: 0.2."
+    )
+    icon_color: rx.Var[str] = field(
+        doc="Color of the icons on the glass. Defaults to white, or near black on clear glass in the light theme. Default: -."
+    )
+    plate: rx.Var[Literal["tilt", "offset", "circle", "none"]] = field(
+        doc="Colored shape behind the glass: a tilted card, a shifted card, a disc or nothing for clear glass. Default: 'tilt'."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Angle of the tilted card in degrees. Default: 30."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="How far the shifted card or disc peeks out from behind the glass, from 0 to 1. Default: 0.5."
+    )
+    hover: rx.Var[Literal["lift", "float", "press", "none"]] = field(
+        doc="Hover animation. Lift raises the glass and swings the card, float raises the glass and press pushes it in. Default: 'press'."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the card behind the glass drifts with the pointer, from 0 to 1. Default: 1."
+    )
+    labels: rx.Var[Literal["hover", "always", "none"]] = field(
+        doc="When the labels under the icons are shown. Default: 'hover'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Plays an entrance the first time the icons scroll into view: the glass settles and the cards swing out. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color scheme of the labels and glass edges. Default: 'dark'."
     )
 
 
 class GlassSurface(ReactBitsComponent):
-    """Advanced Apple-style glass surface with real-time distortion + lighting.
+    """Apple-style liquid glass that bends what is behind it, in a rounded panel or any logo shape.
 
     Docs: https://reactbits.dev/components/glass-surface
     """
@@ -1134,60 +2036,72 @@ class GlassSurface(ReactBitsComponent):
     _rb_files = ('GlassSurface.css', 'GlassSurface.jsx')
 
     width: rx.Var[int | float | str] = field(
-        doc="Width of the glass surface (pixels or CSS value like '100%'). Default: 200."
+        doc="Width in px, or any CSS value like '100%'. Default: 200."
     )
     height: rx.Var[int | float | str] = field(
-        doc="Height of the glass surface (pixels or CSS value like '100vh'). Default: 80."
+        doc="Height in px, or any CSS value like '100vh'. Default: 80."
     )
     border_radius: rx.Var[int | float] = field(
-        doc="Border radius in pixels. Default: 20."
+        doc="Corner radius in px. Not used with a shape. Default: 20."
     )
     border_width: rx.Var[int | float] = field(
-        doc="Border width factor for displacement map. Default: 0.07."
+        doc="Width of the bending edge, as a fraction of the shorter side. Default: 0.07."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Brightness percentage for displacement map. Default: 50."
+        doc="Brightness of the calm center, in %. 50 leaves it undistorted. Default: 50."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Opacity of displacement map elements. Default: 0.93."
+        doc="How strongly the calm center holds the view still, from 0 to 1. Default: 0.93."
     )
     blur: rx.Var[int | float] = field(
-        doc="Input blur amount in pixels. Default: 11."
+        doc="Softness of the transition from the bending edge to the calm center, in px. Default: 11."
     )
     displace: rx.Var[int | float] = field(
-        doc="Output blur (stdDeviation). Default: 0."
+        doc="Blurs the light coming through the glass, for a frosted look. Default: 0."
     )
     background_opacity: rx.Var[int | float] = field(
-        doc="Background frost opacity (0-1). Default: 0."
+        doc="Opacity of a soft frosted tint over the glass, from 0 to 1. Default: 0."
     )
     saturation: rx.Var[int | float] = field(
-        doc="Backdrop filter saturation factor. Default: 1."
+        doc="Saturation of what is seen through the glass. Default: 1."
     )
     distortion_scale: rx.Var[int | float] = field(
-        doc="Main displacement scale. Default: -180."
+        doc="How strongly the edge bends what is behind it. Negative values pull the view inward. Default: -180."
     )
     red_offset: rx.Var[int | float] = field(
-        doc="Red channel extra displacement offset. Default: 0."
+        doc="Extra bending for the red channel. Different offsets split light into colored fringes. Default: 0."
     )
     green_offset: rx.Var[int | float] = field(
-        doc="Green channel extra displacement offset. Default: 10."
+        doc="Extra bending for the green channel. Default: 10."
     )
     blue_offset: rx.Var[int | float] = field(
-        doc="Blue channel extra displacement offset. Default: 20."
+        doc="Extra bending for the blue channel. Default: 20."
     )
     x_channel: rx.Var[Literal["R", "G", "B"]] = field(
-        doc="X displacement channel selector. Default: 'R'."
+        doc="Channel of the displacement map that moves pixels sideways. Default: 'R'."
     )
     y_channel: rx.Var[Literal["R", "G", "B"]] = field(
-        doc="Y displacement channel selector. Default: 'G'."
+        doc="Channel of the displacement map that moves pixels up and down. Default: 'G'."
     )
     mix_blend_mode: rx.Var[str] = field(
-        doc="Mix blend mode for displacement map. Default: 'difference'."
+        doc="How the two edge gradients of the displacement map are combined. Default: 'difference'."
+    )
+    refraction: rx.Var[bool] = field(
+        doc="Bends what is behind the glass at its edges. Set it to false to use the frosted glass look everywhere. Default: true."
+    )
+    renderer: rx.Var[Literal["auto", "svg", "webgl"]] = field(
+        doc="How the glass bends light. Auto uses SVG filters in Chromium, which bend anything behind the glass, and WebGL in Safari and Firefox when a backdrop is given. Without a backdrop, those browsers get a frosted glass look. WebGL forces the WebGL glass whenever a backdrop is given. Default: 'auto'."
+    )
+    backdrop: rx.Var[Any] = field(
+        doc="The image, video or canvas behind the glass. WebGL can only bend what it is given, so pass this to get real refraction outside Chromium. Images from another origin need CORS headers. Default: -."
+    )
+    shape: rx.Var[str] = field(
+        doc="URL of an SVG or transparent PNG that gives the glass its outline, fitted inside the width and height. Files from another origin need CORS headers. Default: -."
     )
 
 
 class GooeyNav(ReactBitsComponent):
-    """Navigation indicator morphs with gooey blob transitions between items.
+    """A navigation bar whose active pill breaks into goo that flows over to the item you pick.
 
     Docs: https://reactbits.dev/components/gooey-nav
     """
@@ -1200,33 +2114,123 @@ class GooeyNav(ReactBitsComponent):
     _rb_files = ('GooeyNav.css', 'GooeyNav.jsx')
 
     items: rx.Var[list[Any]] = field(
-        doc="Array of navigation items. Default: []."
-    )
-    animation_time: rx.Var[int | float] = field(
-        doc="Duration (ms) of the main animation. Default: 600."
-    )
-    particle_count: rx.Var[int | float] = field(
-        doc="Number of bubble particles per transition. Default: 15."
-    )
-    particle_distances: rx.Var[list[int | float]] = field(
-        doc="Outer and inner distances of bubble spread. Default: [90, 10]."
-    )
-    particle_r: rx.Var[int | float] = field(
-        doc="Radius factor influencing random particle rotation. Default: 100."
-    )
-    time_variance: rx.Var[int | float] = field(
-        doc="Random time variance (ms) for particle animations. Default: 300."
-    )
-    colors: rx.Var[list[int | float]] = field(
-        doc="Color indices used when creating bubble particles. Default: [1, 2, 3, 1, 2, 3, 1, 4]."
+        doc="The navigation items. Items without an href render as buttons. Default: DEFAULT_ITEMS."
     )
     initial_active_index: rx.Var[int | float] = field(
-        doc="Which item is selected on mount. Default: 0."
+        doc="Which item starts selected. Default: 0."
+    )
+    active_index: rx.Var[int | float] = field(
+        doc="Controls the selected item yourself. Use it together with onChange. Default: -."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the frame and text. Default: 'dark'."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the active pill. Uses a high-contrast color for the theme when not set. Default: -."
+    )
+    active_text_color: rx.Var[str] = field(
+        doc="Text color inside the pill. Picked automatically from the pill color when not set. Default: -."
+    )
+    colors: rx.Var[list[str]] = field(
+        doc="Colors for the droplets. They blend as they merge. Uses the pill color when empty. Default: []."
+    )
+    size: rx.Var[Literal["sm", "md", "lg"]] = field(
+        doc="Size of the items. Default: 'md'."
+    )
+    frame: rx.Var[bool] = field(
+        doc="Shows the frosted panel around the items. Default: true."
+    )
+    animation_time: rx.Var[int | float] = field(
+        doc="Roughly how long the droplets take to travel to the new item, in ms. Default: 600."
+    )
+    particle_count: rx.Var[int | float] = field(
+        doc="How many droplets the pill breaks into when an item is selected. Default: 15."
+    )
+    time_variance: rx.Var[int | float] = field(
+        doc="Random variation in each droplet\u2019s timing, in ms. Default: 300."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="How far the droplets scatter on their way to the new item, in px. Default: 56."
+    )
+    gooeyness: rx.Var[int | float] = field(
+        doc="How readily the droplets and pills melt together, from 0 to 1. Default: 0.5."
+    )
+    wobble: rx.Var[int | float] = field(
+        doc="How much the new pill wobbles as it forms, from 0 to 1. Default: 0.5."
+    )
+    hover_effect: rx.Var[bool] = field(
+        doc="Shows a soft highlight behind the hovered item. Default: true."
+    )
+    on_change: rx.EventHandler[lambda index, item: [safe(index), safe(item)]] = field(
+        doc="Called when an item is selected. Handler receives: index, item."
+    )
+
+
+class HoloCard(ReactBitsComponent):
+    """Collectible trading card with a real holographic foil and glitter that sparkles as it tilts.
+
+    Docs: https://reactbits.dev/components/holo-card
+    """
+
+    tag = "HoloCard"
+    alias = "ReactBitsHoloCard"
+    is_default = True
+    _rb_category = "Components"
+    _rb_name = "HoloCard"
+    _rb_files = ('HoloCard.css', 'HoloCard.jsx')
+
+    image: rx.Var[str] = field(
+        doc="Front of the card. Same-origin or CORS-enabled URL. Default: -."
+    )
+    back_image: rx.Var[str] = field(
+        doc="Back of the card. When set, a click or Enter flips the card over. Default: -."
+    )
+    alt: rx.Var[str] = field(
+        doc="Accessible description of the card."
+    )
+    preset: rx.Var[Literal["bursts", "stars", "shards", "cosmos", "rainbow", "swirl", "glitter", "gold"]] = field(
+        doc="The holo pattern on the card face. Bursts are rings of foil dashes, shards are cracked ice, swirl is one big round rainbow and gold is a warm etched foil. Default: 'bursts'."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="How strongly the foil shows through the print, from 0 for plain card to 1. Default: 0.85."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the holo pattern. Higher values pack in more, smaller elements. Default: 1."
+    )
+    edge_sparkle: rx.Var[int | float] = field(
+        doc="Brightness of the glitter on the silver border as it catches the light. Default: 0.8."
+    )
+    frame: rx.Var[int | float] = field(
+        doc="Width of the sparkling border as a percentage of the card width. Match it to your card art. Default: 4."
+    )
+    glare: rx.Var[int | float] = field(
+        doc="Strength of the glossy highlight under the light. Default: 0.5."
+    )
+    foil_color: rx.Var[str] = field(
+        doc="Colour of the metal under the print, silver by default. Default: '#e2e6ec'."
+    )
+    width: rx.Var[int | float] = field(
+        doc="Card width in px. The height follows the image. Default: 320."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius in px. Default: 14."
+    )
+    tilt_max: rx.Var[int | float] = field(
+        doc="Largest tilt in degrees as the pointer moves. Default: 14."
+    )
+    hover_scale: rx.Var[int | float] = field(
+        doc="How much the card lifts while hovered. Default: 1.04."
+    )
+    idle: rx.Var[bool] = field(
+        doc="Drifts the light and tilt slowly when nobody is hovering, so the foil keeps shimmering. Default: true."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Soft shadow under the card that follows the tilt. Default: true."
     )
 
 
 class InfiniteMenu(ReactBitsComponent):
-    """Horizontally looping menu effect that scrolls endlessly with seamless wrap.
+    """A draggable sphere of image tiles that snaps the nearest one forward and shows its title.
 
     Docs: https://reactbits.dev/components/infinite-menu
     """
@@ -1237,21 +2241,68 @@ class InfiniteMenu(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "InfiniteMenu"
     _rb_files = ('InfiniteMenu.css', 'InfiniteMenu.jsx')
-    lib_dependencies: list[str] = ['gl-matrix@3.4.4']
 
     items: rx.Var[list[Any]] = field(
-        doc="List of items containing an image, link, title, and description - or just add what you need. Default: []."
+        doc="Items to show. They repeat around the sphere when there are fewer items than tiles. Default: []."
     )
-    scale: rx.Var[int | float] = field(
-        doc="Controls camera zoom. Default: 1.0."
+    count: rx.Var[int | float] = field(
+        doc="Number of tiles on the sphere. Default: 160."
+    )
+    tile_size: rx.Var[int | float] = field(
+        doc="Tile size relative to the space around it. Lower values leave wider gaps. Default: 0.63."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Tile shape, from 0 for squares to 1 for circles. Default: 0.2."
+    )
+    zoom: rx.Var[int | float] = field(
+        doc="How close the camera sits to the active tile when the sphere is at rest. Default: 1.65."
+    )
+    pull_back: rx.Var[int | float] = field(
+        doc="How far the camera pulls back while you drag. 0 keeps it still. Default: 1."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much the tiles stretch with fast motion. Default: 0.6."
+    )
+    inertia: rx.Var[int | float] = field(
+        doc="How long the sphere keeps spinning after you let go, from 0 to 1. Default: 0.6."
+    )
+    autoplay: rx.Var[int | float] = field(
+        doc="Seconds between automatic steps to the next tile. 0 turns it off. Pauses on hover and focus. Default: 3."
+    )
+    grayscale: rx.Var[bool] = field(
+        doc="Shows every tile except the active one in grayscale. Default: true."
+    )
+    dim: rx.Var[int | float] = field(
+        doc="Fades the tiles around the active one toward the background once the sphere settles, which keeps the text readable. From 0 to 1. Default: 0.5."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Spins the sphere into place when it loads. Default: true."
+    )
+    show_info: rx.Var[bool] = field(
+        doc="Shows the title, description and link button of the active item. Default: true."
+    )
+    render_info: rx.Var[Any] = field(
+        doc="Replaces the default title, description and button with your own overlay. Default: -. Pass a JS function with rx.Var('(...) => ...')."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Colors of the text, the button and the placeholder tiles. Default: 'dark'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Background of the link button. Default: -."
     )
     background_color: rx.Var[str] = field(
-        doc="Sets the canvas background and the action button outline color. Default: '#000000'."
+        doc="Background behind the sphere. Transparent by default. Default: -."
+    )
+    on_active_change: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when a new item settles in front. Handler receives: item, index."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when the active tile or its button is clicked, or Enter is pressed. Handler receives: item, index."
     )
 
 
 class InfiniteSpiral(ReactBitsComponent):
-    """An endlessly looping 3D helix of images with customizable motion, depth, spacing and interaction.
+    """An endlessly looping 3D helix of images with adjustable motion, depth and spacing.
 
     Docs: https://reactbits.dev/components/infinite-spiral
     """
@@ -1323,7 +2374,7 @@ class InfiniteSpiral(ReactBitsComponent):
 
 
 class Lanyard(ReactBitsComponent):
-    """Swinging 3D lanyard / badge card with realistic inertial motion.
+    """Swinging 3D badge on a stretchy woven band that you can drag, throw or click to flip.
 
     Docs: https://reactbits.dev/components/lanyard
     """
@@ -1333,35 +2384,68 @@ class Lanyard(ReactBitsComponent):
     is_default = True
     _rb_category = "Components"
     _rb_name = "Lanyard"
-    _rb_files = ('Lanyard.css', 'Lanyard.jsx', 'card.glb', 'lanyard.png')
-    lib_dependencies: list[str] = ['@react-three/drei@10.7.6', '@react-three/fiber@9.3.0', '@react-three/rapier@2.1.0', 'meshline@3.3.1', 'three@0.180.0']
+    _rb_files = ('Lanyard.css', 'Lanyard.jsx')
+    lib_dependencies: list[str] = ['three@0.180.0']
 
-    position: rx.Var[list[Any]] = field(
-        doc="Initial camera position for the canvas. Default: [0, 0, 30]."
-    )
-    gravity: rx.Var[list[Any]] = field(
-        doc="Gravity vector for the physics simulation. Default: [0, -40, 0]."
-    )
-    fov: rx.Var[int | float] = field(
-        doc="Camera field of view. Default: 20."
-    )
-    transparent: rx.Var[bool] = field(
-        doc="Enables a transparent background for the canvas. Default: true."
-    )
     front_image: rx.Var[str] = field(
-        doc="Custom image URL for the card's front face. Falls back to the model's built-in texture when not set."
+        doc="Image URL printed on the front of the card. Any size or aspect works."
     )
     back_image: rx.Var[str] = field(
-        doc="Custom image URL for the card's back face, rendered independently from the front."
+        doc="Image URL printed on the back. Falls back to frontImage, then to a blank card."
     )
     image_fit: rx.Var[Literal["cover", "contain"]] = field(
-        doc="How a custom front/back image fits its face. Both preserve aspect ratio; 'cover' fills and crops, 'contain' letterboxes. Default: 'cover'."
+        doc="How the images fit the card. Cover fills and crops, contain fits inside on the card color. Default: 'cover'."
     )
-    lanyard_image: rx.Var[str] = field(
-        doc="Custom image URL for the lanyard band's repeating texture. Falls back to the default band texture when not set."
+    card_color: rx.Var[str] = field(
+        doc="Color of the card itself, shown when there is no image and around contained images. Default: '#ffffff'."
     )
-    lanyard_width: rx.Var[int | float] = field(
-        doc="Width of the lanyard band (meshline lineWidth). Increase it to give a custom band image more room and reduce stretching. Default: 1."
+    orientation: rx.Var[Literal["portrait", "landscape"]] = field(
+        doc="Whether the card hangs tall or wide. Default: 'portrait'."
+    )
+    finish: rx.Var[Literal["glossy", "matte", "holographic", "metallic"]] = field(
+        doc="Surface of the card. Holographic adds a sparkling foil whose colors shift as the card turns, metallic a brushed sheen. Default: 'glossy'."
+    )
+    corner_radius: rx.Var[int | float] = field(
+        doc="Roundness of the card corners, from 0 for square to 1 for very round. Default: 0.3."
+    )
+    size: rx.Var[int | float] = field(
+        doc="Height of the card as a fraction of the container height. Default: 0.6."
+    )
+    anchor: rx.Var[Literal["left", "center", "right"]] = field(
+        doc="Where the band hangs from along the top edge of the container. Default: 'center'."
+    )
+    strap_length: rx.Var[int | float] = field(
+        doc="How far below the top edge the card hangs, from 0 for a short band to 1 for a long one. Default: 0.5."
+    )
+    strap_image: rx.Var[str] = field(
+        doc="Image URL printed along the band. A wide image repeats along its length, with its height spanning the band width."
+    )
+    strap_color: rx.Var[str] = field(
+        doc="Color of the band when there is no strap image. Default: '#111111'."
+    )
+    strap_width: rx.Var[int | float] = field(
+        doc="Width of the band relative to its default, from 0.4 to 2. Default: 0.65."
+    )
+    metal: rx.Var[Literal["graphite", "silver", "gold"]] = field(
+        doc="Finish of the clamp and the ring that holds the card. Default: 'silver'."
+    )
+    gravity: rx.Var[int | float] = field(
+        doc="How strongly the card falls. Lower values float and swing slowly, 0 turns gravity off. Default: 1."
+    )
+    damping: rx.Var[int | float] = field(
+        doc="How quickly the swinging dies down, from 0 for a long sway to 1 for a quick settle. Default: 0.5."
+    )
+    elasticity: rx.Var[int | float] = field(
+        doc="How hard the band snaps the card back after it is stretched and released. Default: 0.5."
+    )
+    breeze: rx.Var[int | float] = field(
+        doc="A gentle, ever-changing wind that keeps the card moving when nobody touches it. Default: 0.5."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Lets visitors drag, stretch and throw the card, and click it to flip it over. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="On mount the card drops in from the side and swings into place. Default: true."
     )
 
 
@@ -1435,7 +2519,7 @@ class LineSidebar(ReactBitsComponent):
 
 
 class MagicBento(ReactBitsComponent):
-    """Interactive bento grid tiles expand + animate with various options.
+    """A bento grid of feature cards with live artwork, edge light that follows the cursor and a click wave.
 
     Docs: https://reactbits.dev/components/magic-bento
     """
@@ -1446,45 +2530,69 @@ class MagicBento(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "MagicBento"
     _rb_files = ('MagicBento.css', 'MagicBento.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    text_auto_hide: rx.Var[bool] = field(
-        doc="Whether text content should auto-hide on hover. Default: true."
+    items: rx.Var[list[Any]] = field(
+        doc="Cards to show. Each takes label, title, description, icon, image, visual, content, href, onClick, colSpan and rowSpan. Default: DEFAULT_ITEMS."
     )
-    enable_stars: rx.Var[bool] = field(
-        doc="Enable particle star animation effect. Default: true."
+    columns: rx.Var[int | float] = field(
+        doc="Columns on wide screens. Drops to 2, then 1, as the grid gets narrower. Default: 4."
     )
-    enable_spotlight: rx.Var[bool] = field(
-        doc="Enable spotlight cursor following effect. Default: true."
+    row_height: rx.Var[int | float] = field(
+        doc="Height of one row, in px. Default: 200."
     )
-    enable_border_glow: rx.Var[bool] = field(
-        doc="Enable border glow effect that follows cursor. Default: true."
+    gap: rx.Var[int | float] = field(
+        doc="Space between cards, in px. Default: 12."
     )
-    disable_animations: rx.Var[bool] = field(
-        doc="Disable all animations (automatically enabled on mobile). Default: false."
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards, in px. Default: 20."
     )
-    spotlight_radius: rx.Var[int | float] = field(
-        doc="Radius of the spotlight effect in pixels. Default: DEFAULT_SPOTLIGHT_RADIUS."
-    )
-    particle_count: rx.Var[int | float] = field(
-        doc="Number of particles in the star animation. Default: DEFAULT_PARTICLE_COUNT."
-    )
-    enable_tilt: rx.Var[bool] = field(
-        doc="Enable 3D tilt effect on card hover. Default: false."
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the cards. Default: 'dark'."
     )
     glow_color: rx.Var[str] = field(
-        doc="RGB color values for glow effects (without rgba wrapper). Default: DEFAULT_GLOW_COLOR."
+        doc="Color of the lights and the accents in the artwork. Takes hex or \"r, g, b\". Default: Text color."
     )
-    click_effect: rx.Var[bool] = field(
-        doc="Enable ripple effect on card click. Default: true."
+    text_auto_hide: rx.Var[bool] = field(
+        doc="Keeps titles to one line and descriptions to two. Default: true."
+    )
+    enable_border_glow: rx.Var[bool] = field(
+        doc="Lights up the card edges near the cursor, across neighboring cards too. Default: true."
+    )
+    enable_spotlight: rx.Var[bool] = field(
+        doc="A soft light follows the cursor inside the hovered card. Default: true."
+    )
+    spotlight_radius: rx.Var[int | float] = field(
+        doc="Size of the cursor light, in px. Default: 300."
+    )
+    enable_stars: rx.Var[bool] = field(
+        doc="Fine specks of light drift up around the cursor in the hovered card. Default: false."
+    )
+    particle_count: rx.Var[int | float] = field(
+        doc="Number of specks in each card. Default: 24."
+    )
+    enable_tilt: rx.Var[bool] = field(
+        doc="Tilts the hovered card toward the cursor. Default: false."
     )
     enable_magnetism: rx.Var[bool] = field(
-        doc="Enable subtle card attraction to cursor. Default: true."
+        doc="The hovered card leans a few pixels toward the cursor. Default: false."
+    )
+    click_effect: rx.Var[bool] = field(
+        doc="Clicking sends a ring of light across the grid and replays the card artwork. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Cards rise in one by one and their artwork plays when the grid scrolls into view. Default: true."
+    )
+    disable_animations: rx.Var[bool] = field(
+        doc="Turns off all motion. Reduced motion settings do the same. Default: false."
+    )
+    on_item_click: rx.EventHandler[lambda item, index: [safe(item), safe(index)]] = field(
+        doc="Called when a card is clicked. Cards become focusable buttons. Handler receives: item, index."
     )
 
 
 class Masonry(ReactBitsComponent):
-    """Responsive masonry layout with animated reflow + gaps optimization.
+    """A masonry gallery that springs into place, reflows as it resizes and opens images in a lightbox.
 
     Docs: https://reactbits.dev/components/masonry
     """
@@ -1495,39 +2603,69 @@ class Masonry(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Masonry"
     _rb_files = ('Masonry.css', 'Masonry.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
     items: rx.Var[list[Any]] = field(
-        doc="Array of items to display in the masonry layout. Each item should have id, img, url, and height properties. Default: required."
+        doc="Tiles to show. Give width and height to lay out instantly, otherwise the image is measured. span makes a tile cover more columns. Default: []."
     )
-    ease: rx.Var[str] = field(
-        doc="GSAP easing function for animations. Default: 'power3.out'."
+    columns: rx.Var[str] = field(
+        doc="Column count. Auto fits as many columns of columnWidth as the container allows. Default: 'auto'."
     )
-    duration: rx.Var[int | float] = field(
-        doc="Duration of the transition animations in seconds. Default: 0.6."
+    column_width: rx.Var[int | float] = field(
+        doc="Target column width in px for auto columns. Default: 240."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between tiles in px. Default: 12."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the tiles in px. Default: 12."
+    )
+    animate_from: rx.Var[Literal["bottom", "top", "left", "right", "center", "random", "none"]] = field(
+        doc="Where tiles come from as they appear. Default: 'bottom'."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Delay between each item's animation in seconds. Default: 0.05."
+        doc="Delay in seconds between tiles appearing. Default: 0.05."
     )
-    animate_from: rx.Var[str] = field(
-        doc="Direction from which items animate in. Options: 'top', 'bottom', 'left', 'right', 'center', 'random'. Default: 'bottom'."
+    duration: rx.Var[int | float] = field(
+        doc="Length in seconds of the springs that move tiles in and between places. Default: 0.6."
     )
-    scale_on_hover: rx.Var[bool] = field(
-        doc="Whether items should scale on hover. Default: true."
-    )
-    hover_scale: rx.Var[int | float] = field(
-        doc="Scale value when hovering over items (only applies if scaleOnHover is true). Default: 0.95."
+    bounce: rx.Var[int | float] = field(
+        doc="How much the tiles overshoot as they settle, from 0 to 0.9. Default: 0.15."
     )
     blur_to_focus: rx.Var[bool] = field(
-        doc="Whether items should animate from blurred to focused on initial load. Default: true."
+        doc="Tiles sharpen from a blur as they appear. Default: true."
     )
-    color_shift_on_hover: rx.Var[bool] = field(
-        doc="Whether to show a color overlay effect on hover. Default: false."
+    reveal_on_scroll: rx.Var[bool] = field(
+        doc="Tiles appear as they scroll into view instead of all at once. Default: true."
+    )
+    hover_effect: rx.Var[Literal["zoom", "lift", "tilt", "none"]] = field(
+        doc="Zoom the image, lift the tile, or tilt it toward the cursor. Default: 'zoom'."
+    )
+    focus_on_hover: rx.Var[bool] = field(
+        doc="Fades the other tiles while one is hovered. Default: false."
+    )
+    captions: rx.Var[Literal["hover", "always", "none"]] = field(
+        doc="When the title and description show over a tile. Default: 'hover'."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far images drift inside their tiles as the page scrolls, from 0 to 1. Default: 0."
+    )
+    lightbox: rx.Var[bool] = field(
+        doc="Clicking a tile opens it full size. Arrow keys move between images and Escape closes. Default: true."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Drag tiles with a mouse to reorder them. The grid reflows around the tile as it moves. Default: true."
+    )
+    on_item_click: rx.EventHandler[lambda item, index, event: [safe(item), safe(index), safe(event)]] = field(
+        doc="Called when a tile is clicked. Call event.preventDefault() to skip the lightbox or link. Handler receives: item, index, event."
+    )
+    on_reorder: rx.EventHandler[lambda items: [safe(items)]] = field(
+        doc="Called with the new order after a drag. Handler receives: items."
     )
 
 
 class ModelViewer(ReactBitsComponent):
-    """Three.js model viewer with orbit controls and lighting presets.
+    """A product-style 3D model viewer that frames itself and floats over a soft shadow.
 
     Docs: https://reactbits.dev/components/model-viewer
     """
@@ -1541,82 +2679,82 @@ class ModelViewer(ReactBitsComponent):
     lib_dependencies: list[str] = ['@react-three/drei@10.7.6', '@react-three/fiber@9.3.0', 'three@0.180.0']
 
     url: rx.Var[str] = field(
-        doc="URL of the 3D model file (glb/gltf/fbx/obj). Default: -."
+        doc="URL of the model. Supports glb, gltf, fbx and obj. Default: -."
     )
     width: rx.Var[int | float | str] = field(
-        doc="Width of the canvas container. Default: 400."
+        doc="Width of the viewer. Default: 400."
     )
     height: rx.Var[int | float | str] = field(
-        doc="Height of the canvas container. Default: 400."
+        doc="Height of the viewer. Default: 400."
     )
-    model_x_offset: rx.Var[int | float] = field(
-        doc="Horizontal offset of the model. Default: 0."
+    environment: rx.Var[str] = field(
+        doc="Lighting environment: studio, city, sunset, dawn, warehouse, apartment, lobby, night, park, forest or 'none'. Default: 'studio'."
     )
-    model_y_offset: rx.Var[int | float] = field(
-        doc="Vertical offset of the model. Default: 0."
+    environment_intensity: rx.Var[int | float] = field(
+        doc="Strength of the environment lighting and reflections. Default: 1."
     )
-    default_rotation_x: rx.Var[int | float] = field(
-        doc="Initial rotation on the X axis in degrees. Default: -50."
-    )
-    default_rotation_y: rx.Var[int | float] = field(
-        doc="Initial rotation on the Y axis in degrees. Default: 20."
-    )
-    default_zoom: rx.Var[int | float] = field(
-        doc="Initial zoom distance factor. Default: 0.5."
-    )
-    min_zoom_distance: rx.Var[int | float] = field(
-        doc="Minimum zoom distance. Default: 0.5."
-    )
-    max_zoom_distance: rx.Var[int | float] = field(
-        doc="Maximum zoom distance. Default: 10."
-    )
-    enable_mouse_parallax: rx.Var[bool] = field(
-        doc="Enable mouse-based parallax effect. Default: true."
-    )
-    enable_manual_rotation: rx.Var[bool] = field(
-        doc="Enable manual rotation via drag. Default: true."
-    )
-    enable_hover_rotation: rx.Var[bool] = field(
-        doc="Enable rotation on hover based on cursor. Default: true."
-    )
-    enable_manual_zoom: rx.Var[bool] = field(
-        doc="Enable manual zoom via mouse wheel or gestures. Default: true."
-    )
-    ambient_intensity: rx.Var[int | float] = field(
-        doc="Intensity of ambient light. Default: 0.3."
-    )
-    key_light_intensity: rx.Var[int | float] = field(
-        doc="Intensity of key light. Default: 1."
-    )
-    fill_light_intensity: rx.Var[int | float] = field(
-        doc="Intensity of fill light. Default: 0.5."
-    )
-    rim_light_intensity: rx.Var[int | float] = field(
-        doc="Intensity of rim light. Default: 0.8."
-    )
-    environment_preset: rx.Var[str] = field(
-        doc="Environment preset for scene lighting. Default: 'forest'."
-    )
-    auto_frame: rx.Var[bool] = field(
-        doc="Automatically frame the model in view. Default: false."
-    )
-    placeholder_src: rx.Var[str] = field(
-        doc="Placeholder image source while loading. Default: -."
-    )
-    show_screenshot_button: rx.Var[bool] = field(
-        doc="Show the screenshot button overlay. Default: true."
-    )
-    fade_in: rx.Var[bool] = field(
-        doc="Enable fade-in transition on load. Default: false."
+    exposure: rx.Var[int | float] = field(
+        doc="Overall brightness of the render. Default: 1."
     )
     auto_rotate: rx.Var[bool] = field(
-        doc="Enable automatic rotation animation. Default: false."
+        doc="Slowly turns the model while idle. Default: true."
     )
     auto_rotate_speed: rx.Var[int | float] = field(
-        doc="Speed of automatic rotation. Default: 0.35."
+        doc="Speed of the idle rotation. Default: 0.4."
+    )
+    auto_rotate_delay: rx.Var[int | float] = field(
+        doc="Seconds after you let go before the idle rotation eases back in. Default: 2."
+    )
+    drag_rotate: rx.Var[bool] = field(
+        doc="Drag to turn the model, with momentum when you let go. Default: true."
+    )
+    turntable: rx.Var[bool] = field(
+        doc="Limits dragging to left and right, like a product turntable. Default: false."
+    )
+    zoom: rx.Var[bool] = field(
+        doc="Pinch or hold Ctrl or Cmd and scroll to zoom. Plain scrolling still scrolls the page. Default: true."
+    )
+    min_zoom: rx.Var[int | float] = field(
+        doc="How far out you can zoom. Default: 0.7."
+    )
+    max_zoom: rx.Var[int | float] = field(
+        doc="How far in you can zoom. Default: 2."
+    )
+    hover_tilt: rx.Var[int | float] = field(
+        doc="How much the model leans toward the cursor. 0 turns it off. Default: 0.15."
+    )
+    float_: rx.Var[int | float] = field(
+        doc="Gentle floating above the shadow. 0 turns it off. Default: 0.3."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Soft contact shadow under the model. Default: true."
+    )
+    shadow_opacity: rx.Var[int | float] = field(
+        doc="Darkness of the shadow. Default: 0.45."
+    )
+    intro: rx.Var[Literal["rise", "spin", "fade", "none"]] = field(
+        doc="How the model appears once it has loaded. Default: 'rise'."
+    )
+    start_angle: rx.Var[int | float] = field(
+        doc="Starting angle around the model, in degrees. Default: -30."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Starting tilt toward the viewer, in degrees. Default: 10."
+    )
+    offset_x: rx.Var[int | float] = field(
+        doc="Moves the model sideways, from -1 to 1. Default: 0."
+    )
+    offset_y: rx.Var[int | float] = field(
+        doc="Moves the model up or down, from -1 to 1. Default: 0."
+    )
+    fit: rx.Var[int | float] = field(
+        doc="How much of the viewer the model fills. It is framed automatically. Default: 0.8."
+    )
+    reset_on_double_click: rx.Var[bool] = field(
+        doc="Double click to return to the starting view. Default: true."
     )
     on_model_loaded: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback when model finishes loading"
+        doc="Called once the model has loaded."
     )
 
 
@@ -1688,7 +2826,7 @@ class MorphSlider(ReactBitsComponent):
 
 
 class OptionWheel(ReactBitsComponent):
-    """Curved option picker that spins via scroll, drag, or arrow keys, fading and tilting items away from the selection.
+    """Curved option picker that spins with scroll, drag or arrow keys, tilting items away.
 
     Docs: https://reactbits.dev/components/option-wheel
     """
@@ -1760,7 +2898,7 @@ class OptionWheel(ReactBitsComponent):
 
 
 class PillNav(ReactBitsComponent):
-    """Minimal pill nav with sliding active highlight + smooth easing.
+    """A pill navigation bar where a fill rises through each link as its label rolls over, with a sliding active dot.
 
     Docs: https://reactbits.dev/components/pill-nav
     """
@@ -1771,45 +2909,86 @@ class PillNav(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "PillNav"
     _rb_files = ('PillNav.css', 'PillNav.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
-    logo: rx.Var[str] = field(
-        doc="URL for the logo image. Default: -."
+    logo: rx.Var[Component | str] = field(
+        doc="Image URL or element shown in the round logo button. It spins on hover. Default: -."
     )
     logo_alt: rx.Var[str] = field(
-        doc="Alt text for the logo image. Default: 'Logo'."
+        doc="Accessible label for the logo link. Default: 'Logo'."
+    )
+    logo_href: rx.Var[str] = field(
+        doc="Where the logo links to. Default: '#'."
     )
     items: rx.Var[list[Any]] = field(
-        doc="Array of navigation items with label, href, and optional ariaLabel. Default: -."
+        doc="The navigation links. Items without an href render as buttons. Default: DEFAULT_ITEMS."
     )
     active_href: rx.Var[str] = field(
-        doc="The href of the currently active navigation item."
+        doc="Marks the item with this href as the current page. Leave it out to let the nav track clicks itself. Default: -."
     )
-    ease: rx.Var[str] = field(
-        doc="GSAP easing function for animations. Default: 'power3.easeOut'."
+    default_active_index: rx.Var[int | float] = field(
+        doc="Which item starts active when activeHref is not set. Default: 0."
     )
-    base_color: rx.Var[str] = field(
-        doc="Base background color for the navigation. Default: '#fff'."
+    link_component: rx.Var[Component | str] = field(
+        doc="Renders the links, so you can pass your router's link. It receives href, className and children. Default: 'a'."
     )
-    pill_color: rx.Var[str] = field(
-        doc="Background color for navigation pills. Default: '#120F17'."
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color scheme of the surfaces, labels and highlight. Default: 'dark'."
     )
-    hovered_pill_text_color: rx.Var[str] = field(
-        doc="Text color when hovering over pills. Default: '#120F17'."
+    layout: rx.Var[Literal["split", "joined"]] = field(
+        doc="Split puts the logo in its own bubble beside the bar. Joined holds everything in one capsule. Default: 'split'."
     )
-    pill_text_color: rx.Var[str] = field(
-        doc="Text color for navigation pills. Default: baseColor."
+    size: rx.Var[Literal["sm", "md", "lg"]] = field(
+        doc="Height, padding and text size. Default: 'md'."
     )
-    initial_load_animation: rx.Var[bool] = field(
-        doc="Enable initial load animation for logo scale and nav items reveal. Default: true."
+    surface: rx.Var[Literal["glass", "solid", "none"]] = field(
+        doc="Background of the bar and logo: frosted glass, an opaque fill, or nothing. Default: 'glass'."
     )
-    on_mobile_menu_click: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback function triggered when mobile menu button is clicked"
+    item_style: rx.Var[Literal["pill", "plain"]] = field(
+        doc="Pill gives every item its own raised pill. Plain shows the labels straight on the bar. Default: 'pill'."
+    )
+    hover_effect: rx.Var[Literal["fill", "glide", "none"]] = field(
+        doc="Fill rises a circle through the hovered pill as its label rolls over. Glide slides one pill to the item under the cursor. Default: 'fill'."
+    )
+    indicator: rx.Var[Literal["dot", "pill", "none"]] = field(
+        doc="How the current page is marked: a small dot that slides between items, or a filled pill. Default: 'dot'."
+    )
+    highlight_color: rx.Var[str] = field(
+        doc="Color of the fill, the gliding pill and the dot. Labels on it pick black or white for contrast. Default: -."
+    )
+    highlight_text_color: rx.Var[str] = field(
+        doc="Overrides the label color on the highlight. Default: -."
+    )
+    bar_color: rx.Var[str] = field(
+        doc="Overrides the background of the bar and logo. Default: -."
+    )
+    text_color: rx.Var[str] = field(
+        doc="Overrides the label color. Default: -."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the gliding pill and the dot overshoot as they settle, from 0 to 1. Default: 0.3."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How far the gliding pill stretches toward its target before the back edge catches up, from 0 to 1. Default: 0.5."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Pops the logo in and unrolls the bar on mount. Default: true."
+    )
+    collapse: rx.Var[Literal["auto", "always", "never"]] = field(
+        doc="When the links fold into a menu button. Auto folds them only when they no longer fit. Default: 'auto'."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name of the nav landmark. Default: 'Main'."
+    )
+    on_item_click: rx.EventHandler[lambda item, index, event: [safe(item), safe(index), safe(event)]] = field(
+        doc="Called when an item is clicked. Handler receives: item, index, event."
+    )
+    on_menu_toggle: rx.EventHandler[lambda open: [safe(open)]] = field(
+        doc="Called when the folded menu opens or closes. Handler receives: open."
     )
 
 
 class PixelCard(ReactBitsComponent):
-    """Card content revealed through pixel expansion transition.
+    """A card that fills with twinkling pixels on hover, rippling out from the center or the cursor.
 
     Docs: https://reactbits.dev/components/pixel-card
     """
@@ -1821,140 +3000,249 @@ class PixelCard(ReactBitsComponent):
     _rb_name = "PixelCard"
     _rb_files = ('PixelCard.css', 'PixelCard.jsx')
 
-    variant: rx.Var[str] = field(
-        doc="Defines the color scheme and animation style. Default: 'default'."
+    variant: rx.Var[Literal["default", "blue", "yellow", "pink"]] = field(
+        doc="A ready-made palette with its own gap and speed. Any prop you pass overrides it. Default: 'default'."
+    )
+    colors: rx.Var[str | list[str]] = field(
+        doc="Pixel colors, as an array or a comma-separated string. Each pixel picks one at random. Default: From variant."
     )
     gap: rx.Var[int | float] = field(
-        doc="Pixel grid gap size in pixels. Default: varies by variant."
+        doc="Distance between pixels, in px. Default: From variant."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed modifier (lower is slower). Default: varies by variant."
+        doc="How fast the pixels twinkle, from 0 to 100. 0 holds them still. Default: From variant."
     )
-    colors: rx.Var[str] = field(
-        doc="Comma-separated list of colors for the pixel effect. Default: \"#f8fafc,#f1f5f9,#cbd5e1\"."
+    pixel_size: rx.Var[int | float] = field(
+        doc="Largest size a pixel grows to, in px. Default: 2."
+    )
+    shape: rx.Var[Literal["square", "circle", "diamond"]] = field(
+        doc="Shape of each pixel. Default: 'square'."
+    )
+    origin: rx.Var[Literal["center", "pointer"]] = field(
+        doc="Where the reveal wave starts: the middle of the card, or wherever the pointer enters. Default: 'center'."
+    )
+    reveal_duration: rx.Var[int | float] = field(
+        doc="How long the wave takes to sweep across the card, in ms. Default: 600."
+    )
+    spotlight: rx.Var[int | float] = field(
+        doc="How much pixels near the cursor swell and brighten, from 0 to 1. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the soft light under the pixels. Default: 0.5."
+    )
+    glow_color: rx.Var[str] = field(
+        doc="Color of the soft light that follows the cursor across the card. Default: From variant."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the pixels and glow. Lower it to keep text on the card easy to read. Default: 1."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the pixels out toward the middle so they frame your content, from 0 to 1. Default: 0."
+    )
+    trigger: rx.Var[Literal["hover", "click", "always"]] = field(
+        doc="What turns the effect on: hovering or focusing the card, clicking it on and off, or always on. Default: 'hover'."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a ripple of brighter pixels out from the click. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Plays the reveal once when the card first scrolls into view. Default: true."
+    )
+    intro_delay: rx.Var[int | float] = field(
+        doc="Wait before the intro, in ms. Stagger it across a row of cards. Default: 0."
     )
     no_focus: rx.Var[bool] = field(
-        doc="If true, prevents animation from triggering on focus. Default: false."
+        doc="Stops keyboard focus from triggering the effect. Default: From variant."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the card. Default: 'dark'."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the card, in px. Default: 24."
     )
 
 
 class ProfileCard(ReactBitsComponent):
-    """Animated profile card glare with 3D hover effect.
+    """A framed profile card that tilts toward the cursor, with holographic foil shining through a tiled pattern.
 
     Docs: https://reactbits.dev/components/profile-card
     """
 
     tag = "ProfileCard"
     alias = "ReactBitsProfileCard"
-    is_default = True
+    is_default = False
     _rb_category = "Components"
     _rb_name = "ProfileCard"
     _rb_files = ('ProfileCard.css', 'ProfileCard.jsx')
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
     avatar_url: rx.Var[str] = field(
-        doc="URL for the main avatar image displayed on the card. Default: '<Placeholder for avatar URL>'."
+        doc="Portrait shown on the card."
     )
     icon_url: rx.Var[str] = field(
-        doc="Optional URL for an icon pattern overlay on the card background. Default: '<Placeholder for icon URL>'."
-    )
-    grain_url: rx.Var[str] = field(
-        doc="Optional URL for a grain texture overlay effect. Default: '<Placeholder for grain URL>'."
-    )
-    inner_gradient: rx.Var[str] = field(
-        doc="Custom CSS gradient string for the inner card gradient."
-    )
-    behind_glow_enabled: rx.Var[bool] = field(
-        doc="Toggle the smooth radial glow that follows the cursor behind the card. Default: true."
-    )
-    behind_glow_color: rx.Var[str] = field(
-        doc="CSS color for the behind-the-card glow (e.g. rgba/hsla/hex). Default: \"rgba(125, 190, 255, 0.67)\"."
-    )
-    behind_glow_size: rx.Var[str] = field(
-        doc="Size of the glow as a length/percentage stop in the radial gradient. Default: \"50%\"."
-    )
-    enable_tilt: rx.Var[bool] = field(
-        doc="Enable or disable the 3D tilt effect on mouse hover. Default: true."
-    )
-    enable_mobile_tilt: rx.Var[bool] = field(
-        doc="Enable or disable the 3D tilt effect on mobile devices. Default: false."
-    )
-    mobile_tilt_sensitivity: rx.Var[int | float] = field(
-        doc="Sensitivity of the 3D tilt effect on mobile devices. Default: 5."
+        doc="Tileable pattern, like a logo pattern. The holo foil shows only through it. Default: -."
     )
     mini_avatar_url: rx.Var[str] = field(
-        doc="Optional URL for a smaller avatar in the user info section."
+        doc="Small round image next to the handle. Hidden when not set. Default: -."
     )
     name: rx.Var[str] = field(
-        doc="User's display name. Default: 'Javi A. Torres'."
+        doc="Name shown over the portrait. Default: 'Javi A. Torres'."
     )
     title: rx.Var[str] = field(
-        doc="User's job title or role. Default: 'Software Engineer'."
+        doc="Role shown under the name. Default: 'Software Engineer'."
     )
     handle: rx.Var[str] = field(
-        doc="User's handle or username (displayed with @ prefix). Default: 'javicodes'."
+        doc="Handle shown in the footer, without the @. Default: 'javicodes'."
     )
     status: rx.Var[str] = field(
-        doc="User's current status. Default: 'Online'."
+        doc="Status text shown under the handle. Default: 'Online'."
+    )
+    status_color: rx.Var[str] = field(
+        doc="Color of the status dot. Default: '#22c55e'."
     )
     contact_text: rx.Var[str] = field(
-        doc="Text displayed on the contact button. Default: 'Contact'."
+        doc="Label of the contact button. Default: 'Contact'."
     )
     show_user_info: rx.Var[bool] = field(
-        doc="Whether to display the user information section. Default: true."
+        doc="Shows the footer with the handle, status and contact button. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the frame and footer. Default: 'dark'."
+    )
+    backdrop_color: rx.Var[str] = field(
+        doc="Color behind the portrait. Shows around cut-out photos. Uses the theme color when not set. Default: -."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the photo, in px. Default: 16."
+    )
+    holo: rx.Var[int | float] = field(
+        doc="Strength of the holographic foil, from 0 to 1. It lights up where the cursor catches it. Default: 0.8."
+    )
+    glare: rx.Var[int | float] = field(
+        doc="Strength of the light that follows the cursor, from 0 to 1. Default: 0.5."
+    )
+    enable_tilt: rx.Var[bool] = field(
+        doc="Tilts the card toward the cursor. Default: true."
+    )
+    tilt_strength: rx.Var[int | float] = field(
+        doc="Largest tilt angle, in degrees. Default: 12."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the portrait shifts as the card tilts, in px. Default: 8."
+    )
+    enable_mobile_tilt: rx.Var[bool] = field(
+        doc="Tilts the card with the motion of the phone after a tap. Needs HTTPS. Default: false."
+    )
+    mobile_tilt_sensitivity: rx.Var[int | float] = field(
+        doc="How strongly phone motion tilts the card. Default: 5."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Catches the light once as the card appears, then settles. Default: true."
     )
     on_contact_click: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback function called when the contact button is clicked"
+        doc="Called when the contact button is clicked."
     )
 
 
 class ReflectiveCard(ReactBitsComponent):
-    """Card with dynamic webcam reflection and glare effects that respond to cursor movement.
+    """A metal ID card that reflects your camera or a looping video and catches the light as it tilts.
 
     Docs: https://reactbits.dev/components/reflective-card
     """
 
     tag = "ReflectiveCard"
     alias = "ReactBitsReflectiveCard"
-    is_default = True
+    is_default = False
     _rb_category = "Components"
     _rb_name = "ReflectiveCard"
     _rb_files = ('ReflectiveCard.css', 'ReflectiveCard.jsx')
-    lib_dependencies: list[str] = ['lucide-react']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    blur_strength: rx.Var[int | float] = field(
-        doc="The intensity of the blur effect (0-20px). Default: 12."
+    name: rx.Var[str] = field(
+        doc="Name shown on the card. Default: 'Alexander Doe'."
     )
-    color: rx.Var[str] = field(
-        doc="The base text color. Default: 'white'."
+    role: rx.Var[str] = field(
+        doc="Role shown under the name. Default: 'Senior Developer'."
+    )
+    badge: rx.Var[str] = field(
+        doc="Label of the badge in the top left corner. Default: 'Verified'."
+    )
+    status: rx.Var[str] = field(
+        doc="Label of the status chip in the top right corner. Default: 'Active'."
+    )
+    status_color: rx.Var[str] = field(
+        doc="Color of the status dot. Default: '#22c55e'."
+    )
+    id_label: rx.Var[str] = field(
+        doc="Small label above the ID number. Default: 'ID number'."
+    )
+    id_value: rx.Var[str] = field(
+        doc="ID number shown in the footer. Default: '8901 2345 6789'."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Dark graphite or light silver metal, with matching text. Default: 'dark'."
+    )
+    video_src: rx.Var[str] = field(
+        doc="Looping video the card reflects when the camera is off. Without one it reflects a soft studio. Default: -."
+    )
+    webcam: rx.Var[bool] = field(
+        doc="Reflects the camera feed, mirrored. Asks for camera access and falls back to the video. Default: false."
+    )
+    tint: rx.Var[str] = field(
+        doc="Color of the metal. White gives plain steel. Default: '#ffffff'."
     )
     metalness: rx.Var[int | float] = field(
-        doc="The opacity of the metallic sheen (0-1). Default: 1."
+        doc="How strongly the surface mirrors the scene, from 0 to 1. At 0 the card turns matte. Default: 1."
     )
     roughness: rx.Var[int | float] = field(
-        doc="The opacity of the noise texture (0-1). Default: 0.4."
+        doc="Brushed grain of the metal, from 0 to 1. Stretches reflections along the grain. Default: 0.3."
     )
-    overlay_color: rx.Var[str] = field(
-        doc="The color of the overlay tint. Default: 'rgba(255, 255, 255, 0.1)'."
-    )
-    displacement_strength: rx.Var[int | float] = field(
-        doc="Strength of the displacement (how much it warps). Default: 20."
-    )
-    noise_scale: rx.Var[int | float] = field(
-        doc="Scale of the noise texture (size of the ripples). Default: 1."
-    )
-    specular_constant: rx.Var[int | float] = field(
-        doc="Specular constant for the lighting (shininess). Default: 1.2."
+    blur_strength: rx.Var[int | float] = field(
+        doc="Blur of the reflection, in px. Default: 6."
     )
     grayscale: rx.Var[int | float] = field(
-        doc="Grayscale intensity (0-1). Default: 1."
+        doc="Removes color from the reflection, from 0 to 1. Lower it to see the scene in color. Default: 1."
     )
-    glass_distortion: rx.Var[int | float] = field(
-        doc="Strength of the glass edge distortion. Default: 0."
+    warp: rx.Var[int | float] = field(
+        doc="Gentle bends in the surface that ripple the reflection. Default: 0.6."
+    )
+    warp_scale: rx.Var[int | float] = field(
+        doc="Size of the bends. Default: 1."
+    )
+    shine: rx.Var[int | float] = field(
+        doc="Brightness of the light band that sweeps across the card as it tilts. Default: 1."
+    )
+    bevel: rx.Var[int | float] = field(
+        doc="Width of the polished edge that catches the light, in px. Default: 3."
+    )
+    glare: rx.Var[int | float] = field(
+        doc="Strength of the light that follows the cursor, from 0 to 1. Default: 0.5."
+    )
+    enable_tilt: rx.Var[bool] = field(
+        doc="Tilts the card toward the cursor. Default: true."
+    )
+    tilt_strength: rx.Var[int | float] = field(
+        doc="Largest tilt angle, in degrees. Default: 12."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the card in and sweeps the light across it once. Default: true."
+    )
+    width: rx.Var[int | float | str] = field(
+        doc="Width of the card. Numbers are in px. Default: 320."
+    )
+    height: rx.Var[int | float | str] = field(
+        doc="Height of the card. Numbers are in px. Default: 500."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius, in px. Default: 24."
+    )
+    on_webcam_error: rx.EventHandler[lambda error: [safe(error)]] = field(
+        doc="Called when camera access is denied or unavailable. Handler receives: error."
     )
 
 
 class ScrollStack(ReactBitsComponent):
-    """Overlapping card stack reveals on scroll with depth layering.
+    """Cards pin and stack as you scroll, settling back into a dimmed deck with smooth, jitter-free motion.
 
     Docs: https://reactbits.dev/components/scroll-stack
     """
@@ -1965,40 +3253,51 @@ class ScrollStack(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "ScrollStack"
     _rb_files = ('ScrollStack.css', 'ScrollStack.jsx')
-    lib_dependencies: list[str] = ['lenis@1.3.13']
 
     item_distance: rx.Var[int | float] = field(
-        doc="Distance between stacked items in pixels. Default: 100."
-    )
-    item_scale: rx.Var[int | float] = field(
-        doc="Scale increment for each stacked item. Default: 0.03."
+        doc="Gap between cards before they stack, in px. Larger gaps mean more scrolling between cards. Default: 100."
     )
     item_stack_distance: rx.Var[int | float] = field(
-        doc="Distance between items when they start stacking. Default: 30."
+        doc="How far each card rests below the one before it in the stack, in px. 0 piles them exactly. Default: 24."
     )
-    stack_position: rx.Var[str] = field(
-        doc="Position where the stacking effect begins as a percentage of viewport height. Default: '20%'."
+    stack_position: rx.Var[int | float | str] = field(
+        doc="Where the stack pins, from the top of the viewport or container. A number is px, or use a % string. Default: '15%'."
     )
-    scale_end_position: rx.Var[str] = field(
-        doc="Position where the scaling effect ends as a percentage of viewport height. Default: '10%'."
+    item_scale: rx.Var[int | float] = field(
+        doc="How much a card shrinks for each card stacked on top of it. Default: 0.05."
     )
     base_scale: rx.Var[int | float] = field(
-        doc="Base scale value for the first item in the stack. Default: 0.85."
+        doc="The smallest a buried card can shrink to. Default: 0.8."
     )
-    scale_duration: rx.Var[int | float] = field(
-        doc="Duration of the scaling animation in seconds. Default: 0.5."
-    )
-    rotation_amount: rx.Var[int | float] = field(
-        doc="Rotation amount for each item in degrees. Default: 0."
+    dim_amount: rx.Var[int | float] = field(
+        doc="How much a card darkens for each card stacked on top of it, from 0 to 1. Default: 0.2."
     )
     blur_amount: rx.Var[int | float] = field(
-        doc="Blur amount for items that are further back in the stack. Default: 0."
+        doc="Blur added for each card stacked on top, in px. Default: 0."
+    )
+    tilt_amount: rx.Var[int | float] = field(
+        doc="How far buried cards lean back in 3D, in degrees. Default: 0."
+    )
+    rotation_amount: rx.Var[int | float] = field(
+        doc="How far buried cards turn, alternating left and right like a loose pile, in degrees. Default: 0."
+    )
+    hold_distance: rx.Var[int | float] = field(
+        doc="How long the finished stack stays pinned before it scrolls away, in px of scrolling. Default: 200."
+    )
+    smooth_scroll: rx.Var[bool] = field(
+        doc="Glides mouse wheel scrolling smoothly. Touch, keyboard and scrollbar scrolling stay native. With useWindowScroll it smooths the whole page while the stack is mounted. Default: true."
+    )
+    snap: rx.Var[bool] = field(
+        doc="When scrolling stops near a card, glides it the rest of the way onto the stack. Default: false."
     )
     use_window_scroll: rx.Var[bool] = field(
-        doc="Whether to use window scroll for the stack. Default: false."
+        doc="Stacks the cards as the page scrolls instead of scrolling inside its own container. Avoid overflow: hidden on parent elements, which stops cards from pinning. Default: false."
+    )
+    item_class_name: rx.Var[str] = field(
+        doc="ScrollStackItem only. Extra class names for the card, for its size, colors and content."
     )
     on_stack_complete: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback function called when the stack animation is complete."
+        doc="Called when the last card lands on the stack."
     )
 
 
@@ -2011,13 +3310,12 @@ class ScrollStackItem(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "ScrollStack"
     _rb_files = ('ScrollStack.css', 'ScrollStack.jsx')
-    lib_dependencies: list[str] = ['lenis@1.3.13']
 
     item_class_name: rx.Var[str] = field(doc="Extra class name for the card.")
 
 
 class SpecularButton(ReactBitsComponent):
-    """Glass button with a shader-driven specular rim light that sweeps around the edge and follows the cursor.
+    """Glass button whose edge catches the light, with a highlight that glides toward the cursor.
 
     Docs: https://reactbits.dev/components/specular-button
     """
@@ -2028,58 +3326,63 @@ class SpecularButton(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "SpecularButton"
     _rb_files = ('SpecularButton.css', 'SpecularButton.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     size: rx.Var[Literal["sm", "md", "lg"]] = field(
-        doc="Preset padding and font size of the button. Default: 'lg'."
+        doc="Padding and font size of the button. Default: 'lg'."
     )
     radius: rx.Var[int | float] = field(
-        doc="Corner radius in pixels; clamps to a pill automatically. Default: 18."
+        doc="Corner radius in px. Values past half the height make a pill. Default: 18."
     )
     tint: rx.Var[str] = field(
-        doc="Color of the glass background tint. Default: '#ffffff'."
+        doc="Color of the glass body. Default: '#ffffff'."
     )
     tint_opacity: rx.Var[int | float] = field(
-        doc="Strength of the glass tint. Default: 0."
+        doc="How strongly the tint fills the body, from 0 for clear glass to 1 for a solid button. Default: 0.04."
     )
     blur: rx.Var[int | float] = field(
-        doc="Backdrop blur in pixels behind the button. Default: 0."
+        doc="Blur of whatever sits behind the button, in px. Default: 0."
     )
     text_color: rx.Var[str] = field(
-        doc="Color of the button label. Default: '#f5f5f5'."
+        doc="Color of the label. Default: '#f5f5f5'."
     )
     line_color: rx.Var[str] = field(
-        doc="Color of the moving specular highlight. Default: '#ffffff'."
+        doc="Color of the light on the edge. Default: '#ffffff'."
     )
     base_color: rx.Var[str] = field(
-        doc="Color of the static edge stroke under the highlight. Default: '#525252'."
+        doc="Color of the thin edge line that stays visible under the light. Default: '#525252'."
     )
     intensity: rx.Var[int | float] = field(
-        doc="Brightness of the specular highlight. Default: 1."
+        doc="Brightness of the light on the edge. Default: 1."
+    )
+    idle_intensity: rx.Var[int | float] = field(
+        doc="How much of the light stays on when the cursor is away, from 0 to 1. Default: 0.35."
     )
     shine_size: rx.Var[int | float] = field(
-        doc="Angular size in degrees of each shine streak along the edge. Default: 10."
+        doc="How much of the edge the light covers at full strength, in degrees around the button. Default: 10."
     )
     shine_fade: rx.Var[int | float] = field(
-        doc="How gradually each streak fades out at its ends, in degrees. Default: 40."
+        doc="How far the light fades out past that, in degrees around the button. Default: 34."
     )
     thickness: rx.Var[int | float] = field(
-        doc="Width of the highlight line in pixels. Default: 1."
+        doc="Width of the lit edge in px. Default: 1.2."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft light around the lit edge and inside the glass. 0 keeps only the crisp line. Default: 1."
     )
     speed: rx.Var[int | float] = field(
-        doc="Rotation speed of the sweep when autoAnimate is on. Default: 0.35."
+        doc="How fast the light circles when autoAnimate is on. Default: 0.35."
     )
     follow_mouse: rx.Var[bool] = field(
-        doc="Point the light toward the cursor. Default: true."
+        doc="Moves the light to the part of the edge nearest the cursor. Default: true."
     )
     proximity: rx.Var[int | float] = field(
-        doc="Distance in pixels within which the shine fades in as the cursor approaches. Default: 250."
+        doc="Distance in px at which the light starts to follow the cursor and brighten. Default: 250."
     )
     auto_animate: rx.Var[bool] = field(
-        doc="Keep the shine always on with a rotating sweep, regardless of cursor distance. Default: false."
+        doc="Keeps the light on and circling the edge whenever the cursor is away. Default: false."
     )
     disabled: rx.Var[bool] = field(
-        doc="Disable the button. Default: false."
+        doc="Disables the button. Default: false."
     )
     type: rx.Var[Literal["button", "submit", "reset"]] = field(
         doc="Native button type. Default: 'button'."
@@ -2087,7 +3390,7 @@ class SpecularButton(ReactBitsComponent):
 
 
 class SpotlightCard(ReactBitsComponent):
-    """Dynamic spotlight follows cursor casting gradient illumination.
+    """Card lit by a soft spotlight that follows the pointer, catches its edge and reaches nearby cards.
 
     Docs: https://reactbits.dev/components/spotlight-card
     """
@@ -2100,12 +3403,45 @@ class SpotlightCard(ReactBitsComponent):
     _rb_files = ('SpotlightCard.css', 'SpotlightCard.jsx')
 
     spotlight_color: rx.Var[str] = field(
-        doc="Controls the color of the radial gradient used for the spotlight effect. Default: 'rgba(255, 255, 255, 0.25)'."
+        doc="Color of the light. Any CSS color works and its alpha is respected. Defaults to white on dark cards and near black on light ones."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="Brightness of the light on the card surface, from 0 to 1. Default: 0.15."
+    )
+    spotlight_size: rx.Var[int | float] = field(
+        doc="Radius of the light in px. Default: 240."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How gradually the light fades out. 0 gives a crisp disc, 1 a soft glow that fades from the center. Default: 0.7."
+    )
+    shape: rx.Var[Literal["circle", "beam"]] = field(
+        doc="Circle is a round spotlight around the pointer. Beam pours light down from the top edge toward it, like a stage light. Default: 'circle'."
+    )
+    border_glow: rx.Var[int | float] = field(
+        doc="How much the card edge catches the light near the pointer, from 0 to 1. Default: 0.6."
+    )
+    proximity: rx.Var[int | float] = field(
+        doc="Distance in px outside the card at which the light starts to reach it. Cards placed together share one light this way. 0 lights a card only while hovered. Default: 80."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="How far the light floats behind the pointer. 0 sticks to it. Default: 0.3."
+    )
+    ambient: rx.Var[bool] = field(
+        doc="Lets the light drift slowly across the card while nothing points at it, which keeps cards alive on touch screens. Default: false."
+    )
+    flare: rx.Var[bool] = field(
+        doc="The light swells and brightens while the card is pressed. Default: true."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain inside the light, from 0 to 1. A little removes banding from large soft gradients. Default: 0."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Surface, border and light treatment for dark or light pages. Override the colors with the --spotlight-card-surface and --spotlight-card-border CSS variables. Default: 'dark'."
     )
 
 
 class Stack(ReactBitsComponent):
-    """Layered stack with swipe animations, autoplay and smooth transitions.
+    """Pile of cards you can drag, flick or click through, with thrown cards tucking underneath.
 
     Docs: https://reactbits.dev/components/stack
     """
@@ -2118,35 +3454,56 @@ class Stack(ReactBitsComponent):
     _rb_files = ('Stack.css', 'Stack.jsx')
     lib_dependencies: list[str] = ['motion@12.23.21']
 
-    random_rotation: rx.Var[bool] = field(
-        doc="Applies a random rotation to each card for a 'messy' look. Default: false."
-    )
-    sensitivity: rx.Var[int | float] = field(
-        doc="Drag sensitivity for sending a card to the back. Default: 200."
-    )
     cards: rx.Var[list[Any]] = field(
-        doc="The array of card elements to display in the stack. Default: []."
+        doc="The cards in the stack, top first. Images fill the card automatically, any other content works too. Default: four sample photos."
     )
-    animation_config: rx.Var[dict[str, Any]] = field(
-        doc="Configures the spring animation's stiffness and damping. Default: { stiffness: 260, damping: 20 }."
+    layout: rx.Var[Literal["fan", "cascade", "deck", "pile"]] = field(
+        doc="How the cards behind sit. Fan tilts them out from a corner, cascade offsets them diagonally, deck stacks them upward and pile scatters them like loose photos. Default: 'fan'."
+    )
+    visible: rx.Var[int | float] = field(
+        doc="How many cards show, counting the top one. The rest wait hidden at the back. Default: 4."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="How far the cards behind fan, offset or scatter, from 0 for a neat stack to 1 for a wide one. Default: 0.5."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How much smaller and darker each card behind gets, from 0 for none to 1 for a strong recede. Default: 0.5."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the cards in pixels. Default: 16."
+    )
+    frame: rx.Var[int | float] = field(
+        doc="Width of a border around each card in pixels, like the edge of a printed photo. Default: 0."
+    )
+    frame_color: rx.Var[str] = field(
+        doc="Color of the frame around each card. Default: '#ffffff'."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Gives every card a soft drop shadow. Default: true."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="How far the top card leans in 3D while it is dragged, in degrees. It tilts around the point you hold and leans into fast moves. Use 0 to keep it flat. Default: 30."
+    )
+    threshold: rx.Var[int | float] = field(
+        doc="How far in pixels the top card has to be dragged before it goes to the back. A quick flick works too. Default: 90."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of every animation, from 0.5 for slow and soft to 2 for fast and snappy. Default: 1."
     )
     send_to_back_on_click: rx.Var[bool] = field(
-        doc="When enabled, the stack also shifts to the next card on click. Default: false."
+        doc="Clicking the top card also sends it to the back. Default: false."
     )
     autoplay: rx.Var[bool] = field(
-        doc="When enabled, the stack automatically cycles through cards. Default: false."
+        doc="Cycles through the cards on its own. Default: false."
     )
     autoplay_delay: rx.Var[int | float] = field(
-        doc="Delay in milliseconds between automatic card transitions. Default: 3000."
+        doc="Time in milliseconds between automatic cycles. Default: 3000."
     )
     pause_on_hover: rx.Var[bool] = field(
-        doc="When enabled, autoplay pauses when hovering over the stack. Default: false."
+        doc="Pauses autoplay while the pointer is over the stack. Default: false."
     )
-    mobile_click_only: rx.Var[bool] = field(
-        doc="The `mobileClickOnly` prop. Default: false."
-    )
-    mobile_breakpoint: rx.Var[int | float] = field(
-        doc="The `mobileBreakpoint` prop. Default: 768."
+    on_change: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called with the index of the new top card whenever the stack moves. Handler receives: index."
     )
 
 
@@ -2212,7 +3569,7 @@ class StaggeredMenu(ReactBitsComponent):
 
 
 class Stepper(ReactBitsComponent):
-    """Animated multi-step progress indicator with active state transitions.
+    """A multi-step flow with a gliding step indicator, spring transitions and horizontal or vertical layouts.
 
     Docs: https://reactbits.dev/components/stepper
     """
@@ -2223,46 +3580,85 @@ class Stepper(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Stepper"
     _rb_files = ('Stepper.css', 'Stepper.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
+    step: rx.Var[int | float] = field(
+        doc="Controls the current step yourself. Use it with onStepChange. Default: -."
+    )
     initial_step: rx.Var[int | float] = field(
-        doc="The first step to display when the stepper is initialized. Default: 1."
+        doc="The step shown first. Default: 1."
     )
-    step_circle_container_class_name: rx.Var[str] = field(
-        doc="Custom class name for the container holding the step indicators."
+    indicator: rx.Var[Literal["numbers", "dots", "bars"]] = field(
+        doc="Style of the step indicators in the horizontal layout. Default: 'numbers'."
     )
-    step_container_class_name: rx.Var[str] = field(
-        doc="Custom class name for the row holding the step circles/connectors."
+    orientation: rx.Var[Literal["horizontal", "vertical"]] = field(
+        doc="Indicators across the top, or a rail of numbered steps beside the content. Default: 'horizontal'."
     )
-    content_class_name: rx.Var[str] = field(
-        doc="Custom class name for the step\u2019s main content container."
+    transition: rx.Var[Literal["slide", "fade", "none"]] = field(
+        doc="How the content changes between steps. The height always animates. Default: 'slide'."
     )
-    footer_class_name: rx.Var[str] = field(
-        doc="Custom class name for the footer area containing navigation buttons."
-    )
-    back_button_props: rx.Var[dict[str, Any]] = field(
-        doc="Extra props passed to the Back button. Default: {}."
-    )
-    next_button_props: rx.Var[dict[str, Any]] = field(
-        doc="Extra props passed to the Next/Complete button. Default: {}."
-    )
-    back_button_text: rx.Var[str] = field(
-        doc="Text for the Back button. Default: 'Back'."
-    )
-    next_button_text: rx.Var[str] = field(
-        doc="Text for the Next button when not on the last step. Default: 'Continue'."
+    linear: rx.Var[bool] = field(
+        doc="Only lets the indicators jump back to steps that have been reached. Default: false."
     )
     disable_step_indicators: rx.Var[bool] = field(
-        doc="Disables click interaction on step indicators. Default: false."
+        doc="Stops the indicators from changing the step when clicked. Default: false."
     )
-    render_step_indicator: rx.Var[dict[str, Any]] = field(
-        doc="Renders a custom step indicator."
+    render_step_indicator: rx.Var[Any] = field(
+        doc="Renders your own numbered indicator. Default: -. Pass a JS function with rx.Var('(...) => ...')."
+    )
+    show_footer: rx.Var[bool] = field(
+        doc="Shows the Back and Continue buttons. Default: true."
+    )
+    back_button_text: rx.Var[str] = field(
+        doc="Text of the Back button. Default: 'Back'."
+    )
+    next_button_text: rx.Var[str] = field(
+        doc="Text of the Continue button. Default: 'Continue'."
+    )
+    complete_button_text: rx.Var[str] = field(
+        doc="Text of the Continue button on the last step. Default: 'Complete'."
+    )
+    back_button_props: rx.Var[dict[str, Any]] = field(
+        doc="Extra props for the Back button. Default: {}."
+    )
+    next_button_props: rx.Var[dict[str, Any]] = field(
+        doc="Extra props for the Continue button, such as disabled while a step is incomplete. Default: {}."
+    )
+    completed_content: rx.Var[Component | str] = field(
+        doc="Shown in place of the steps once the last one is completed. Default: -."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the panel and controls. Default: 'dark'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of completed steps, the progress lines and the Continue button. Default: -."
+    )
+    frame: rx.Var[bool] = field(
+        doc="Shows the frosted panel around the stepper. Default: true."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the panel, in px. Default: 24."
+    )
+    width: rx.Var[int | float | str] = field(
+        doc="Maximum width of the stepper. Default: 440."
+    )
+    step_circle_container_class_name: rx.Var[str] = field(
+        doc="The `stepCircleContainerClassName` prop."
+    )
+    step_container_class_name: rx.Var[str] = field(
+        doc="Extra class names for the indicator row."
+    )
+    content_class_name: rx.Var[str] = field(
+        doc="Extra class names for the content area."
+    )
+    footer_class_name: rx.Var[str] = field(
+        doc="Extra class names for the footer."
     )
     on_step_change: rx.EventHandler[lambda step: [safe(step)]] = field(
-        doc="Callback fired whenever the step changes. Handler receives: step."
+        doc="Called when the step changes. Handler receives: step."
     )
     on_final_step_completed: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback fired when the stepper completes its final step."
+        doc="Called when the last step is completed."
     )
 
 
@@ -2275,11 +3671,15 @@ class Step(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Stepper"
     _rb_files = ('Stepper.css', 'Stepper.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
+
+    title: rx.Var[Component | str] = field(doc="Label shown under the indicator, or beside it in the vertical layout.")
+    description: rx.Var[Component | str] = field(doc="Second line shown beside the indicator in the vertical layout.")
+    icon: rx.Var[Component | str] = field(doc="Icon shown inside the indicator instead of the number.")
 
 
 class TiltedCard(ReactBitsComponent):
-    """3D perspective tilt card reacting to pointer.
+    """A 3D card that tilts toward the cursor, with glare, a soft shadow, floating layers and a flip side.
 
     Docs: https://reactbits.dev/components/tilted-card
     """
@@ -2290,47 +3690,113 @@ class TiltedCard(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "TiltedCard"
     _rb_files = ('TiltedCard.css', 'TiltedCard.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     image_src: rx.Var[str] = field(
-        doc="The source URL of the image. Default: N/A."
+        doc="Photo that fills the card. Default: -."
     )
     alt_text: rx.Var[str] = field(
-        doc="Alternative text for the image. Default: 'Tilted card image'."
+        doc="Alternative text for the photo. Default: 'Tilted card image'."
     )
     caption_text: rx.Var[str] = field(
-        doc="Text for the tooltip caption."
+        doc="Text in the small tag that follows the cursor and swings as it moves."
     )
-    container_height: rx.Var[str] = field(
-        doc="Height of the overall card container. Default: '300px'."
+    container_height: rx.Var[int | float | str] = field(
+        doc="Height of the area that reacts to the cursor. Default: '300px'."
     )
-    container_width: rx.Var[str] = field(
-        doc="Width of the overall card container. Default: '100%'."
+    container_width: rx.Var[int | float | str] = field(
+        doc="Width of the area that reacts to the cursor. Default: '100%'."
     )
-    image_height: rx.Var[str] = field(
-        doc="Height of the inner image. Default: '300px'."
+    image_height: rx.Var[int | float | str] = field(
+        doc="Height of the card. Default: '300px'."
     )
-    image_width: rx.Var[str] = field(
-        doc="Width of the inner image. Default: '300px'."
+    image_width: rx.Var[int | float | str] = field(
+        doc="Width of the card. Default: '300px'."
     )
     scale_on_hover: rx.Var[int | float] = field(
-        doc="Scaling factor applied on hover. Default: 1.1."
+        doc="How much the card grows when hovered. Default: 1.05."
     )
     rotate_amplitude: rx.Var[int | float] = field(
-        doc="Controls how much the card tilts with mouse movement. Default: 14."
-    )
-    show_mobile_warning: rx.Var[bool] = field(
-        doc="Whether to show a small alert about mobile usage. Default: true."
+        doc="How far the card tilts toward the cursor, in degrees. Default: 12."
     )
     show_tooltip: rx.Var[bool] = field(
-        doc="Toggles the visibility of the tooltip (figcaption). Default: true."
+        doc="Shows the caption tag on hover. Default: true."
     )
-    overlay_content: rx.Var[rx.Component | str] = field(
-        doc="A React node to display as an overlay on the card."
+    overlay_content: rx.Var[Component | str] = field(
+        doc="Content that floats in front of the card, lifted off its surface."
     )
     display_overlay_content: rx.Var[bool] = field(
-        doc="Whether to display any overlayContent on top of the image. Default: false."
+        doc="Shows the overlay content. Default: false."
     )
+    overlay_depth: rx.Var[int | float] = field(
+        doc="How far the overlay floats in front, in px. Default: 30."
+    )
+    back_content: rx.Var[Component | str] = field(
+        doc="Content for the back of the card. Clicking, tapping or pressing Enter flips the card over."
+    )
+    flip_on_click: rx.Var[bool] = field(
+        doc="Flips the card when it is clicked. Needs backContent. Default: true."
+    )
+    flipped: rx.Var[bool] = field(
+        doc="Controls which side shows. Leave it unset to let clicks flip the card. Default: -."
+    )
+    radius: rx.Var[int | float | str] = field(
+        doc="Corner radius of the card. Default: 15."
+    )
+    perspective: rx.Var[int | float | str] = field(
+        doc="Viewing distance in px. Lower values give a stronger 3D effect. Default: 800."
+    )
+    smoothness: rx.Var[int | float] = field(
+        doc="From 0 to 1. Low values snap to the cursor, high values glide and settle with a soft bounce. Default: 0.6."
+    )
+    glare: rx.Var[int | float] = field(
+        doc="Strength of the light that catches the surface and edges as the card tilts, from 0 to 1. Default: 0.5."
+    )
+    glare_color: rx.Var[str] = field(
+        doc="Color of the glare. Default: '#ffffff'."
+    )
+    shadow: rx.Var[int | float] = field(
+        doc="Strength of the soft shadow under the card, which shifts and grows as the card lifts, from 0 to 1. Default: 0.5."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far layers and the photo shift with the tilt. 0 keeps everything flat. Default: 1."
+    )
+    axis: rx.Var[Literal["both", "horizontal", "vertical"]] = field(
+        doc="Limits the tilt to following the cursor left and right, or up and down. Default: 'both'."
+    )
+    reverse: rx.Var[bool] = field(
+        doc="Tilts away from the cursor instead of toward it. Default: false."
+    )
+    track_window: rx.Var[bool] = field(
+        doc="The card follows the cursor anywhere on the page, not only while hovered. Default: false."
+    )
+    floating: rx.Var[bool] = field(
+        doc="The card drifts and sways gently while idle. Default: false."
+    )
+    gyroscope: rx.Var[bool] = field(
+        doc="Tilts the card as a phone or tablet is moved. Asks for permission on iOS on the first tap. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The card rises and settles into place when it first scrolls into view. Default: true."
+    )
+    intro_delay: rx.Var[int | float] = field(
+        doc="Wait before the intro, in ms. Stagger it across a row of cards. Default: 0."
+    )
+    on_flip: rx.EventHandler[lambda flipped: [safe(flipped)]] = field(
+        doc="Called with the new side whenever the card is flipped. Handler receives: flipped."
+    )
+
+
+class TiltedCardLayer(ReactBitsComponent):
+    """Content floating above (positive depth) or sinking behind (negative) a TiltedCard's face."""
+
+    tag = "TiltedCardLayer"
+    alias = "ReactBitsTiltedCardLayer"
+    is_default = False
+    _rb_category = "Components"
+    _rb_name = "TiltedCard"
+    _rb_files = ('TiltedCard.css', 'TiltedCard.jsx')
+
+    depth: rx.Var[int | float] = field(doc="How far the layer floats above the card face.")
 
 
 accordion_gallery = AccordionGallery.create
@@ -2343,6 +3809,7 @@ card_swap = CardSwap.create
 card_swap_card = CardSwapCard.create
 carousel = Carousel.create
 chroma_grid = ChromaGrid.create
+circular_carousel = CircularCarousel.create
 circular_gallery = CircularGallery.create
 counter = Counter.create
 curved_input = CurvedInput.create
@@ -2352,6 +3819,7 @@ dock = Dock.create
 dome_gallery = DomeGallery.create
 drift_wall = DriftWall.create
 elastic_slider = ElasticSlider.create
+flex_carousel = FlexCarousel.create
 flowing_menu = FlowingMenu.create
 fluid_glass = FluidGlass.create
 flying_posters = FlyingPosters.create
@@ -2359,6 +3827,7 @@ folder = Folder.create
 glass_icons = GlassIcons.create
 glass_surface = GlassSurface.create
 gooey_nav = GooeyNav.create
+holo_card = HoloCard.create
 infinite_menu = InfiniteMenu.create
 infinite_spiral = InfiniteSpiral.create
 lanyard = Lanyard.create
@@ -2381,3 +3850,4 @@ staggered_menu = StaggeredMenu.create
 stepper = Stepper.create
 step = Step.create
 tilted_card = TiltedCard.create
+tilted_card_layer = TiltedCardLayer.create
