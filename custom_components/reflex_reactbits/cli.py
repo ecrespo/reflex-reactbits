@@ -16,7 +16,14 @@ import sys
 from pathlib import Path
 
 from .catalog import CATALOG, find_component
-from .source import PINNED_REF, component_dir, ensure_component_source, remove_component_source
+from .source import (
+    PINNED_REF,
+    component_dir,
+    ensure_component_source,
+    remove_component_source,
+    resolve_ref,
+    vendored_ref,
+)
 
 _CATEGORIES = sorted({e["category"] for e in CATALOG})
 
@@ -77,7 +84,9 @@ def cmd_add(args: argparse.Namespace) -> int:
             e["category"], e["name"], _files_for(e), assets_dir=assets, ref=args.ref, force=args.force
         )
         where = component_dir(e["category"], e["name"], assets)
-        state = "added" if written else "up to date"
+        state = "added" if written else "present"
+        if vendored_ref(e["category"], e["name"], assets) != resolve_ref(args.ref):
+            state = "stale"  # copied from another React Bits ref; --force replaces it
         print(f"{e['name']:<24} {state:<11} {where}")
     return 0
 

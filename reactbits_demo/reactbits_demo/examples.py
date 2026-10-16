@@ -15,8 +15,10 @@ from typing import Any
 
 import reflex as rx
 import reflex_reactbits as rb
+from reflex.utils.imports import ImportVar
+from reflex.vars.base import VarData
 
-from .state import EventLog
+from .state import EventLog, ShredderDemo
 
 ICONS = ["house", "archive", "user", "settings", "star", "heart", "bell", "camera", "music", "globe"]
 # Local placeholder images (assets/demo/img1..12.jpg) so previews work offline.
@@ -33,7 +35,9 @@ def IMG(i: int | str) -> str:
 HEIGHTS = {"Backgrounds": "520px", "Animations": "460px", "Components": "520px", "TextAnimations": "380px", "Micro": "320px"}
 TALL = {"ScrollStack": "600px", "Masonry": "640px", "ChromaGrid": "700px", "Lanyard": "640px", "StaggeredMenu": "600px",
         "FlyingPosters": "600px", "InfiniteMenu": "600px", "DomeGallery": "600px", "CardNav": "520px", "Stepper": "560px",
-        "ScrollReveal": "460px", "ScrollFloat": "460px", "ScrollVelocity": "360px", "BubbleMenu": "520px"}
+        "ScrollReveal": "460px", "ScrollFloat": "460px", "ScrollVelocity": "360px", "BubbleMenu": "520px",
+        # React Bits 2.0 additions with a fixed size bigger than their category's box.
+        "FlipCard": "480px", "PaperCrumple": "600px", "Shredder": "560px", "TearTicket": "360px", "HoloCard": "600px"}
 
 
 def _materialize(value: Any, counter: list[int]) -> Any:
@@ -93,10 +97,10 @@ LOGO = "data:image/svg+xml;utf8," + (
 
 def _stepper(**events) -> rx.Component:
     return rb.stepper(
-        rb.step(rx.heading("Welcome to the React Bits stepper!", size="5"), rx.text("Check out the next step!")),
-        rb.step(rx.heading("Step 2", size="5"), rx.image(src=IMG("step"), height="100px", width="100%", object_fit="cover", border_radius="15px")),
-        rb.step(rx.heading("How about an input?", size="5"), rx.input(placeholder="Your name?")),
-        rb.step(rx.heading("Final step", size="5"), rx.text("You made it!")),
+        rb.step(rx.heading("Welcome to the React Bits stepper!", size="5"), rx.text("Check out the next step!"), title="Welcome"),
+        rb.step(rx.heading("Step 2", size="5"), rx.image(src=IMG("step"), height="100px", width="100%", object_fit="cover", border_radius="15px"), title="Image"),
+        rb.step(rx.heading("How about an input?", size="5"), rx.input(placeholder="Your name?"), title="Input"),
+        rb.step(rx.heading("Final step", size="5"), rx.text("You made it!"), title="Done"),
         initial_step=1,
         back_button_text="Previous",
         next_button_text="Next",
@@ -154,7 +158,7 @@ def _gradual_blur(**events) -> rx.Component:
             rx.vstack(*[rx.text(f"Scrollable line {i} - gradual blur sits on top of this content.", size="4") for i in range(40)], padding="2em"),
             height="100%",
         ),
-        rb.gradual_blur(target="parent", position="bottom", height="7rem", strength=2, div_count=5, curve="bezier", exponential=True, opacity=1, **events),
+        rb.gradual_blur(target="parent", position="bottom", height="7rem", strength=2, layers=8, curve="bezier", exponential=True, opacity=1, **events),
         position="relative",
         height="100%",
         width="100%",
@@ -180,7 +184,7 @@ def _click_spark(**events) -> rx.Component:
 
 
 def _star_border(**events) -> rx.Component:
-    return rb.star_border(rx.text("Star border"), as_="button", color="cyan", speed="5s", **events)
+    return rb.star_border(rx.text("Star border"), as_="button", color="cyan", trail_color="cyan", duration=4, stars=2, click_pulse=True, **events)
 
 
 def _glare_hover(**events) -> rx.Component:
@@ -200,12 +204,18 @@ def _border_glow(**events) -> rx.Component:
 
 
 def _tilted_card(**events) -> rx.Component:
+    # 2.0: floating layers (rb.tilted_card_layer) and a back face shown on click.
     return rb.tilted_card(
+        rb.tilted_card_layer(
+            rx.heading("Open Sky", size="6", position="absolute", left="20px", bottom="20px", color="white"),
+            depth=30,
+        ),
         image_src=IMG("tilted"),
-        alt_text="Album cover", caption_text="Tilted card", container_height="300px", container_width="300px",
-        image_height="300px", image_width="300px", rotate_amplitude=12, scale_on_hover=1.2,
-        show_mobile_warning=False, show_tooltip=True, display_overlay_content=True,
-        overlay_content=rx.text("Tilted card", weight="bold", padding="1em"), **events,
+        alt_text="Album cover", caption_text="Click to flip", container_height="300px", container_width="300px",
+        image_height="300px", image_width="300px", rotate_amplitude=12, scale_on_hover=1.05, glare=0.5,
+        back_content=rx.vstack(rx.heading("Tracklist", size="4"), *[rx.text(f"{i}. Track {i}", size="2") for i in range(1, 6)],
+                               padding="20px", spacing="1"),
+        flip_on_click=True, **events,
     )
 
 
@@ -218,6 +228,62 @@ def _pixel_transition(**events) -> rx.Component:
         first_content=rx.image(src=IMG("pixel"), width="100%", height="100%", object_fit="cover"),
         second_content=rx.center(rx.text("Meow!", size="8", weight="bold"), width="100%", height="100%", background="#111"),
         grid_size=12, pixel_color="#ffffff", once=False, animation_step_duration=0.4, class_name="custom-pixel-card", **events,
+    )
+
+
+def _flip_card(**events) -> rx.Component:
+    return rb.flip_card(
+        front=rx.image(src=IMG("flip"), width="100%", height="100%", object_fit="cover"),
+        back=rx.vstack(rx.heading("Wooded landscape", size="5"), rx.text("Click, drag or flick the card to flip it back.", size="2"),
+                       padding="24px", spacing="2"),
+        width=300, height=400, radius=22, glare=True, tilt=True, **events,
+    )
+
+
+def _tear_ticket(**events) -> rx.Component:
+    return rb.tear_ticket(
+        rx.text("Spectrum", weight="bold", size="6"),
+        stub=rx.vstack(rx.heading("Admit one", size="4"), rx.text("Rooftop gallery", size="1"), rx.code("No. 284619", size="1"),
+                       spacing="1", padding="12px"),
+        image=IMG("ticket"), image_alt="Gallery", width=460, height=250, stub_size=150, **events,
+    )
+
+
+def _holo_card(**events) -> rx.Component:
+    return rb.holo_card(image=IMG("holo"), back_image=IMG("holo-back"), alt="Collectible card", preset="bursts", **events)
+
+
+def _electric_logo(**events) -> rx.Component:
+    # No src: the component falls back to its built-in lightning bolt.
+    return rb.electric_logo(color="#ecc7ff", glow_color="#ad6dff", scale=0.7, strands=4, crackle=1.5, speed=2.5, **events)
+
+
+# Shredder renders its rows with a JS function; the rows themselves live in Reflex
+# state and on_shred removes the shredded one on the backend.
+SHRED_ROW = rx.Var(
+    "(item) => createElement('div', { className: 'shred-row' },"
+    " createElement('strong', null, item.title), createElement('span', null, item.meta))",
+    _var_data=VarData(imports={"react": [ImportVar(tag="createElement")]}),
+)
+
+
+def _shredder(**events) -> rx.Component:
+    events.pop("on_shred", None)
+    return rx.vstack(
+        rb.shredder(
+            items=ShredderDemo.items,
+            render_item=SHRED_ROW,
+            on_shred=ShredderDemo.shred,
+            width=340, height=460,
+            key=ShredderDemo.generation.to_string(),
+            **events,
+        ),
+        rx.text("Shredded on the backend: ", rx.code(rx.cond(ShredderDemo.shredded.length() > 0,
+                                                            ShredderDemo.shredded.join(", "), "nothing yet")), size="2"),
+        rx.button("Refill the list", size="1", variant="soft", on_click=ShredderDemo.refill),
+        align="center",
+        # Shredder is `width: min(<width>px, 100%)`: it needs a parent with a definite width.
+        width="100%",
     )
 
 
@@ -243,6 +309,11 @@ OVERRIDES: dict[str, Callable[..., rx.Component]] = {
     "TiltedCard": _tilted_card,
     "Magnet": _magnet,
     "PixelTransition": _pixel_transition,
+    "FlipCard": _flip_card,
+    "TearTicket": _tear_ticket,
+    "HoloCard": _holo_card,
+    "ElectricLogo": _electric_logo,
+    "Shredder": _shredder,
 }
 
 

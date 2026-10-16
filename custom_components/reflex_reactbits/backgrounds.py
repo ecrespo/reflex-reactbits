@@ -9,21 +9,16 @@ from __future__ import annotations
 from typing import Any, Literal
 
 import reflex as rx
-from reflex_base.components.component import field
-import json
-
-from reflex.utils.imports import ImportVar
-from reflex.vars.base import VarData
-
-from .source import ASSETS_SUBDIR, ensure_component_source
+from reflex.event import no_args_event_spec
+from reflex_base.components.component import Component, field
 
 from .base import ReactBitsComponent, safe
 
-__all__ = ['AcidSquares', 'AeroShards', 'Aurora', 'Balatro', 'Ballpit', 'Beams', 'CRTWarp', 'ColorBends', 'DarkVeil', 'Dither', 'DotField', 'DotGrid', 'EvilEye', 'FaultyTerminal', 'Ferrofluid', 'FloatingLines', 'Galaxy', 'GhostFibers', 'GradientBlinds', 'GradientWaves', 'Grainient', 'GridDistortion', 'GridMotion', 'GridScan', 'Hyperspeed', 'Iridescence', 'LetterGlitch', 'LightPillar', 'LightRays', 'LightTunnel', 'Lightfall', 'Lightning', 'LineWaves', 'LiquidChrome', 'LiquidEther', 'MoltenMetal', 'Orb', 'Particles', 'PixelBlast', 'PixelSnow', 'Plasma', 'PlasmaWave', 'Prism', 'PrismaticBurst', 'Radar', 'RippleGrid', 'Scanner', 'ShapeGrid', 'ShapeWaves', 'SideRays', 'Silk', 'SlicedWaves', 'SoftAurora', 'Threads', 'Topography', 'Waves', 'WebThreads', 'acid_squares', 'aero_shards', 'aurora', 'balatro', 'ballpit', 'beams', 'color_bends', 'crt_warp', 'dark_veil', 'dither', 'dot_field', 'dot_grid', 'evil_eye', 'faulty_terminal', 'ferrofluid', 'floating_lines', 'galaxy', 'ghost_fibers', 'gradient_blinds', 'gradient_waves', 'grainient', 'grid_distortion', 'grid_motion', 'grid_scan', 'hyperspeed', 'iridescence', 'letter_glitch', 'light_pillar', 'light_rays', 'light_tunnel', 'lightfall', 'lightning', 'line_waves', 'liquid_chrome', 'liquid_ether', 'molten_metal', 'orb', 'particles', 'pixel_blast', 'pixel_snow', 'plasma', 'plasma_wave', 'prism', 'prismatic_burst', 'radar', 'ripple_grid', 'scanner', 'shape_grid', 'shape_waves', 'side_rays', 'silk', 'sliced_waves', 'soft_aurora', 'threads', 'topography', 'waves', 'web_threads']
+__all__ = ['AcidSquares', 'AeroShards', 'Antigravity', 'Aurora', 'Balatro', 'Ballpit', 'Beams', 'CRTWarp', 'ColorBends', 'DarkVeil', 'Dither', 'DotField', 'DotGrid', 'EvilEye', 'FaultyTerminal', 'Ferrofluid', 'FloatingLines', 'FluxLines', 'Galaxy', 'GhostFibers', 'GradientASCII', 'GradientBlinds', 'GradientWaves', 'Grainient', 'GridDistortion', 'GridMotion', 'GridScan', 'Hyperspeed', 'Iridescence', 'LetterGlitch', 'LightPillar', 'LightRays', 'LightTunnel', 'Lightfall', 'Lightning', 'LineWaves', 'LiquidChrome', 'LiquidEther', 'MagicRings', 'MagnetLines', 'MicroSlats', 'MoltenMetal', 'Orb', 'Particles', 'PatternWaves', 'PixelBlast', 'PixelSnow', 'Plasma', 'PlasmaWave', 'Prism', 'PrismaticBurst', 'Radar', 'RippleGrid', 'Scanner', 'ShapeGrid', 'ShapeWaves', 'SideRays', 'Silk', 'SlicedWaves', 'SoftAurora', 'Threads', 'Topography', 'Waves', 'WebThreads', 'acid_squares', 'aero_shards', 'antigravity', 'aurora', 'balatro', 'ballpit', 'beams', 'color_bends', 'crt_warp', 'dark_veil', 'dither', 'dot_field', 'dot_grid', 'evil_eye', 'faulty_terminal', 'ferrofluid', 'floating_lines', 'flux_lines', 'galaxy', 'ghost_fibers', 'gradient_ascii', 'gradient_blinds', 'gradient_waves', 'grainient', 'grid_distortion', 'grid_motion', 'grid_scan', 'hyperspeed', 'iridescence', 'letter_glitch', 'light_pillar', 'light_rays', 'light_tunnel', 'lightfall', 'lightning', 'line_waves', 'liquid_chrome', 'liquid_ether', 'magic_rings', 'magnet_lines', 'micro_slats', 'molten_metal', 'orb', 'particles', 'pattern_waves', 'pixel_blast', 'pixel_snow', 'plasma', 'plasma_wave', 'prism', 'prismatic_burst', 'radar', 'ripple_grid', 'scanner', 'shape_grid', 'shape_waves', 'side_rays', 'silk', 'sliced_waves', 'soft_aurora', 'threads', 'topography', 'waves', 'web_threads']
 
 
 class AcidSquares(ReactBitsComponent):
-    """A crystalline corridor of stacked squares receding into depth.
+    """A rolling field of glossy squares that ripples under two drifting colored lights.
 
     Docs: https://reactbits.dev/backgrounds/acid-squares
     """
@@ -34,81 +29,122 @@ class AcidSquares(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "AcidSquares"
     _rb_files = ('AcidSquares.css', 'AcidSquares.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    color1: rx.Var[str] = field(
-        doc="Violet core color used for the dim depths of the corridor. Default: '#5227FF'."
+    color: rx.Var[str] = field(
+        doc="Base color of the squares. Set it to your page background, the gaps show the page through. Default: '#120f17'."
     )
-    color2: rx.Var[str] = field(
-        doc="Pink mid-tone color used for the glowing crystal faces. Default: '#A855F7'."
+    accent_color: rx.Var[str] = field(
+        doc="Color of the first light that drifts across the squares. Default: '#ff4fb8'."
     )
-    color3: rx.Var[str] = field(
-        doc="White highlight color used for the hottest edges. Default: '#FFFFFF'."
+    secondary_color: rx.Var[str] = field(
+        doc="Color of the second light. Default: '#3b6bff'."
     )
-    detail: rx.Var[Literal["low", "medium", "high"]] = field(
-        doc="Raymarch quality tier (20 / 32 / 48 steps). Higher looks richer but costs more. Default: 'medium'."
+    tile_size: rx.Var[int | float] = field(
+        doc="Size of the squares. Default: 1."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Width of the gaps between the squares. Default: 0.12."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Corner radius, from sharp squares at 0 to circles at 1. Default: 0.25."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How softly the edges of each square round off into the gaps. Default: 0.5."
+    )
+    bulge: rx.Var[int | float] = field(
+        doc="How much each square domes up like a cushion. 0 keeps the tops flat. Default: 0.3."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Rotation of the grid, in degrees. Default: 35."
+    )
+    gloss: rx.Var[int | float] = field(
+        doc="From soft satin at 0 to glossy at 1, with tighter highlights along the edges. Default: 0.6."
+    )
+    waves: rx.Var[int | float] = field(
+        doc="Height of the slow swells. 0 lays the surface flat. Default: 1."
+    )
+    wave_scale: rx.Var[int | float] = field(
+        doc="Size of the swells. Higher makes them broader. Default: 1."
     )
     speed: rx.Var[int | float] = field(
-        doc="Speed of the forward drift through the lattice. Default: 0.7."
+        doc="Speed of the swells and the drifting lights. Default: 0.6."
     )
-    wave_depth: rx.Var[int | float] = field(
-        doc="How far the view gently drifts in and back out as the corridor breathes. 0 holds it still. Default: 1."
+    shape: rx.Var[Literal["square", "round"]] = field(
+        doc="Shape of the ripples that travel across the surface. Default: 'square'."
     )
-    zoom: rx.Var[int | float] = field(
-        doc="Field of view into the corridor. Higher zooms in. Default: 1.3."
+    pulse: rx.Var[int | float] = field(
+        doc="Height of the ripples. 0 turns them off. Default: 1."
     )
-    density: rx.Var[int | float] = field(
-        doc="How tightly the boxes of the lattice are packed. Default: 10.0."
+    pulse_speed: rx.Var[int | float] = field(
+        doc="How fast the ripples travel. Default: 0.45."
     )
-    glow: rx.Var[int | float] = field(
-        doc="Gain applied to the accumulated light along each ray. Default: 1.0."
+    pulse_spacing: rx.Var[int | float] = field(
+        doc="Time between ripples. Default: 1."
     )
-    exposure: rx.Var[int | float] = field(
-        doc="Tone-mapping exposure. Higher values darken the render. Default: 2700."
+    pulse_width: rx.Var[int | float] = field(
+        doc="Width of each ripple. Default: 1."
     )
-    spread: rx.Var[int | float] = field(
-        doc="Controls how the ray step grows each iteration; strongly shapes the look. Default: 0.3."
-    )
-    step_size: rx.Var[int | float] = field(
-        doc="Minimum ray step. Larger values thin out the glow. Default: 0.002."
-    )
-    color_shift: rx.Var[int | float] = field(
-        doc="Rate of the gentle brightness shimmer cycling over time. Default: 0."
-    )
-    contrast: rx.Var[int | float] = field(
-        doc="Contrast applied around the mid-tones of the final image. Default: 1."
+    pulse_origin: rx.Var[Literal["center", "random"]] = field(
+        doc="Start every ripple from the center, or from random spots on the surface. Default: 'center'."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier before tone mapping. Default: 1.0."
+        doc="Overall brightness. Default: 1."
+    )
+    lighting: rx.Var[Literal["split", "backlit", "overhead"]] = field(
+        doc="Placement of the two lights: from either side, low behind the surface, or from above. Default: 'split'."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="View angle, from straight down at 0 to low across the surface at 1. Default: 0.7."
+    )
+    zoom: rx.Var[int | float] = field(
+        doc="Zoom. Higher brings the squares closer. Default: 1."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How far the surface reaches before it fades into the page. Default: 10."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.12."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect over the transparent background. Default: 1.0."
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Switches the squares on from the center outward when the effect first appears. Default: true."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables a soft depression that sinks the lattice downward around the pointer. Default: true."
+        doc="Lets the cursor shape the surface and the view follow it slightly. Default: true."
+    )
+    hover_effect: rx.Var[Literal["press", "lift", "none"]] = field(
+        doc="Whether the cursor presses the surface down or lifts it up. Default: 'press'."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="How deeply the cursor presses the lattice down inside the affected area. Default: 0.1."
+        doc="Depth of the cursor press or lift. Default: 1."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Size of the area around the pointer that collapses, as a fraction of the view height. Default: 0.35."
+        doc="Size of the area the cursor shapes. Default: 0.35."
     )
-    blur: rx.Var[int | float] = field(
-        doc="Softens the whole effect with a post-process Gaussian blur. 0 is crisp; 1 is a soft haze. Default: 0."
+    pulse_on_click: rx.Var[bool] = field(
+        doc="Sends a ripple out from wherever you click. Default: true."
     )
-    grain: rx.Var[bool] = field(
-        doc="Adds a faint animated film grain over the final image for a subtle analog texture. Default: true."
-    )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+    detail: rx.Var[Literal["low", "medium", "high"]] = field(
+        doc="Smoothness of the surface. Lower it for weaker devices. Default: 'medium'."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws pale squares with soft tints for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class AeroShards(ReactBitsComponent):
-    """A GPU-driven wind sculpture of folded foil shards with crisp detail, content-safe placements, and responsive pointer interactions.
+    """Silk ribbons of thick glass shards streaming on layered depths among survey markers, catching light along their edges.
 
     Docs: https://reactbits.dev/backgrounds/aero-shards
     """
@@ -121,100 +157,184 @@ class AeroShards(ReactBitsComponent):
     _rb_files = ('AeroShards.css', 'AeroShards.jsx')
     lib_dependencies: list[str] = ['vgpu@0.3.1']
 
-    background_color: rx.Var[str] = field(
-        doc="Background behind the wind sculpture. Lighting and bloom adapt automatically to light surfaces. Default: '#120F17'."
-    )
     shard_color: rx.Var[str] = field(
-        doc="Primary body color for the shards. Default: '#896ABD'."
+        doc="Main color of the shards. Default: '#896ABD'."
     )
     accent_color: rx.Var[str] = field(
-        doc="Accent color used to derive reflections, depth, and highlights. Default: '#A855F7'."
+        doc="Color of the light the shards catch, their rim light and the markers. Default: '#A855F7'."
     )
-    placement: rx.Var[Literal["right", "left", "center", "full"]] = field(
-        doc="Places the sculpture while preserving a content-safe region. Default: 'full'."
+    background_color: rx.Var[str] = field(
+        doc="Fills the canvas behind the shards. Transparent lets the page show through. Default: 'transparent'."
     )
-    flow: rx.Var[Literal["stream", "vortex", "ribbon"]] = field(
-        doc="Morphs the same shards between a flowing stream, circulating vortex, and twisted ribbon without restarting the animation. Default: 'stream'."
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the shards as soft tinted glass for light backgrounds. Default: false."
     )
-    material: rx.Var[Literal["pearl", "chrome", "satin"]] = field(
-        doc="Applies a complete lighting and surface finish. Default: 'pearl'."
+    placement: rx.Var[Literal["full", "left", "right", "center"]] = field(
+        doc="Where the ribbons flow: across the whole view, down one side, or in a ring around the center. Default: 'full'."
     )
-    detail: rx.Var[Literal["bold", "balanced", "fine"]] = field(
-        doc="Balances shard count and size into a finished visual texture. Default: 'balanced'."
+    material: rx.Var[Literal["glass", "chrome"]] = field(
+        doc="Surface of the shards: thick glass that catches light along its edges, or polished chrome. Default: 'glass'."
     )
-    effect: rx.Var[Literal["none", "dither", "ascii"]] = field(
-        doc="Applies ordered color dithering or compact, shape-matched ASCII before postprocessing. Stylized modes use fewer, larger shards for readability; none preserves the original render. Default: 'none'."
-    )
-    scale: rx.Var[int | float] = field(
-        doc="Zooms the complete shard field without changing its shard count or individual shard size. Default: 1."
-    )
-    spread: rx.Var[int | float] = field(
-        doc="Controls how tightly the shards gather around the flow path. Default: 1."
-    )
-    depth: rx.Var[int | float] = field(
-        doc="Controls front-to-back volume and perspective variation. Default: 1."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Controls the shared travel speed of every shard. Default: 1."
-    )
-    spin: rx.Var[int | float] = field(
-        doc="Controls how quickly shards roll around their direction of travel. Default: 1."
-    )
-    interaction: rx.Var[Literal["none", "repel", "attract"]] = field(
-        doc="Disables interaction or enables damped cursor repulsion/attraction and click ripples across the field. Default: 'repel'."
-    )
-    density: rx.Var[int | float] = field(
-        doc="Fine-tuning multiplier for the shard count selected by detail. Default: 1.5."
+    count: rx.Var[int | float] = field(
+        doc="Number of shards across all the ribbons. Default: 1300."
     )
     shard_size: rx.Var[int | float] = field(
-        doc="Fine-tuning multiplier for the shard size selected by detail. Default: 1.1."
+        doc="Size of the shards. Default: 1."
     )
-    stretch: rx.Var[int | float] = field(
-        doc="Controls shard length without changing their overall count. Default: 1."
+    spread: rx.Var[int | float] = field(
+        doc="Width of the ribbons. Default: 1."
     )
-    turbulence: rx.Var[int | float] = field(
-        doc="Fine-tuning multiplier for the turbulence produced by motion. Default: 1."
+    twist: rx.Var[int | float] = field(
+        doc="How much the ribbons twist along their length. Default: 1."
+    )
+    billow: rx.Var[int | float] = field(
+        doc="How much the ribbons ripple like silk. Default: 1."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the shards flow. Default: 1."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Zoom of the whole scene. Default: 1."
+    )
+    depth_of_field: rx.Var[int | float] = field(
+        doc="How soft the farther ribbons get. 0 keeps everything sharp. Default: 0.75."
     )
     glow: rx.Var[int | float] = field(
-        doc="Fine-tuning multiplier for emissive edges and reflected highlights. Default: 1."
-    )
-    edge_softness: rx.Var[int | float] = field(
-        doc="Controls analytic antialiasing without blurring the whole image. Default: 2."
-    )
-    bloom: rx.Var[int | float] = field(
-        doc="Adds a soft halo without blurring the shards; on light backgrounds the halo uses the shard and accent colors. Default: 0.5."
+        doc="Soft bloom around the brightest glints. Default: 0.35."
     )
     grain: rx.Var[int | float] = field(
-        doc="Adds screen-space film grain; set to 0 for a completely clean render. Default: 0.05."
+        doc="Film grain on the shards. 0 turns it off. Default: 0.06."
     )
-    chromatic_aberration: rx.Var[int | float] = field(
-        doc="Adds RGB edge separation; set to 0 for a color-neutral finish. Dither and ASCII use subtler separation to preserve their fine patterns. Default: 0.0075."
+    vignette: rx.Var[int | float] = field(
+        doc="Fades everything out toward the edges of the frame. 0 runs edge to edge. Default: 0.3."
     )
-    transition_duration: rx.Var[int | float] = field(
-        doc="Controls the transition time for placement and flow formation changes. Default: 1."
+    intro: rx.Var[bool] = field(
+        doc="The ribbons draw in from the left, front to back, on mount. Default: true."
     )
-    interaction_radius: rx.Var[int | float] = field(
-        doc="Scales the soft, flow-aligned reach of the cursor interaction. Default: 1.5."
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The cursor parts the shards it passes through and leans the camera toward it. Default: true."
     )
-    interaction_strength: rx.Var[int | float] = field(
-        doc="Fine-tuning multiplier for the selected interaction force. Default: 0.5."
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the cursor parts the shards. Default: 0.6."
     )
-    ripple_intensity: rx.Var[int | float] = field(
-        doc="Strength of the click/release wave and its accent-colored illumination. Set to 0 to disable ripples. Default: 1."
+    markers: rx.Var[Literal["plus", "dots", "none"]] = field(
+        doc="Survey markers floating at each depth. A few blink, and the one nearest the cursor gets a target frame. Default: 'plus'."
+    )
+    pulse_on_click: rx.Var[bool] = field(
+        doc="Clicking sends a ring of light out through every depth, flipping the shards it passes. Default: true."
     )
     hold_to_gather: rx.Var[bool] = field(
-        doc="Press and hold to gather a softly circulating cloud around the cursor; release to unfurl. Respects interaction=\"none\", pause, and reduced motion. Default: true."
+        doc="Pressing and holding gathers nearby shards into a swirl that scatters back on release. Default: true."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the camera leans toward the cursor. Default: 0.5."
     )
     paused: rx.Var[bool] = field(
-        doc="Freezes the shard field. Default: false."
+        doc="Freezes the flow. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio of the canvas. Default: 2."
     )
     on_error: rx.EventHandler[lambda error: [safe(error)]] = field(
-        doc="Called when WebGPU setup or rendering fails. Handler receives: error."
+        doc="Called if WebGPU is unavailable or fails, so you can show a fallback. Handler receives: error."
+    )
+
+
+class Antigravity(ReactBitsComponent):
+    """A field of particles that lifts into a glowing ring around the cursor and bursts outward on click.
+
+    Docs: https://reactbits.dev/backgrounds/antigravity
+    """
+
+    tag = "Antigravity"
+    alias = "ReactBitsAntigravity"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "Antigravity"
+    _rb_files = ('Antigravity.css', 'Antigravity.jsx')
+
+    count: rx.Var[int | float] = field(
+        doc="Number of particles in the field. Default: 1500."
+    )
+    magnet_radius: rx.Var[int | float] = field(
+        doc="Size of the area around the cursor whose particles get pulled into the ring. Default: 9."
+    )
+    ring_radius: rx.Var[int | float] = field(
+        doc="Radius of the ring the particles form. Default: 7."
+    )
+    wave_speed: rx.Var[int | float] = field(
+        doc="How fast the ripples travel around the ring. Default: 0.4."
+    )
+    wave_amplitude: rx.Var[int | float] = field(
+        doc="How much the ring ripples. 0 gives a clean circle. Default: 1."
+    )
+    wave_count: rx.Var[int | float] = field(
+        doc="Number of ripples around the ring. Pair with a high waveAmplitude for a flower shape. Default: 3."
+    )
+    particle_size: rx.Var[int | float] = field(
+        doc="Size of the particles. Default: 0.9."
+    )
+    lerp_speed: rx.Var[int | float] = field(
+        doc="How quickly the particles follow the cursor. Lower values leave longer trails. Default: 0.05."
+    )
+    color: rx.Var[str] = field(
+        doc="A single color for every particle. Overrides colors when set. Default: -."
+    )
+    colors: rx.Var[list[str]] = field(
+        doc="Palette the particles are colored from. How it is spread depends on colorMode. Default: DEFAULT_COLORS."
+    )
+    color_mode: rx.Var[Literal["conic", "radial", "random"]] = field(
+        doc="Spreads the palette around the cursor, outward from the ring, or gives each particle a random color from it. Default: 'conic'."
+    )
+    color_speed: rx.Var[int | float] = field(
+        doc="How fast the conic palette turns around the cursor. 0 keeps it still. Default: 0.05."
+    )
+    auto_animate: rx.Var[bool] = field(
+        doc="The ring drifts around on its own after a couple of seconds without cursor movement. Default: true."
+    )
+    particle_variance: rx.Var[int | float] = field(
+        doc="How much each particle pulses in size, from 0 to 1. Default: 1."
+    )
+    rotation_speed: rx.Var[int | float] = field(
+        doc="How fast the particles orbit the cursor. Negative values orbit the other way. Default: 0."
+    )
+    depth_factor: rx.Var[int | float] = field(
+        doc="Strength of the 3D depth. Particles in front grow, particles behind shrink and soften. Default: 1."
+    )
+    pulse_speed: rx.Var[int | float] = field(
+        doc="How fast the particles pulse in size. Default: 3."
+    )
+    particle_shape: rx.Var[Literal["capsule", "sphere", "box", "tetrahedron"]] = field(
+        doc="Shape of the particles. Capsules stretch into dashes that point at the cursor. Default: 'capsule'."
+    )
+    field_strength: rx.Var[int | float] = field(
+        doc="How tightly the particles line up on the ring. Lower values spread them into a wider band. Default: 10."
+    )
+    ambient: rx.Var[int | float] = field(
+        doc="How visible the particles away from the ring are, from 0 to 1. Default: 0.25."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="The ring follows the cursor or finger. Turn off for a purely ambient background. Default: true."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Pressing pulls the ring in and spins it faster. Releasing blasts the particles outward. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The particles float up into place on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Deepens pale colors so the particles stay visible on light backgrounds. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class Aurora(ReactBitsComponent):
-    """Flowing aurora gradient background.
+    """A soft, calm aurora that flows across the top of the page and drifts toward the cursor.
 
     Docs: https://reactbits.dev/backgrounds/aurora
     """
@@ -225,27 +345,62 @@ class Aurora(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Aurora"
     _rb_files = ('Aurora.css', 'Aurora.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     color_stops: rx.Var[list[str]] = field(
-        doc="An array of three hex colors defining the aurora gradient. Default: ['#5227FF', '#7cff67', '#5227FF']."
+        doc="Two to five colors that blend across the aurora from left to right. Default: ['#5227FF', '#7cff67', '#5227FF']."
     )
     amplitude: rx.Var[int | float] = field(
-        doc="Controls the height intensity of the aurora effect. Default: 1.0."
+        doc="How tall the waves along the edge are. Default: 1."
     )
     blend: rx.Var[int | float] = field(
-        doc="Controls the blending of the aurora effect with the background. Default: 0.5."
-    )
-    light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="How softly the edge fades out, from 0 to 1. Default: 0.5."
     )
     speed: rx.Var[int | float] = field(
-        doc="Controls the animation speed. Higher values make the aurora move faster. Default: 1.0."
+        doc="Speed of the flowing motion. Default: 1."
+    )
+    time: rx.Var[int | float] = field(
+        doc="Drives the animation from your own clock, for example scroll progress, instead of real time. Default: -."
+    )
+    height: rx.Var[int | float] = field(
+        doc="How far the aurora reaches into the container, from 0 to 1. Default: 0.45."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the waves. Lower values make broader, calmer shapes. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="How far the light spills softly past the edge. Default: 0.6."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness of the light. Default: 1."
+    )
+    layers: rx.Var[int | float] = field(
+        doc="Number of curtains, from 1 to 3. Extra ones glow fainter behind for depth. Default: 1."
+    )
+    direction: rx.Var[Literal["top", "bottom"]] = field(
+        doc="Whether the aurora hangs from the top or rises from the bottom. Default: 'top'."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The light gently reaches toward the cursor. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the aurora in as it unfurls on mount. Default: true."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the aurora as soft pastel light for white backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Balatro(ReactBitsComponent):
-    """The balatro shader, fully customizalbe and interactive.
+    """The swirling Balatro paint shader, with crisp pixels, a cursor that stirs the paint and click whirlpools.
 
     Docs: https://reactbits.dev/backgrounds/balatro
     """
@@ -256,51 +411,71 @@ class Balatro(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Balatro"
     _rb_files = ('Balatro.css', 'Balatro.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    spin_rotation: rx.Var[int | float] = field(
-        doc="Base rotation amount affecting the shader effect. Default: -2.0."
-    )
-    spin_speed: rx.Var[int | float] = field(
-        doc="Speed of the spin animation. Default: 7.0."
-    )
-    offset: rx.Var[list[int | float]] = field(
-        doc="Offset for the shader effect. Default: [0.0, 0.0]."
-    )
     color1: rx.Var[str] = field(
-        doc="Primary color in HEX format. Default: '#DE443B'."
+        doc="Main paint color. Default: '#DE443B'."
     )
     color2: rx.Var[str] = field(
-        doc="Secondary color in HEX format. Default: '#006BB4'."
+        doc="Second paint color, swirled into the first. Default: '#006BB4'."
     )
     color3: rx.Var[str] = field(
-        doc="Tertiary color in HEX format. Default: '#162325'."
+        doc="Color of the gaps between the two paints. Default: '#162325'."
     )
     contrast: rx.Var[int | float] = field(
-        doc="Contrast value affecting color blending. Default: 3.5."
+        doc="How sharply the paints separate. Lower values blend them into soft washes. Default: 3.5."
     )
     lighting: rx.Var[int | float] = field(
-        doc="Lighting factor affecting brightness. Default: 0.4."
+        doc="Strength of the glossy highlights on the paint. Default: 0.4."
     )
-    spin_amount: rx.Var[int | float] = field(
-        doc="Amount of spin influence based on UV length. Default: 0.25."
+    swirl: rx.Var[int | float] = field(
+        doc="How tightly the paint spirals around the center, from 0 to 1. Default: 0.25."
     )
-    pixel_filter: rx.Var[int | float] = field(
-        doc="Pixel filter factor determining pixelation. Default: 745.0."
+    speed: rx.Var[int | float] = field(
+        doc="How fast the paint flows. 0 freezes it. Default: 1."
     )
-    spin_ease: rx.Var[int | float] = field(
-        doc="Ease factor for spin. Default: 1.0."
+    rotation_speed: rx.Var[int | float] = field(
+        doc="Turns the whole swirl continuously. Negative values turn it the other way. Default: 0."
     )
-    is_rotate: rx.Var[bool] = field(
-        doc="Determines if the shader rotates continuously. Default: false."
+    scale: rx.Var[int | float] = field(
+        doc="Size of the paint shapes. Higher values zoom in. Default: 1."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="How many times the paint folds over itself, from 1 to 8. Higher values add finer streaks. Default: 5."
+    )
+    offset: rx.Var[list[int | float]] = field(
+        doc="Moves the center of the swirl, as a fraction of the container diagonal. Default: [0, 0]."
+    )
+    pixel_size: rx.Var[int | float] = field(
+        doc="Size of the pixels in CSS pixels. 0 renders it smooth. Default: 1.5."
+    )
+    crt: rx.Var[int | float] = field(
+        doc="Adds the scanlines and soft edge falloff of an old CRT screen, from 0 to 1. Default: 0."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables or disables mouse interaction for rotation. Default: true."
+        doc="The cursor stirs the paint and steers the swirl. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the cursor drags the paint along. Default: 1."
+    )
+    click_swirl: rx.Var[bool] = field(
+        doc="Clicking spins the paint into a whirlpool that slowly unwinds. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The swirl spins into place on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Lightens the gaps between the paints so it sits on light pages. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class Ballpit(ReactBitsComponent):
-    """Physics ball pit simulation with bouncing colorful spheres.
+    """A soft-lit pit of physics balls you can shove with the cursor, grab, throw and blast apart.
 
     Docs: https://reactbits.dev/backgrounds/ballpit
     """
@@ -311,60 +486,74 @@ class Ballpit(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Ballpit"
     _rb_files = ('Ballpit.jsx',)
-    lib_dependencies: list[str] = ['three@0.180.0']
 
-    follow_cursor: rx.Var[bool] = field(
-        doc="Enables or disables the sphere following the cursor. Default: true."
-    )
     count: rx.Var[int | float] = field(
-        doc="Sets the number of balls in the ballpit. Default: 200."
-    )
-    gravity: rx.Var[int | float] = field(
-        doc="Controls the gravity affecting the balls. Default: 0.5."
-    )
-    friction: rx.Var[int | float] = field(
-        doc="Sets the friction applied to the ball movement. Default: 0.9975."
-    )
-    wall_bounce: rx.Var[int | float] = field(
-        doc="Determines how much balls bounce off walls. Default: 0.95."
+        doc="Number of balls in the pit. Default: 200."
     )
     colors: rx.Var[list[Any]] = field(
-        doc="Defines the colors of the balls. Default: [0, 0, 0]."
+        doc="Ball colors, handed out in turn. Hex strings or numbers such as 0x5227ff. Default: ['#ffffff']."
     )
-    ambient_color: rx.Var[int | float] = field(
-        doc="Sets the ambient light color. Default: 16777215."
-    )
-    ambient_intensity: rx.Var[int | float] = field(
-        doc="Controls the intensity of ambient light. Default: 1."
-    )
-    light_intensity: rx.Var[int | float] = field(
-        doc="Sets the intensity of the main light source. Default: 200."
+    material: rx.Var[Literal["satin", "matte", "gloss", "frosted", "metal"]] = field(
+        doc="Surface finish: soft satin, chalky matte, polished gloss, see-through frosted or brushed metal. Default: 'satin'."
     )
     min_size: rx.Var[int | float] = field(
-        doc="Specifies the minimum size of the balls. Default: 0.5."
+        doc="Smallest ball radius. The view is about 18 units tall. Default: 0.5."
     )
     max_size: rx.Var[int | float] = field(
-        doc="Specifies the maximum size of the balls. Default: 1."
+        doc="Largest ball radius. Default: 1."
     )
-    size0: rx.Var[int | float] = field(
-        doc="Initial size value for the cursor ball. Default: 1."
+    gravity: rx.Var[int | float] = field(
+        doc="Pull toward the floor. 0 lets the balls float, around 0.5 piles them up. Default: 0.5."
     )
-    max_velocity: rx.Var[int | float] = field(
-        doc="Limits the maximum velocity of the balls. Default: 0.15."
+    friction: rx.Var[int | float] = field(
+        doc="How much speed the balls keep each frame. 1 never slows them down. Default: 0.9975."
     )
-    max_x: rx.Var[int | float] = field(
-        doc="Defines the maximum X-coordinate boundary. Default: 5."
+    wall_bounce: rx.Var[int | float] = field(
+        doc="How much speed the balls keep when they hit the edges, from 0 to 1. Default: 0.95."
     )
-    max_y: rx.Var[int | float] = field(
-        doc="Defines the maximum Y-coordinate boundary. Default: 5."
+    bounce: rx.Var[int | float] = field(
+        doc="How bouncy the balls are against each other, from 0 to 1. Default: 0.85."
     )
-    max_z: rx.Var[int | float] = field(
-        doc="Defines the maximum Z-coordinate boundary. Default: 2."
+    depth: rx.Var[int | float] = field(
+        doc="How deep the pit is, so balls can sit in front of and behind each other. Default: 2."
+    )
+    drift: rx.Var[int | float] = field(
+        doc="Gentle wandering that keeps floating balls moving on their own. Default: 0."
+    )
+    follow_cursor: rx.Var[bool] = field(
+        doc="A ball follows the cursor and shoves the others out of the way. Default: true."
+    )
+    cursor_size: rx.Var[int | float] = field(
+        doc="Radius of the cursor ball. Default: 1."
+    )
+    grab: rx.Var[bool] = field(
+        doc="Press on a ball to pick it up, drag it around and throw it. Default: true."
+    )
+    click_effect: rx.Var[Literal["burst", "none"]] = field(
+        doc="Clicking an empty spot blasts the nearby balls away with a flash of light. Default: 'burst'."
+    )
+    light_color: rx.Var[str] = field(
+        doc="Color of the light that follows the cursor and lights up the balls around it. Default: '#ffffff'."
+    )
+    light_intensity: rx.Var[int | float] = field(
+        doc="Brightness of the cursor light. Default: 1."
+    )
+    exposure: rx.Var[int | float] = field(
+        doc="Overall brightness of the balls. Default: 1."
+    )
+    shadows: rx.Var[int | float] = field(
+        doc="Strength of the soft shadows where balls touch each other and the floor. Default: 0.6."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Balls pour in from the top on mount, or burst out from the center when gravity is near zero. Default: true."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Beams(ReactBitsComponent):
-    """Crossing animated ribbons with customizable properties.
+    """Glossy ribbons that ripple in the dark and catch the light, which follows your cursor.
 
     Docs: https://reactbits.dev/backgrounds/beams
     """
@@ -375,45 +564,80 @@ class Beams(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Beams"
     _rb_files = ('Beams.css', 'Beams.jsx')
-    lib_dependencies: list[str] = ['@react-three/drei@10.7.6', '@react-three/fiber@9.3.0', 'three@0.180.0']
 
+    color: rx.Var[str] = field(
+        doc="Color of the light that glints off the beams. Default: '#ffffff'."
+    )
     beam_width: rx.Var[int | float] = field(
-        doc="Width of each beam. Default: 2."
-    )
-    beam_height: rx.Var[int | float] = field(
-        doc="Height of each beam. Default: 15."
-    )
-    beam_number: rx.Var[int | float] = field(
-        doc="Number of beams to display. Default: 12."
-    )
-    light_color: rx.Var[str] = field(
-        doc="Color of the directional light. Default: '#ffffff'."
-    )
-    beam_color: rx.Var[str] = field(
-        doc="Base material color of the beams. Default: '#000000'."
-    )
-    background_color: rx.Var[str] = field(
-        doc="Canvas background color. Default: '#000000'."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Speed of the animation. Default: 2."
-    )
-    noise_intensity: rx.Var[int | float] = field(
-        doc="Intensity of the noise effect overlay. Default: 1.75."
-    )
-    scale: rx.Var[int | float] = field(
-        doc="Scale of the noise pattern. Default: 0.2."
+        doc="Width of each beam, in px. Default: 140."
     )
     rotation: rx.Var[int | float] = field(
-        doc="Rotation of the entire beams system in degrees. Default: 0."
+        doc="Angle of the beams, in degrees. Default: 30."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the ripples move. Default: 1."
+    )
+    wave_length: rx.Var[int | float] = field(
+        doc="Length of the ripples along each beam, in px. Default: 233."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How deep the ripples are. Deeper ripples catch the light in more places. Default: 1."
+    )
+    sharpness: rx.Var[int | float] = field(
+        doc="How crisp the glints are, from 0 for soft satin to 1 for sharp, glossy streaks. Default: 0.6."
+    )
+    twist: rx.Var[int | float] = field(
+        doc="Turns each beam slightly on its own axis, so glints show up on more beams. Default: 0."
+    )
+    fill_light: rx.Var[int | float] = field(
+        doc="Strength of a dimmer second light from the other side, for fuller, more metallic beams. Default: 0.3."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around the brightest glints. Default: 0.6."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Strength of the light. Default: 1.6."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different ripple pattern. Any number works. Default: 0."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain, from 0 to 1. Default: 0.35."
+    )
+    quality: rx.Var[int | float] = field(
+        doc="Render resolution, from 0.25 to 1. Lower values run faster. Default: 0.75."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The cursor moves the light along the beams and brightens the glints near it. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the cursor moves the light. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Sweeps the light in on mount. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Prints the glints as soft ink, for light backgrounds. Default: false."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Optional solid background. By default the canvas is transparent and the page shows through."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class CRTWarp(ReactBitsComponent):
-    """Full-canvas CRT plasma with curved distortion, scanlines, bloom and pointer interaction.
+    """A blocky plasma glowing on a curved CRT, with real scanlines, a phosphor mask, afterglow and a power-on intro.
 
     Docs: https://reactbits.dev/backgrounds/crt-warp
     """
@@ -424,67 +648,99 @@ class CRTWarp(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "CRTWarp"
     _rb_files = ('CRTWarp.css', 'CRTWarp.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
 
     color: rx.Var[str] = field(
-        doc="Main phosphor color. Default: '#c755f7'."
+        doc="Phosphor color of the picture. Default: '#c755f7'."
     )
     background_color: rx.Var[str] = field(
-        doc="Canvas background color. Default: '#05010a'."
+        doc="Color of the dark tube behind the picture. Use 'transparent' to let the page show through. Default: '#120f17'."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Prints the picture as ink on a light background instead of glowing phosphor. Default: false."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed. Default: 0.5."
+        doc="How fast the plasma flows. Default: 0.5."
     )
-    curvature: rx.Var[int | float] = field(
-        doc="Strength of the CRT barrel distortion. Default: 0.25."
-    )
-    scanline_strength: rx.Var[int | float] = field(
-        doc="Visibility of the horizontal scanlines. Default: 0.25."
-    )
-    scanline_frequency: rx.Var[int | float] = field(
-        doc="Number of scanline bands across the canvas. Default: 200."
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different plasma pattern. Each whole number is a new one. Default: 0."
     )
     wave_amplitude: rx.Var[int | float] = field(
-        doc="Amount of fluid displacement. Default: 0.3."
+        doc="How tightly the plasma folds into bands. Default: 0.3."
     )
     wave_frequency: rx.Var[int | float] = field(
-        doc="Density of the plasma waves. Default: 2.5."
+        doc="How many blobs fit on screen. Default: 2.5."
+    )
+    levels: rx.Var[int | float] = field(
+        doc="Number of brightness steps in the picture. Default: 3."
+    )
+    columns: rx.Var[int | float] = field(
+        doc="Width of the low resolution picture in blocks. Fewer columns make chunkier blocks. Default: 80."
+    )
+    persistence: rx.Var[int | float] = field(
+        doc="How long the phosphor keeps glowing after the picture moves on, leaving soft trails. Default: 0.4."
+    )
+    curvature: rx.Var[int | float] = field(
+        doc="Bulge of the curved glass. Default: 0.25."
+    )
+    corners: rx.Var[int | float] = field(
+        doc="Rounds the corners of the tube and shows its edge. 0 keeps the picture edge to edge. Default: 0."
+    )
+    scanline_strength: rx.Var[int | float] = field(
+        doc="Depth of the dark gaps between scanlines. Bright lines widen and fill the gaps. Default: 0.6."
+    )
+    scanline_frequency: rx.Var[int | float] = field(
+        doc="Number of scanlines from top to bottom. Default: 200."
+    )
+    mask: rx.Var[Literal["aperture", "shadow", "slot", "none"]] = field(
+        doc="The phosphor pattern of the tube: vertical stripes, dot triads, slots, or a plain mono tube. Default: 'aperture'."
+    )
+    mask_strength: rx.Var[int | float] = field(
+        doc="Visibility of the phosphor mask. Default: 0.3."
     )
     bloom: rx.Var[int | float] = field(
-        doc="Intensity of the soft phosphor glow. Default: 1.5."
+        doc="Glow that spills from bright areas. Default: 1.5."
     )
     bloom_radius: rx.Var[int | float] = field(
-        doc="Spread of the glow sampling. Default: 1."
-    )
-    noise: rx.Var[int | float] = field(
-        doc="Fine analog grain amount. Default: 0.1."
-    )
-    vignette: rx.Var[int | float] = field(
-        doc="Edge darkening strength. Default: 0."
-    )
-    brightness: rx.Var[int | float] = field(
-        doc="Overall output brightness. Default: 1.25."
-    )
-    pixelation: rx.Var[int | float] = field(
-        doc="Pixel block size; 1 keeps the image smooth. Default: 1."
+        doc="How far the glow spreads. Default: 1."
     )
     rgb_shift: rx.Var[int | float] = field(
-        doc="Horizontal phosphor-channel separation. Default: 0.015."
+        doc="Misalignment of the red and blue beams, which fringes edges with color. Default: 0.003."
+    )
+    noise: rx.Var[int | float] = field(
+        doc="Grain in the lit picture. Default: 0.1."
+    )
+    flicker: rx.Var[int | float] = field(
+        doc="Brightness flicker of the tube. Default: 0.15."
+    )
+    interference: rx.Var[int | float] = field(
+        doc="A slow hum bar rolling down the screen and jitter along the lines. Default: 0.2."
+    )
+    vignette: rx.Var[int | float] = field(
+        doc="Darkening toward the edges of the tube. Default: 0.3."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness, or ink strength in light mode. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Warms the tube up when it first comes into view: the plasma grows out of the dark and pulls into focus. Default: true."
     )
     mouse_react: rx.Var[bool] = field(
-        doc="Lets the pointer bend the signal. Default: true."
+        doc="The cursor acts like a magnet held to the glass, twisting the picture with color fringes. Default: true."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the pointer distortion. Default: 0.5."
+        doc="Strength of the magnet. Default: 0.5."
+    )
+    change_on_click: rx.Var[bool] = field(
+        doc="Clicking changes the channel: the picture rolls through static and comes back with a new pattern. Default: true."
     )
     dpr: rx.Var[int | float] = field(
-        doc="Maximum device pixel ratio used by the renderer. Default: 1."
+        doc="Maximum device pixel ratio of the canvas. Default: 2."
     )
     fps: rx.Var[int | float] = field(
-        doc="Maximum render frame rate. Default: 30."
+        doc="Maximum frame rate. Default: 60."
     )
     paused: rx.Var[bool] = field(
-        doc="Freezes the animation when true. Default: false."
+        doc="Freezes the plasma. Default: false."
     )
 
 
@@ -547,7 +803,7 @@ class ColorBends(ReactBitsComponent):
 
 
 class DarkVeil(ReactBitsComponent):
-    """Subtle dark background with a smooth animation and postprocessing.
+    """A silky veil of light that drifts in the dark and bends around the cursor.
 
     Docs: https://reactbits.dev/backgrounds/dark-veil
     """
@@ -558,36 +814,71 @@ class DarkVeil(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "DarkVeil"
     _rb_files = ('DarkVeil.css', 'DarkVeil.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    hue_shift: rx.Var[int | float] = field(
-        doc="Shifts the hue of the entire animation. Default: 0."
-    )
-    noise_intensity: rx.Var[int | float] = field(
-        doc="Intensity of the noise/grain effect. Default: 0."
-    )
-    scanline_intensity: rx.Var[int | float] = field(
-        doc="Intensity of the scanline effect. Default: 0."
+    color: rx.Var[str] = field(
+        doc="Color of the veil. Highlights are derived from it. Default: '#6b12ff'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Speed of the animation. Default: 0.5."
+        doc="Animation speed. Default: 0.5."
     )
-    scanline_frequency: rx.Var[int | float] = field(
-        doc="Frequency of the scanlines. Default: 0."
+    scale: rx.Var[int | float] = field(
+        doc="Zoom of the veil. Higher values zoom in. Default: 1."
     )
-    warp_amount: rx.Var[int | float] = field(
-        doc="Amount of warp distortion applied to the effect. Default: 0."
+    rotation: rx.Var[int | float] = field(
+        doc="Turns the veil around the center, in degrees. Default: 0."
     )
-    resolution_scale: rx.Var[int | float] = field(
-        doc="Scale factor for the resolution. Default: 1."
+    flow: rx.Var[int | float] = field(
+        doc="How much the veil drifts and changes shape over time. Default: 1."
+    )
+    warp: rx.Var[int | float] = field(
+        doc="Adds a gentle ripple to the veil. Default: 0."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different veil shape. Any number works. Default: 0."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 1."
+    )
+    sheen: rx.Var[int | float] = field(
+        doc="Strength of the silky highlights along the folds. They follow the cursor like a light. Default: 0."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around the brightest parts. Default: 0.4."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.03."
+    )
+    quality: rx.Var[int | float] = field(
+        doc="Render resolution, from 0.25 to 1. The veil is soft, so lower values look almost the same and run faster. Default: 0.5."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The veil swirls, morphs and lights up around the cursor. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the cursor bends the veil. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the veil in as it unfolds. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the veil as soft tinted ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Dither(ReactBitsComponent):
-    """Retro dithered noise shader background.
+    """Retro dithered waves with Bayer, halftone, line and noise patterns, palettes and cursor trails.
 
     Docs: https://reactbits.dev/backgrounds/dither
     """
@@ -598,42 +889,74 @@ class Dither(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Dither"
     _rb_files = ('Dither.css', 'Dither.jsx')
-    lib_dependencies: list[str] = ['@react-three/fiber@9.3.0', '@react-three/postprocessing@3.0.4', 'postprocessing@6.37.8', 'three@0.180.0']
 
     wave_speed: rx.Var[int | float] = field(
         doc="Speed of the wave animation. Default: 0.05."
     )
     wave_frequency: rx.Var[int | float] = field(
-        doc="Frequency of the wave pattern. Default: 3."
+        doc="How much finer each layer of detail gets. Default: 3."
     )
     wave_amplitude: rx.Var[int | float] = field(
-        doc="Amplitude of the wave pattern. Default: 0.3."
+        doc="How strongly the finer layers of detail show. Default: 0.3."
     )
-    wave_color: rx.Var[list[int | float]] = field(
-        doc="Color of the wave, defined as an RGB array. Default: [0.5, 0.5, 0.5]."
+    wave_color: rx.Var[list[Any] | str] = field(
+        doc="Color of the waves. Accepts any CSS color, or a linear RGB array from 0 to 1. Default: [0.5, 0.5, 0.5]."
     )
-    background_color: rx.Var[list[int | float]] = field(
-        doc="Base canvas color behind the dithered waves. Default: [0, 0, 0]."
+    background_color: rx.Var[list[Any] | str] = field(
+        doc="Color behind the waves. Use 'transparent' to dither the waves over your own background. Default: [0, 0, 0]."
     )
     color_num: rx.Var[int | float] = field(
-        doc="Number of colors to use in the dithering effect. Default: 4."
+        doc="Number of shades per color channel. Default: 4."
     )
     pixel_size: rx.Var[int | float] = field(
-        doc="Size of the pixels for the dithering effect. Default: 2."
+        doc="Size of each dither pixel, in px. Default: 2."
     )
     disable_animation: rx.Var[bool] = field(
-        doc="Disable the wave animation when true. Default: false."
+        doc="Freezes the wave animation. Default: false."
     )
     enable_mouse_interaction: rx.Var[bool] = field(
-        doc="Enables mouse interaction to influence the wave effect. Default: true."
+        doc="Lets the cursor interact with the waves. Default: true."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Radius for the mouse interaction effect. Default: 1."
+        doc="Radius of the cursor effect. Default: 1."
+    )
+    dither_mode: rx.Var[Literal["bayer", "bayer4", "bayer2", "halftone", "lines", "crosshatch", "noise", "none"]] = field(
+        doc="Pattern used to dither the shades. Default: 'bayer'."
+    )
+    palette: rx.Var[list[str]] = field(
+        doc="Two to eight colors from dark to light. Replaces the wave and background colors with an indexed palette. Default: -."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the wave pattern. Default: 1."
+    )
+    contrast: rx.Var[int | float] = field(
+        doc="Contrast of the waves before dithering. Default: 1."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Brightens or darkens the waves. Default: 0."
+    )
+    mouse_effect: rx.Var[Literal["erase", "reveal", "ripple"]] = field(
+        doc="Erase darkens the waves under the cursor, reveal lights them up and ripple bends them. Default: 'erase'."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="Strength of the cursor effect. Default: 1."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long the cursor leaves a fading trail, from 0 to 1. Default: 0.5."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a ring through the waves. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Resolves from chunky pixels to full detail on mount. Default: true."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class DotField(ReactBitsComponent):
-    """Interactive dot grid with cursor bulge, glow, sparkle, and wave effects.
+    """A gradient dot field seen through a lens that follows the cursor, magnifying, pinching or swirling the dots.
 
     Docs: https://reactbits.dev/backgrounds/dot-field
     """
@@ -646,45 +969,75 @@ class DotField(ReactBitsComponent):
     _rb_files = ('DotField.css', 'DotField.jsx')
 
     dot_radius: rx.Var[int | float] = field(
-        doc="Radius of each individual dot in the grid. Default: 1.5."
+        doc="Radius of each dot in pixels. Default: 1.5."
     )
     dot_spacing: rx.Var[int | float] = field(
-        doc="Spacing between dots in the grid. Default: 14."
+        doc="Gap between neighbouring dots in pixels. Default: 14."
     )
-    cursor_radius: rx.Var[int | float] = field(
-        doc="Radius of the cursor interaction area. Default: 500."
-    )
-    cursor_force: rx.Var[int | float] = field(
-        doc="Force applied to dots when not in bulge mode. Default: 0.1."
-    )
-    bulge_only: rx.Var[bool] = field(
-        doc="When true, dots bulge away from cursor. When false, dots are pushed with physics. Default: true."
-    )
-    bulge_strength: rx.Var[int | float] = field(
-        doc="Strength of the bulge effect around the cursor. Default: 67."
-    )
-    glow_radius: rx.Var[int | float] = field(
-        doc="Radius of the SVG glow effect that follows the cursor. Default: 160."
-    )
-    sparkle: rx.Var[bool] = field(
-        doc="When enabled, ~3% of dots randomly sparkle at a larger size. Default: false."
-    )
-    wave_amplitude: rx.Var[int | float] = field(
-        doc="Amplitude of the wave displacement animation applied to dots. Default: 0."
+    pattern: rx.Var[Literal["grid", "hex", "spiral", "scatter"]] = field(
+        doc="How the dots are laid out: square rows, offset honeycomb rows, a sunflower spiral or a loose scatter. Default: 'grid'."
     )
     gradient_from: rx.Var[str] = field(
-        doc="Start color of the diagonal gradient applied to dots. Default: 'rgba(168, 85, 247, 0.35)'."
+        doc="Color the gradient starts from. Default: '#5227FF'."
     )
     gradient_to: rx.Var[str] = field(
-        doc="End color of the diagonal gradient applied to dots. Default: 'rgba(180, 151, 207, 0.25)'."
+        doc="Color the gradient ends on. Default: '#FF9FFC'."
+    )
+    gradient_angle: rx.Var[int | float] = field(
+        doc="Direction of the gradient in degrees, the same as CSS linear-gradient. Default: 135."
+    )
+    cursor_radius: rx.Var[int | float] = field(
+        doc="Radius of the lens that follows the cursor, in pixels. Default: 240."
+    )
+    bulge_strength: rx.Var[int | float] = field(
+        doc="How much the lens magnifies the dots under it, from -1 to 1. Negative values pinch them inward. Default: 0.6."
+    )
+    twist: rx.Var[int | float] = field(
+        doc="Swirls the dots around the cursor by this many degrees. Negative values swirl the other way. Default: 0."
     )
     glow_color: rx.Var[str] = field(
-        doc="Color of the radial glow effect that follows the cursor. Default: '#120F17'."
+        doc="Color the dots inside the glow light up to. Default: '#ffffff'."
+    )
+    glow_radius: rx.Var[int | float] = field(
+        doc="Radius of the glow around the cursor, in pixels. 0 turns it off. Default: 160."
+    )
+    glow_intensity: rx.Var[int | float] = field(
+        doc="How strongly the dots inside the glow light up and bloom. Default: 0.8."
+    )
+    base_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the dots outside the glow, from 0 to 1. Default: 0.55."
+    )
+    wave_amplitude: rx.Var[int | float] = field(
+        doc="How far the dots drift in a slow rolling wave, in pixels. 0 keeps the field still. Default: 0."
+    )
+    sparkle: rx.Var[bool] = field(
+        doc="A few dots at a time softly grow and brighten, like stars twinkling. Default: false."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the wave and the sparkles animate. Default: 1."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="The lens follows the cursor or finger. Turn off for a purely ambient background. Default: true."
+    )
+    hold_to_zoom: rx.Var[bool] = field(
+        doc="Pressing and holding deepens the lens to look closer. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The field pulls into focus on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Prints the dots as ink so they stay crisp on light backgrounds. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class DotGrid(ReactBitsComponent):
-    """Animated dot grid with cursor interactions.
+    """A springy dot grid that the cursor flicks and drags through like jelly, with click shockwaves.
 
     Docs: https://reactbits.dev/backgrounds/dot-grid
     """
@@ -695,40 +1048,72 @@ class DotGrid(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "DotGrid"
     _rb_files = ('DotGrid.css', 'DotGrid.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
     dot_size: rx.Var[int | float] = field(
-        doc="Size of each dot in pixels. Default: 16."
+        doc="Size of each dot, in px. Default: 5."
     )
     gap: rx.Var[int | float] = field(
-        doc="Gap between each dot in pixels. Default: 32."
+        doc="Space between dots, in px. Default: 18."
     )
     base_color: rx.Var[str] = field(
-        doc="Base color of the dots. Default: '#5227FF'."
+        doc="Color of the dots at rest. Default: '#3a3446'."
     )
     active_color: rx.Var[str] = field(
-        doc="Color of dots when hovered or activated. Default: '#5227FF'."
+        doc="Color the dots light up to while they move or sit near the cursor. Default: '#ffffff'."
     )
     proximity: rx.Var[int | float] = field(
-        doc="Radius around the mouse pointer within which dots react. Default: 150."
+        doc="Radius around the cursor that pushes the dots and lights them up, in px. Default: 140."
     )
-    speed_trigger: rx.Var[int | float] = field(
-        doc="Mouse speed threshold to trigger inertia effect. Default: 100."
+    strength: rx.Var[int | float] = field(
+        doc="How hard a moving cursor pushes the dots. Default: 1."
     )
-    shock_radius: rx.Var[int | float] = field(
-        doc="Radius of the shockwave effect on click. Default: 250."
+    bounce: rx.Var[int | float] = field(
+        doc="How much the dots overshoot and wobble as they settle, from 0 to 1. Default: 0.6."
     )
-    shock_strength: rx.Var[int | float] = field(
-        doc="Strength of the shockwave effect on click. Default: 5."
-    )
-    max_speed: rx.Var[int | float] = field(
-        doc="Maximum speed for inertia calculation. Default: 5000."
-    )
-    resistance: rx.Var[int | float] = field(
-        doc="Resistance for the inertia effect. Default: 750."
+    tension: rx.Var[int | float] = field(
+        doc="How strongly each dot pulls on its neighbours, so a push travels through the grid like jelly. 0 keeps every dot independent. Default: 0.4."
     )
     return_duration: rx.Var[int | float] = field(
-        doc="Duration for dots to return to their original position after inertia. Default: 1.5."
+        doc="Roughly how long the dots take to settle back into place, in seconds. Default: 0.8."
+    )
+    shock_radius: rx.Var[int | float] = field(
+        doc="How far a click shockwave travels, in px. Default: 320."
+    )
+    shock_strength: rx.Var[int | float] = field(
+        doc="How hard a click shockwave pushes the dots. Default: 5."
+    )
+    swell: rx.Var[int | float] = field(
+        doc="How much the dots grow while they are lit. Default: 0.8."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much moving dots stretch into short streaks along their motion. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft halo around lit dots. Default: 0.5."
+    )
+    shape: rx.Var[Literal["circle", "square"]] = field(
+        doc="Shape of each dot. Default: 'circle'."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the grid out toward the edges, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity of the grid. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Pops the dots in from the center when the grid first appears. Default: true."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Lets the cursor push the dots and light them up. Default: true."
+    )
+    click_shock: rx.Var[bool] = field(
+        doc="Sends a shockwave out from each click. Default: true."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
@@ -782,7 +1167,7 @@ class EvilEye(ReactBitsComponent):
 
 
 class FaultyTerminal(ReactBitsComponent):
-    """Terminal CRT scanline squares effect with flicker + noise.
+    """A flickering CRT terminal of glowing glyphs, with phosphor trails under the cursor and glitches on click.
 
     Docs: https://reactbits.dev/backgrounds/faulty-terminal
     """
@@ -793,69 +1178,92 @@ class FaultyTerminal(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "FaultyTerminal"
     _rb_files = ('FaultyTerminal.css', 'FaultyTerminal.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     scale: rx.Var[int | float] = field(
-        doc="Controls the zoom/scale of the pattern. Default: 1."
+        doc="Zoom of the pattern. Higher values show more, smaller glyphs. Default: 1."
     )
-    grid_mul: rx.Var[list[Any]] = field(
-        doc="Grid multiplier for glyph density [x, y]. Default: [2, 1]."
+    grid_mul: rx.Var[list[int | float]] = field(
+        doc="Glyph density across and down, multiplied with scale. Default: [2, 1]."
     )
     digit_size: rx.Var[int | float] = field(
-        doc="Size of individual glyphs. Default: 1.5."
+        doc="Space around each glyph. 1 packs them edge to edge, higher values leave wider gaps. Default: 1.5."
     )
     time_scale: rx.Var[int | float] = field(
-        doc="Animation speed multiplier. Default: 0.3."
+        doc="Speed of the animation. Default: 0.3."
     )
     pause: rx.Var[bool] = field(
-        doc="Pause/resume animation. Default: false."
+        doc="Freezes the animation. The cursor still lights up glyphs. Default: false."
     )
     scanline_intensity: rx.Var[int | float] = field(
-        doc="Strength of scanline effects. Default: 0.3."
+        doc="Strength of the soft halo and the bright band that rolls down the screen. Default: 0.3."
     )
     glitch_amount: rx.Var[int | float] = field(
-        doc="Glitch displacement intensity. Default: 1."
+        doc="How far the faulty bands of the screen shift sideways. Default: 1."
     )
     flicker_amount: rx.Var[int | float] = field(
-        doc="Flicker effect strength. Default: 1."
+        doc="How often the faulty bands appear. Default: 1."
     )
     noise_amp: rx.Var[int | float] = field(
-        doc="Noise pattern amplitude. Default: 1."
+        doc="Strength of the swirling pattern that decides which glyphs light up. Default: 1."
     )
     chromatic_aberration: rx.Var[int | float] = field(
-        doc="RGB channel separation in pixels. Default: 0."
+        doc="Splits the red and blue channels apart, in pixels. Default: 0."
     )
     dither: rx.Var[int | float | bool] = field(
-        doc="Dithering effect intensity. Default: 0."
+        doc="Fine noise that smooths color banding. Default: 0."
     )
     curvature: rx.Var[int | float] = field(
-        doc="Barrel distortion amount. Default: 0.2."
+        doc="Bulge of the screen, like the glass of an old tube. Default: 0.2."
     )
     tint: rx.Var[str] = field(
-        doc="Color tint (hex). Default: '#ffffff'."
+        doc="Phosphor color of the glyphs. In light mode, light colors are deepened so they print clearly. Default: '#ffffff'."
     )
     mouse_react: rx.Var[bool] = field(
-        doc="Enable/disable mouse interaction. Default: true."
+        doc="Lights up the glyphs around the cursor. The light rests in the middle while the cursor is away. Default: true."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Mouse interaction intensity. Default: 0.2."
-    )
-    dpr: rx.Var[Any] = field(
-        doc="The `dpr` prop. Default: Math.min(window.devicePixelRatio || 1, 2)."
+        doc="How many glyphs the cursor lights up around it. Default: 0.2."
     )
     page_load_animation: rx.Var[bool] = field(
-        doc="Enable fade-in animation on load. Default: true."
+        doc="Switches the glyphs on one by one, each with a short phosphor flash, on mount. Default: true."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall opacity/brightness control. Default: 1."
+        doc="Overall brightness of the screen, or ink strength in light mode. Default: 1."
+    )
+    glyphs: rx.Var[Literal["blocks", "dots", "characters"]] = field(
+        doc="What each cell draws: squares of lit pixels, round LED dots, or terminal characters that keep changing. Default: 'blocks'."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Phosphor bloom around the glyphs, with richer color in the halo and paler bright cores. Default: 0.5."
+    )
+    persistence: rx.Var[int | float] = field(
+        doc="How long glyphs keep glowing after they switch off, like real phosphor. Leaves trails behind the cursor. Default: 0.5."
+    )
+    scramble: rx.Var[int | float] = field(
+        doc="How fast characters change near the cursor. Only used with characters. Default: 0.5."
+    )
+    mouse_glow: rx.Var[int | float] = field(
+        doc="How much the glyphs under the cursor heat up toward white while you move. Default: 0.6."
+    )
+    vignette: rx.Var[int | float] = field(
+        doc="Darkens the edges of the screen so it fades into the page. Default: 0.25."
+    )
+    click_effect: rx.Var[Literal["glitch", "degauss", "none"]] = field(
+        doc="What a click does: tear the screen into shifting bands, or send a wobbling degauss wave from the click. Default: 'glitch'."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a fixed pattern. Leave it out for a different one on every mount. Default: random."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Prints the glyphs as crisp ink on a light page. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Ferrofluid(ReactBitsComponent):
-    """A churning magnetic fluid traced by glowing contour lines, with a cursor magnet.
+    """A glossy sea of magnetic fluid where swells of spikes roll in and the cursor raises a crown.
 
     Docs: https://reactbits.dev/backgrounds/ferrofluid
     """
@@ -866,66 +1274,86 @@ class Ferrofluid(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Ferrofluid"
     _rb_files = ('Ferrofluid.css', 'Ferrofluid.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    dpr: rx.Var[int | float] = field(
-        doc="Overrides device pixel ratio; lower for performance, higher for sharpness. Default: window.devicePixelRatio."
-    )
-    paused: rx.Var[bool] = field(
-        doc="If true, stops rendering updates (freezing the current frame). Default: false."
-    )
     colors: rx.Var[list[str]] = field(
-        doc="Array of hex colors (up to 8) used to tint the fluid rim. Colors are spread across the surface by height; a single color makes the whole effect uniform. Default: ['#ffffff', '#ffffff', '#ffffff']."
+        doc="Colors of the studio lights reflected in the fluid: key light, side lights and fill light. Default: ['#ffffff', '#ffffff', '#ffffff']."
     )
     speed: rx.Var[int | float] = field(
-        doc="Multiplier for how fast the fluid churns and flows. Default: 0.5."
+        doc="How fast the swells roll across the surface. Default: 0.5."
     )
     scale: rx.Var[int | float] = field(
-        doc="Overall feature size. Higher values zoom in for larger, fewer blobs. Default: 1.6."
+        doc="Zoom of the fluid. Higher values show bigger, fewer spikes. Default: 1.6."
     )
-    turbulence: rx.Var[int | float] = field(
-        doc="Amount of domain distortion. Higher values create more chaotic, swirling motion. Default: 1."
-    )
-    fluidity: rx.Var[int | float] = field(
-        doc="Smoothness of the merge between the two fluid layers. Higher = softer, more liquid blending. Default: 0.1."
-    )
-    rim_width: rx.Var[int | float] = field(
-        doc="Thickness of the glowing contour lines tracing the fluid surface. Default: 0.2."
+    spike_height: rx.Var[int | float] = field(
+        doc="How tall the spikes grow in a strong field. Default: 1."
     )
     sharpness: rx.Var[int | float] = field(
-        doc="Contrast of the rim highlights. Higher values give crisper, thinner edges. Default: 2.5."
+        doc="How peaked the spikes are. Low values give soft mounds, high values taller cones. Tips always stay rounded. Default: 2.5."
     )
-    shimmer: rx.Var[int | float] = field(
-        doc="Amount of fine grainy break-up applied to the rim. 0 = smooth lines. Default: 1.5."
+    turbulence: rx.Var[int | float] = field(
+        doc="How much the spike pattern sways and drifts out of its regular grid. Default: 1."
     )
-    glow: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier of the rim highlights. Default: 2."
+    fluidity: rx.Var[int | float] = field(
+        doc="How loosely the spikes respond, from 0 (thick and slow) to 1 (bouncy). Default: 0.5."
     )
-    flow_direction: rx.Var[Literal["up", "down", "left", "right"]] = field(
-        doc="Primary direction the fluid surface drifts. Default: 'down'."
+    tilt: rx.Var[int | float] = field(
+        doc="Viewing angle in degrees. Low values look down from above, high values look across the fluid. Default: 48."
     )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall alpha of the rendered canvas. Default: 1."
+    magnetism: rx.Var[int | float] = field(
+        doc="Strength of the magnetic field that raises swells of spikes across the surface. Default: 1."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different arrangement of swells. Default: 0."
+    )
+    flow_direction: rx.Var[Literal["down", "up", "left", "right", "none"]] = field(
+        doc="Direction the swells roll. None keeps them morphing in place. Default: 'down'."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Strength of the reflections. Default: 1."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables a magnetic spike that rises and glows under the cursor. Default: true."
+        doc="Turns the cursor into a magnet that raises a crown of spikes. Default: true."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Intensity of the magnetic cursor spike. Default: 1."
+        doc="Strength of the cursor magnet. Default: 1."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Falloff radius of the magnetic cursor spike. Default: 0.35."
+        doc="Reach of the cursor magnet, as a fraction of the height. Default: 0.22."
     )
     mouse_dampening: rx.Var[int | float] = field(
-        doc="Easing time constant (seconds) for the cursor to follow the pointer. 0 = immediate. Default: 0.15."
+        doc="Time in seconds the crown takes to catch up with the cursor. 0 follows instantly. Default: 0.15."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a magnetic pulse through the fluid. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Raises the spikes when the field switches on. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Renders the fluid as glossy white liquid for light backgrounds. Default: false."
+    )
+    transparent: rx.Var[bool] = field(
+        doc="Lets the page show through. When off, the fluid sits on the color below. Default: true."
+    )
+    color: rx.Var[str] = field(
+        doc="Background color when transparent is off. Defaults to white in light mode. Default: '#120f17'."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the fluid. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
     mix_blend_mode: rx.Var[str] = field(
-        doc="CSS mix-blend-mode applied to the canvas (e.g. 'screen', 'lighten')."
+        doc="CSS mix-blend-mode applied to the container. Default: -."
     )
 
 
 class FloatingLines(ReactBitsComponent):
-    """3D floating lines that react to cursor movement.
+    """Ribbons of fine glowing lines that drift in waves, part around the cursor and curl when clicked.
 
     Docs: https://reactbits.dev/backgrounds/floating-lines
     """
@@ -936,63 +1364,182 @@ class FloatingLines(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "FloatingLines"
     _rb_files = ('FloatingLines.css', 'FloatingLines.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
 
     lines_gradient: rx.Var[list[str]] = field(
-        doc="Array of hex color strings for gradient coloring of lines (max 8 colors)."
+        doc="Up to 8 colors blended across the lines of each wave. Default: ['#e945f5', '#ffffff']."
     )
     enabled_waves: rx.Var[list[Any]] = field(
-        doc="Which wave layers to display. Can toggle individual waves on/off. Default: ['top', 'middle', 'bottom']."
+        doc="Which waves to show. Default: ['top', 'middle', 'bottom']."
     )
     line_count: rx.Var[int | float | list[int | float]] = field(
-        doc="Number of lines per wave. Single number applies to all waves, or array for per-wave control. Default: [6]."
+        doc="Lines per wave, from 1 to 24. Pass an array to set each enabled wave separately. Default: 10."
     )
     line_distance: rx.Var[int | float | list[int | float]] = field(
-        doc="Spacing between lines. Single number applies to all waves, or array for per-wave control. Default: [5]."
+        doc="Spacing between the lines of a wave. Pass an array to set each enabled wave separately. Default: 6."
     )
     top_wave_position: rx.Var[dict[str, Any]] = field(
-        doc="Position and rotation settings for the top wave layer."
+        doc="Offset, height and curl of the top wave. Default: { x: 10, y: 0.5, rotate: -0.4 }."
     )
     middle_wave_position: rx.Var[dict[str, Any]] = field(
-        doc="Position and rotation settings for the middle wave layer."
+        doc="Offset, height and curl of the middle wave. Default: { x: 5, y: 0, rotate: 0.2 }."
     )
     bottom_wave_position: rx.Var[dict[str, Any]] = field(
-        doc="Position and rotation settings for the bottom wave layer. Default: { x: 2.0, y: -0.7, rotate: -1 }."
+        doc="Offset, height and curl of the bottom wave. Default: { x: 2, y: -0.7, rotate: -1 }."
     )
     animation_speed: rx.Var[int | float] = field(
-        doc="Speed multiplier for the wave animation. Default: 1."
+        doc="Speed of the wave motion. Default: 1."
+    )
+    amplitude: rx.Var[int | float] = field(
+        doc="Height of the waves. Default: 1."
+    )
+    line_width: rx.Var[int | float] = field(
+        doc="Width of each line in pixels. Default: 1."
+    )
+    line_style: rx.Var[Literal["solid", "dotted", "dashed"]] = field(
+        doc="Draws the lines as solid strands, rows of dots or dashes. Default: 'solid'."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the glow around the lines. Default: 1."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness of the lines. Default: 1."
+    )
+    depth_of_field: rx.Var[int | float] = field(
+        doc="How much the waves in the back soften out of focus, from 0 to 1. Default: 0.5."
+    )
+    edge_fade: rx.Var[int | float] = field(
+        doc="Fades the lines out toward the left and right edges, from 0 to 1. Default: 0."
     )
     interactive: rx.Var[bool] = field(
-        doc="Whether the lines react to mouse/pointer movement. Default: true."
+        doc="Bends the lines around the cursor. Default: true."
     )
     bend_radius: rx.Var[int | float] = field(
-        doc="Radius of the area affected by mouse interaction. Default: 5.0."
+        doc="Size of the area around the cursor that bends the lines. Default: 5."
     )
     bend_strength: rx.Var[int | float] = field(
-        doc="Intensity of the bend effect when interacting with mouse. Default: -0.5."
+        doc="How strongly the lines bend. Negative values part them around the cursor, positive values pull them in. Default: -0.5."
     )
     mouse_damping: rx.Var[int | float] = field(
-        doc="Smoothing factor for mouse movement tracking (0-1). Default: 0.05."
+        doc="How smoothly the bend follows the cursor, from 0 (frozen) to 1 (instant). Default: 0.05."
     )
     parallax: rx.Var[bool] = field(
-        doc="Enable parallax effect with mouse movement. Default: true."
+        doc="Shifts the waves in depth as the cursor moves. Default: true."
     )
     parallax_strength: rx.Var[int | float] = field(
-        doc="Strength of the parallax effect. Default: 0.2."
+        doc="Strength of the parallax shift. Default: 0.2."
+    )
+    click_swirl: rx.Var[bool] = field(
+        doc="Clicking stirs the lines into a curl that slowly unwinds, turning in the direction the cursor was moving. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Swells the waves in from flat lines on mount. Default: true."
     )
     mix_blend_mode: rx.Var[str] = field(
-        doc="CSS mix-blend-mode applied to the canvas element. Default: 'screen'."
+        doc="CSS mix-blend-mode of the container in dark mode. Default: 'screen'."
     )
     background_color: rx.Var[str] = field(
-        doc="The `backgroundColor` prop. Default: '#000000'."
+        doc="Paints an opaque background behind the lines. Leave it unset for a transparent canvas. Default: -."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the lines as ink for light backgrounds. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
+    )
+
+
+class FluxLines(ReactBitsComponent):
+    """Glowing flux lines tracing a churning magnetic fluid. The cursor magnet reveals and curls them.
+
+    Docs: https://reactbits.dev/backgrounds/flux-lines
+    """
+
+    tag = "FluxLines"
+    alias = "ReactBitsFluxLines"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "FluxLines"
+    _rb_files = ('FluxLines.css', 'FluxLines.jsx')
+
+    colors: rx.Var[list[str]] = field(
+        doc="Up to 8 colors blended along the lines. A single color makes every line the same. Default: ['#ffffff', '#ffffff', '#ffffff']."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the fluid churns and flows. Default: 0.5."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Zoom of the pattern. Higher values show bigger, fewer shapes. Default: 1.6."
+    )
+    turbulence: rx.Var[int | float] = field(
+        doc="How much the flow swirls and distorts. Default: 1."
+    )
+    fluidity: rx.Var[int | float] = field(
+        doc="How smoothly the two layers of the fluid merge. Higher values give softer, rounder lines. Default: 0.1."
+    )
+    rim_width: rx.Var[int | float] = field(
+        doc="Thickness of the glow around each line. Default: 0.2."
+    )
+    sharpness: rx.Var[int | float] = field(
+        doc="Falloff of the glow. Higher values are tighter. Default: 2.5."
+    )
+    shimmer: rx.Var[int | float] = field(
+        doc="How much the lines break up into separate strokes. 0 shows every line. Default: 1.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Brightness of the lines. Default: 2."
+    )
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the crisp core inside each line, in pixels. 0 keeps only the glow. Default: 1."
+    )
+    flow_direction: rx.Var[Literal["up", "down", "left", "right"]] = field(
+        doc="Main direction the fluid drifts. Default: 'down'."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Turns the cursor into a magnet that reveals and curls the lines around it. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="Strength of the cursor magnet. Default: 1."
+    )
+    mouse_radius: rx.Var[int | float] = field(
+        doc="Reach of the cursor magnet, as a fraction of the height. Default: 0.35."
+    )
+    mouse_dampening: rx.Var[int | float] = field(
+        doc="Time in seconds the magnet takes to catch up with the cursor. 0 follows instantly. Default: 0.15."
+    )
+    click_swirl: rx.Var[bool] = field(
+        doc="Clicking stirs the fluid into a swirl. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the lines in on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the lines as ink for light backgrounds. Default: false."
+    )
+    transparent: rx.Var[bool] = field(
+        doc="Lets the page show through. When off, the lines sit on the background color. Default: true."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Background color when transparent is off. Defaults to white in light mode. Default: '#120f17'."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the flow. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
+    )
+    mix_blend_mode: rx.Var[str] = field(
+        doc="CSS mix-blend-mode applied to the container. Default: -."
     )
 
 
 class Galaxy(ReactBitsComponent):
-    """Parallax realistic starfield with pointer interactions.
+    """Endless flight through a twinkling starfield with warp jumps, cursor repulsion and star palettes.
 
     Docs: https://reactbits.dev/backgrounds/galaxy
     """
@@ -1003,63 +1550,92 @@ class Galaxy(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Galaxy"
     _rb_files = ('Galaxy.css', 'Galaxy.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     focal: rx.Var[list[int | float]] = field(
-        doc="Sets the focal point of the galaxy effect as [x, y] coordinates from 0 to 1. Default: [0.5, 0.5]."
+        doc="Center of the starfield, from 0 to 1. Default: [0.5, 0.5]."
     )
     rotation: rx.Var[list[int | float]] = field(
-        doc="Controls the rotation matrix of the galaxy as [x, y] rotation values. Default: [1.0, 0.0]."
+        doc="Fixed rotation of the starfield as a [cos, sin] pair. Default: [1.0, 0.0]."
     )
     star_speed: rx.Var[int | float] = field(
-        doc="Controls the speed of star movement and animation. Default: 0.5."
+        doc="How fast you travel through the stars. Default: 0.5."
     )
     density: rx.Var[int | float] = field(
-        doc="Controls the density of stars in the galaxy. Default: 1."
+        doc="How densely the stars are packed. Default: 1."
     )
     hue_shift: rx.Var[int | float] = field(
-        doc="Shifts the hue of all stars by the specified degrees (0-360). Default: 140."
+        doc="Shifts the hue of the stars, in degrees. Default: 140."
     )
     disable_animation: rx.Var[bool] = field(
-        doc="When true, stops all time-based animations. Default: false."
+        doc="Freezes the animation. Default: false."
     )
     speed: rx.Var[int | float] = field(
-        doc="Global speed multiplier for all animations. Default: 1.0."
+        doc="Overall speed of the animation. Default: 1.0."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables or disables mouse interaction with the galaxy. Default: true."
+        doc="Lets the cursor interact with the stars. Default: true."
     )
     glow_intensity: rx.Var[int | float] = field(
-        doc="Controls the intensity of the star glow effect. Default: 0.3."
+        doc="Brightness of the glow around each star. Default: 0.3."
     )
     saturation: rx.Var[int | float] = field(
-        doc="Controls color saturation of stars (0 = grayscale, 1 = full color). Default: 0.0."
+        doc="Color saturation of the stars, from 0 to 1. Default: 0.0."
     )
     mouse_repulsion: rx.Var[bool] = field(
-        doc="When true, stars are repelled by the mouse cursor. Default: true."
+        doc="Pushes the stars away from the cursor. When off, the field shifts with the cursor instead. Default: true."
     )
     repulsion_strength: rx.Var[int | float] = field(
-        doc="Strength of mouse repulsion effect when mouseRepulsion is enabled. Default: 2."
+        doc="Strength of the push away from the cursor. Default: 2."
     )
     twinkle_intensity: rx.Var[int | float] = field(
-        doc="Controls how much stars twinkle (0 = no twinkle, 1 = maximum twinkle). Default: 0.3."
+        doc="How much the stars twinkle, from 0 to 1. Default: 0.3."
     )
     rotation_speed: rx.Var[int | float] = field(
-        doc="Speed of automatic galaxy rotation. Default: 0.1."
+        doc="How fast the starfield rotates. Default: 0.1."
     )
     auto_center_repulsion: rx.Var[int | float] = field(
-        doc="Creates repulsion from center of canvas. Overrides mouse repulsion when > 0. Default: 0."
+        doc="Pushes the stars away from the center without the cursor. 0 turns it off. Default: 0."
     )
     transparent: rx.Var[bool] = field(
-        doc="Makes the black background transparent, showing only stars. Default: true."
+        doc="Shows the page behind the stars. When off, the stars sit on the background color. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the stars as ink for light backgrounds. Default: false."
+    )
+    star_colors: rx.Var[list[str]] = field(
+        doc="Up to four colors the stars are picked from. Replaces the hue shift and saturation coloring. Default: -."
+    )
+    star_size: rx.Var[int | float] = field(
+        doc="Size of each star glow. Default: 1."
+    )
+    flare_intensity: rx.Var[int | float] = field(
+        doc="Strength of the cross flares on the brightest stars. Default: 1."
+    )
+    layers: rx.Var[int | float] = field(
+        doc="Number of star layers, from 2 to 8. Default: 4."
+    )
+    direction: rx.Var[Literal["forward", "backward"]] = field(
+        doc="Whether you fly into the stars or drift back out of them. Default: 'forward'."
+    )
+    click_warp: rx.Var[bool] = field(
+        doc="Clicking jumps forward at warp speed. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Drops out of warp speed on mount. Default: true."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Background behind the stars when transparent is off, or the paper color in light mode. Default: '#000000'."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class GhostFibers(ReactBitsComponent):
-    """A deep-blue recursive fiber field with luminous bands, radial twisting and soft atmospheric glow.
+    """Layered ribbons of fine glowing fibers that twist, fold and drift through soft depth of field.
 
     Docs: https://reactbits.dev/backgrounds/ghost-fibers
     """
@@ -1070,93 +1646,206 @@ class GhostFibers(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "GhostFibers"
     _rb_files = ('GhostFibers.css', 'GhostFibers.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    line_color: rx.Var[str] = field(
-        doc="Color of the thin fiber cores. Default: '#140E35'."
-    )
     glow_color: rx.Var[str] = field(
-        doc="Color of the broad luminous bands. Default: '#3437A0'."
+        doc="Main color of the fibers. Default: '#8b5cf6'."
+    )
+    line_color: rx.Var[str] = field(
+        doc="Color of the bright folds, sparkles and tips. Leave it out to use a pale tint of the glow color. Default: -."
+    )
+    secondary_color: rx.Var[str] = field(
+        doc="Second color the gradient blends toward. Leave it out to use a deeper shade of the glow color. Default: -."
+    )
+    gradient: rx.Var[Literal["depth", "along", "across"]] = field(
+        doc="How the two colors blend: by distance, along the length of the ribbons, or across their width. Default: 'depth'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Master animation speed. Default: 0.2."
+        doc="Speed of the waves and the twist. 0 holds them still. Default: 0.5."
     )
     scale: rx.Var[int | float] = field(
-        doc="Zoom level of the field. Default: 2."
+        doc="Size of the whole effect. Default: 1."
     )
     rotation: rx.Var[int | float] = field(
-        doc="Static field rotation in degrees. Default: 0."
+        doc="Tilt of the whole effect, in degrees. Default: 18."
     )
-    rotation_speed: rx.Var[int | float] = field(
-        doc="Continuous rotation rate. Default: 0.25."
+    roll_speed: rx.Var[int | float] = field(
+        doc="How fast the ribbons roll around their length. Default: 0.15."
     )
     layers: rx.Var[int | float] = field(
-        doc="Number of cumulative fiber layers, from 1 to 10. Default: 4."
+        doc="Number of ribbons, from 1 to 3. Default: 3."
     )
-    wave_amplitude: rx.Var[int | float] = field(
-        doc="Strength of the recursive wave displacement. Default: 0.015."
-    )
-    wave_frequency: rx.Var[int | float] = field(
-        doc="Frequency of the recursive wave displacement. Default: 3."
-    )
-    wave_speed: rx.Var[int | float] = field(
-        doc="Base speed of the layered waves. Default: 0.15."
-    )
-    layer_speed: rx.Var[int | float] = field(
-        doc="Additional wave speed contributed by each layer. Default: 0.08."
+    waves: rx.Var[int | float] = field(
+        doc="How much the ribbons undulate. 0 keeps them straight. Default: 1."
     )
     twist: rx.Var[int | float] = field(
-        doc="Angular distortion applied during each iteration. Default: 0.1."
+        doc="How often the ribbons turn over along their length. Default: 1.2."
     )
-    twist_frequency: rx.Var[int | float] = field(
-        doc="Radial frequency of the angular distortion. Default: 5."
+    threads: rx.Var[int | float] = field(
+        doc="Number of fibers in each ribbon. Default: 72."
     )
-    twist_speed: rx.Var[int | float] = field(
-        doc="Animation speed of the angular distortion. Default: 1.2."
+    volume: rx.Var[int | float] = field(
+        doc="Thickness of each ribbon, from a single flat sheet at 0 to a layered bundle. Default: 0.7."
     )
-    line_frequency: rx.Var[int | float] = field(
-        doc="Base frequency of the bright fibers. Default: 5."
+    spread: rx.Var[int | float] = field(
+        doc="Width of the ribbons. Default: 1."
     )
-    line_spacing: rx.Var[int | float] = field(
-        doc="Frequency increment applied per layer. Default: 2."
+    density: rx.Var[int | float] = field(
+        doc="Number of dots along each fiber. Default: 1."
     )
-    line_sharpness: rx.Var[int | float] = field(
-        doc="Sharpness of the thin fiber cores. Default: 16."
+    thickness: rx.Var[int | float] = field(
+        doc="Size of the dots. Default: 1."
     )
-    glow_falloff: rx.Var[int | float] = field(
-        doc="Falloff of the broad glowing bands. Default: 10."
+    flow: rx.Var[int | float] = field(
+        doc="Speed of the dots along the fibers. Negative values reverse them. Default: 0.4."
     )
-    glow_intensity: rx.Var[int | float] = field(
-        doc="Brightness multiplier for the broad glow. Default: 1.6."
+    fiber_style: rx.Var[Literal["dots", "dashes", "lines"]] = field(
+        doc="Draws the fibers as rows of dots, short dashes or continuous lines. Default: 'dots'."
+    )
+    tips: rx.Var[int | float] = field(
+        doc="Cuts the fibers at different lengths and lights their ends, like fiber optics. Default: 0."
+    )
+    fold_glow: rx.Var[int | float] = field(
+        doc="Brightness of the light where the ribbons fold edge-on. Default: 1."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="How far the ribbons turn into the distance, from side-on at 0 to steeply receding at 1. Default: 0.65."
+    )
+    depth_of_field: rx.Var[int | float] = field(
+        doc="Strength of the camera blur away from the focus. 0 keeps everything sharp. Default: 0.85."
+    )
+    focus_depth: rx.Var[int | float] = field(
+        doc="Moves the focus nearer with negative values or farther with positive ones. Default: 0."
+    )
+    particles: rx.Var[int | float] = field(
+        doc="Amount of dust floating around the ribbons. Default: 0.5."
+    )
+    sparkle: rx.Var[int | float] = field(
+        doc="How often single dots twinkle. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the bloom around the bright areas. Default: 0.8."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Exposure used by the final tone mapping. Default: 2."
-    )
-    blue_boost: rx.Var[int | float] = field(
-        doc="Multiplier applied to the final blue channel. Default: 1.25."
+        doc="Overall brightness. Default: 1."
     )
     vignette: rx.Var[int | float] = field(
-        doc="Strength of the original edge darkening. Default: 0.8."
+        doc="How much the edges fade out, from 0 to 1. Default: 0.3."
     )
     grain: rx.Var[int | float] = field(
-        doc="Strength of the layered screen-space film grain. Default: 0.05."
+        doc="Strength of the film grain. Default: 0.06."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Lets the view follow the cursor slightly and turns on the hover effect. Default: true."
+    )
+    hover_effect: rx.Var[Literal["focus", "part", "none"]] = field(
+        doc="Pulls the focus to the ribbon under the cursor, parts the fibers around it, or does nothing. Default: 'focus'."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="Strength of the hover effect. Default: 1."
+    )
+    pulse_on_click: rx.Var[bool] = field(
+        doc="Sends a pulse of light along the ribbon you click. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Draws the ribbons in from one end when the effect first appears. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="Uses an ink-on-light compositing mode. Default: false."
-    )
-    dpr: rx.Var[int | float] = field(
-        doc="Canvas pixel density, clamped between 0.5 and 2. Default: 1."
-    )
-    fps: rx.Var[int | float] = field(
-        doc="Maximum shader render rate. Default: 60."
+        doc="Draws the fibers as colored ink for light backgrounds. Default: false."
     )
     paused: rx.Var[bool] = field(
-        doc="Freezes the animation and stops its render loop. Default: false."
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
+    )
+
+
+class GradientASCII(ReactBitsComponent):
+    """Soft gradient glows drawn in ASCII characters that scramble under the cursor.
+
+    Docs: https://reactbits.dev/backgrounds/gradient-ascii
+    """
+
+    tag = "GradientASCII"
+    alias = "ReactBitsGradientASCII"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "GradientASCII"
+    _rb_files = ('GradientASCII.css', 'GradientASCII.jsx')
+
+    colors: rx.Var[list[str]] = field(
+        doc="Two to eight colors for the light, from the edge of the shadow to the brightest or farthest point. Dark areas stay transparent. Default: DEFAULT_COLORS."
+    )
+    shape: rx.Var[Literal["horizon", "pinch", "rise", "eclipse"]] = field(
+        doc="Horizon glows over a dark curve, pinch is a band of light squeezed in the middle, rise glows up from the bottom and eclipse rings a dark disc. Default: 'horizon'."
+    )
+    characters: rx.Var[str] = field(
+        doc="Characters from dimmest to brightest. Brighter parts of the gradient use characters further along. Default: DEFAULT_CHARACTERS."
+    )
+    cell_size: rx.Var[int | float] = field(
+        doc="Height of each character cell in px. Default: 18."
+    )
+    density: rx.Var[int | float] = field(
+        doc="Share of cells that show a character, from 0 to 1. Brighter areas fill in first. Default: 0.8."
+    )
+    glyph_opacity: rx.Var[int | float] = field(
+        doc="How strongly the characters stand out from the gradient. Default: 0.85."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around the characters, from 0 to 1.5. Default: 0.2."
+    )
+    depth_of_field: rx.Var[int | float] = field(
+        doc="Share of characters drawn out of focus, from 0 to 1. Default: 0."
+    )
+    flicker: rx.Var[int | float] = field(
+        doc="How often characters swap with their neighbors in brightness, from 0 to 1. Default: 0.2."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How soft the edges of the shape are, from 0 to 1. Default: 0.5."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the shape, from 0.4 to 2.5. Default: 1."
+    )
+    flow: rx.Var[int | float] = field(
+        doc="How much the light wavers as it drifts, from 0 to 2. Default: 0.5."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the drift. 0 holds the shape still. Default: 1."
+    )
+    gradient_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the gradient behind the characters. At 0 only the characters are left. Default: 0.9."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain, from 0 to 0.4. Default: 0.08."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different drift and a different pattern of characters. Default: 0."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Scrambles the characters under the cursor as it moves. They settle back a moment later. Default: true."
+    )
+    scramble_radius: rx.Var[int | float] = field(
+        doc="Size of the scrambled area around the cursor, relative to the container height. Default: 0.1."
+    )
+    click_effect: rx.Var[Literal["wave", "burst", "none"]] = field(
+        doc="Wave sends a ring of scrambled characters out from the click, burst scrambles a patch under it. Default: 'wave'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the light in from its source while the characters decode. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the gradient as a wash on light backgrounds, with characters a shade darker. Default: false."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Font used for the characters. Monospaced fonts keep the grid even. Default: DEFAULT_FONT."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class GradientBlinds(ReactBitsComponent):
-    """Layered gradient blinds with spotlight and noise distortion.
+    """Satin gradient blinds lit by a spotlight that follows the cursor, swaying and turning toward the light.
 
     Docs: https://reactbits.dev/backgrounds/gradient-blinds
     """
@@ -1167,60 +1856,95 @@ class GradientBlinds(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "GradientBlinds"
     _rb_files = ('GradientBlinds.css', 'GradientBlinds.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     dpr: rx.Var[int | float] = field(
-        doc="Overrides device pixel ratio; lower for performance, higher for sharpness. Default: window.devicePixelRatio."
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
     paused: rx.Var[bool] = field(
-        doc="If true, stops rendering updates (freezing the current frame). Default: false."
+        doc="Freezes the current frame. Default: false."
     )
     gradient_colors: rx.Var[list[str]] = field(
-        doc="Array of hex colors (up to 8) forming the animated gradient. If one color is provided it is duplicated. Default: ['#FF9FFC', '#5227FF']."
+        doc="Colors of the gradient across the blinds, up to 8. One color is used for every blind. Default: ['#FF9FFC', '#5227FF']."
     )
     angle: rx.Var[int | float] = field(
-        doc="Rotation of the gradient in degrees (0 = horizontal left\u2192right). Default: 0."
+        doc="Rotation of the blinds in degrees. 0 stands them upright. Default: 0."
     )
     noise: rx.Var[int | float] = field(
-        doc="Strength of per\u2011pixel noise added to the final color (0 = clean). Default: 0.3."
+        doc="Strength of the film grain, from 0 (clean) to 1. Default: 0.3."
     )
     blind_count: rx.Var[int | float] = field(
-        doc="Target number of vertical blinds. Acts as an upper bound when blindMinWidth is set. Default: 16."
+        doc="Number of blinds. Acts as an upper limit when blindMinWidth is set. Default: 16."
     )
     blind_min_width: rx.Var[int | float] = field(
-        doc="Minimum pixel width for each blind. Reduces effective blindCount if necessary to satisfy this width. Default: 60."
+        doc="Narrowest a blind can get, in px. Fewer blinds are drawn on small screens to respect it. Default: 60."
     )
     mouse_dampening: rx.Var[int | float] = field(
-        doc="Easing time constant (seconds) for the spotlight to follow the cursor. 0 = immediate. Default: 0.15."
+        doc="How long the light takes to catch up with the cursor, in seconds. 0 follows instantly. Default: 0.15."
     )
     mirror_gradient: rx.Var[bool] = field(
-        doc="Creates a mirrored ping\u2011pong gradient progression instead of a linear wrap. Default: false."
+        doc="Runs the gradient forward and back again instead of once across. Default: false."
     )
     spotlight_radius: rx.Var[int | float] = field(
-        doc="Normalized spotlight radius relative to the shorter canvas dimension. Default: 0.5."
+        doc="Size of the light around the cursor, relative to the area. Default: 0.5."
     )
     spotlight_softness: rx.Var[int | float] = field(
-        doc="Falloff exponent for spotlight edge. Higher = sharper edge (values >1 increase contrast). Default: 1."
+        doc="How the light fades toward its edge. Higher values keep it brighter for longer, then drop off. Default: 1."
     )
     spotlight_opacity: rx.Var[int | float] = field(
-        doc="Overall intensity multiplier for the spotlight highlight. Default: 1."
+        doc="Strength of the light. Default: 1."
     )
     distort_amount: rx.Var[int | float] = field(
-        doc="Sin/cos warp intensity applied to UVs for subtle wavy distortion. Default: 0."
+        doc="Bends the blinds into soft waves. Default: 0."
     )
     shine_direction: rx.Var[Literal["left", "right"]] = field(
-        doc="Flips the bright side of each blind; useful for composition with other elements. Default: 'left'."
+        doc="Which edge of each blind catches the light. Default: 'left'."
+    )
+    light_color: rx.Var[str] = field(
+        doc="Color of the light that falls on the blinds. Warm or cool whites change the mood. Default: '#ffffff'."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="Makes the blinds recede to one side like a window seen at an angle, from -1 to 1. Default: 0."
+    )
+    gradient_speed: rx.Var[int | float] = field(
+        doc="Drifts the colors across the blinds over time. 0 keeps them still. Default: 0."
+    )
+    shine: rx.Var[int | float] = field(
+        doc="Soft highlight along the lit edge of each blind, strongest near the light, from 0 (matte) to 1. Default: 0.4."
+    )
+    relief: rx.Var[int | float] = field(
+        doc="Depth of the shadow where each blind tucks under the next, from 0 (flat) to 1. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft haze of colored light around the cursor. Default: 0.4."
+    )
+    sway: rx.Var[int | float] = field(
+        doc="How much the blinds drift and turn on their own, as if in a breeze. Default: 0.35."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the sway and of the drifting light. Default: 1."
+    )
+    hover_tilt: rx.Var[int | float] = field(
+        doc="How much the blinds near the cursor turn toward the light and brighten, from 0 to 1. Default: 0.6."
+    )
+    click_effect: rx.Var[Literal["ripple", "none"]] = field(
+        doc="Clicking sends a wave of light through the blinds, from slat to slat outward from the click. Default: 'ripple'."
+    )
+    idle: rx.Var[Literal["drift", "center", "stay"]] = field(
+        doc="What the light does while the cursor is away: wander slowly, return to the middle, or stay put. Default: 'drift'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the light in while the blinds turn into place on mount. Default: true."
     )
     mix_blend_mode: rx.Var[str] = field(
-        doc="CSS mix-blend-mode applied to the canvas (e.g. 'screen', 'overlay', 'multiply'). Default: 'lighten'."
+        doc="CSS blend mode of the blinds over the page in dark mode, so dark areas show the page behind. Default: 'lighten'."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the blinds as clean colored light on a white page. Default: false."
     )
 
 
 class GradientWaves(ReactBitsComponent):
-    """Raymarched sine waves rolling toward a soft, hazy horizon.
+    """Lit satin waves rolling in from a hazy horizon, with a light that follows the cursor and swells on click.
 
     Docs: https://reactbits.dev/backgrounds/gradient-waves
     """
@@ -1231,72 +1955,98 @@ class GradientWaves(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "GradientWaves"
     _rb_files = ('GradientWaves.css', 'GradientWaves.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     horizon_color: rx.Var[str] = field(
-        doc="Distant haze color the waves fade into. Default: '#5227FF'."
+        doc="Haze the waves fade into toward the horizon, and the tint of their shadows. Default: '#5227FF'."
     )
     wave_color: rx.Var[str] = field(
-        doc="Mid color of the rolling wave bodies. Default: '#FF9FFC'."
+        doc="Main color of the wave bodies. Default: '#FF9FFC'."
     )
     crest_color: rx.Var[str] = field(
-        doc="Highlight color of the nearest wave crests. Default: '#FFFFFF'."
+        doc="Color of the crests and the light they catch. Default: '#FFFFFF'."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Fills the canvas behind the waves. Transparent lets the page show through. Default: 'transparent'."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the waves as soft colored ink for light pages. Default: false."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed of the undulating wave field. Default: 0.4."
+        doc="How fast the waves roll in. Default: 0.4."
     )
     amplitude: rx.Var[int | float] = field(
-        doc="Height of the sine-plasma waves. Default: 2.5."
+        doc="Height of the waves. Default: 2.5."
     )
     wave_scale: rx.Var[int | float] = field(
-        doc="Overall spatial frequency of the waves. Default: 0.6."
+        doc="How many waves fit in view. Higher is choppier. Default: 0.6."
     )
     wave_ratio: rx.Var[int | float] = field(
-        doc="Ratio between the short and long wavelength components. Default: 0.9."
+        doc="Balance between the long rolling waves and the shorter cross waves. Default: 0.9."
     )
     swell: rx.Var[int | float] = field(
-        doc="Large-scale horizontal swell distortion. Default: 35."
+        doc="How much the long waves bend and meander. Default: 35."
     )
     turbulence: rx.Var[int | float] = field(
-        doc="Large-scale cross-flow turbulence distortion. Default: 20."
+        doc="How much the cross waves wander. Default: 20."
     )
     tilt: rx.Var[int | float] = field(
-        doc="Camera pitch toward the horizon (radians). Default: 1.11."
+        doc="Camera angle in degrees, from looking down to facing the horizon. Default: 64."
     )
     zoom: rx.Var[int | float] = field(
-        doc="Field-of-view zoom into the wave field. Default: 1.0."
+        doc="Field of view. Higher zooms in. Default: 1."
     )
     height: rx.Var[int | float] = field(
-        doc="Vertical offset of the horizon line. Default: 5.5."
+        doc="Water level. Higher brings the waves closer. Default: 5.5."
     )
     fog_depth: rx.Var[int | float] = field(
-        doc="Distance over which the waves fade into haze and transparency. Default: 15."
+        doc="How far you can see before the waves fade out. Default: 15."
     )
-    detail: rx.Var[str] = field(
-        doc="Raymarch quality tier: 'low', 'medium', or 'high'. Default: 'medium'."
+    relief: rx.Var[int | float] = field(
+        doc="Depth of the light and shadow on the waves. 0 gives flat gradient waves. Default: 1."
+    )
+    light_angle: rx.Var[int | float] = field(
+        doc="Direction the light comes from, in degrees. 0 lights the waves from behind you, 180 from the horizon. Default: 120."
+    )
+    sheen: rx.Var[int | float] = field(
+        doc="Strength of a soft highlight on the crests. Default: 0."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier for the final color. Default: 1.0."
+        doc="Overall brightness. Default: 1."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Global opacity of the effect. Default: 1.0."
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain on the waves, up to 0.5. 0 turns it off. Default: 0.2."
+    )
+    quality: rx.Var[Literal["low", "medium", "high"]] = field(
+        doc="Rendering precision. Lower is faster on weak devices. Default: 'medium'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Starts from calm water and lets the waves rise from the horizon toward you. Default: true."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enable subtle pointer-driven camera parallax. Default: true."
+        doc="The light follows the cursor across the waves and the view turns gently toward it. Default: true."
     )
     parallax_strength: rx.Var[int | float] = field(
-        doc="Strength of the cursor parallax drift. Default: 0.5."
+        doc="How far the view turns toward the cursor. Default: 0.5."
     )
-    grain: rx.Var[bool] = field(
-        doc="Overlay a whisper-subtle animated film grain on the effect. Default: true."
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How far the light turns to follow the cursor. Default: 0.6."
     )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+    swell_on_click: rx.Var[bool] = field(
+        doc="Clicking sends a swell rolling in from that point. Default: true."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the waves. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio of the canvas. Default: 2."
     )
 
 
 class Grainient(ReactBitsComponent):
-    """Grainy gradient swirls with soft wave distortion.
+    """Flowing grainy gradients you can stir with the cursor.
 
     Docs: https://reactbits.dev/backgrounds/grainient
     """
@@ -1307,81 +2057,74 @@ class Grainient(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Grainient"
     _rb_files = ('Grainient.css', 'Grainient.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    time_speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier for the gradient motion. Default: 0.25."
+    colors: rx.Var[list[str]] = field(
+        doc="Two to eight colors, from the base to the highlight. Use your page background as the first color so the edges blend in. Default: DEFAULT_COLORS."
     )
-    color_balance: rx.Var[int | float] = field(
-        doc="Shifts the palette balance toward dark or lighter tones. Default: 0.0."
+    type: rx.Var[Literal["linear", "radial"]] = field(
+        doc="Linear runs the colors across the container. Radial puts the last color in the middle. Default: 'linear'."
     )
-    warp_strength: rx.Var[int | float] = field(
-        doc="Strength of the wave warp distortion (0 = none). Default: 1.0."
+    angle: rx.Var[int | float] = field(
+        doc="Direction of a linear gradient in degrees, like CSS: 0 runs bottom to top, 90 left to right. Default: 55."
     )
-    warp_frequency: rx.Var[int | float] = field(
-        doc="Frequency of the wave warp. Default: 5.0."
+    bands: rx.Var[int | float] = field(
+        doc="How many times the colors repeat back and forth, from 1 to 8. Higher values make stripes or rings. Default: 1."
     )
-    warp_speed: rx.Var[int | float] = field(
-        doc="Speed multiplier for the warp animation. Default: 2.0."
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the drifting waves. 0 holds them still. Default: 1."
     )
-    warp_amplitude: rx.Var[int | float] = field(
-        doc="Base amplitude for the warp distortion. Default: 50.0."
+    flow: rx.Var[int | float] = field(
+        doc="How much the gradient bends into waves, from 0 (straight) to 3. Above 1 it starts to marble. Default: 0.8."
     )
-    blend_angle: rx.Var[int | float] = field(
-        doc="Rotation angle for the color blend axis (degrees). Default: 0.0."
+    scale: rx.Var[int | float] = field(
+        doc="Size of the waves, from 0.25 to 3. Default: 1."
     )
-    blend_softness: rx.Var[int | float] = field(
-        doc="Softens the blend edges between color layers. Default: 0.05."
+    softness: rx.Var[int | float] = field(
+        doc="Blend between colors, from 0 (crisp, poster-like edges) to 1 (smooth). Default: 1."
     )
-    rotation_amount: rx.Var[int | float] = field(
-        doc="Rotation amount driven by noise. Default: 500.0."
-    )
-    noise_scale: rx.Var[int | float] = field(
-        doc="Scales the noise frequency that drives rotation. Default: 2.0."
+    silk: rx.Var[int | float] = field(
+        doc="Satin shading on the folds, from 0 to 1. Combine with bands for glossy ribbons. Default: 0.35."
     )
     grain_amount: rx.Var[int | float] = field(
-        doc="Amount of film grain applied to the gradient. Default: 0.1."
+        doc="Strength of the film grain, from 0 to 0.5. Default: 0.08."
     )
-    grain_scale: rx.Var[int | float] = field(
-        doc="Scale of the grain pattern. Default: 2.0."
+    grain_size: rx.Var[int | float] = field(
+        doc="Size of the grain in pixels, from 0.5 to 4. Default: 1.2."
     )
     grain_animated: rx.Var[bool] = field(
-        doc="Animate grain over time. Default: false."
+        doc="Shifts the grain every frame like film. When off, the grain stays fixed. Default: true."
     )
     contrast: rx.Var[int | float] = field(
-        doc="Overall contrast applied to the final color. Default: 1.5."
-    )
-    gamma: rx.Var[int | float] = field(
-        doc="Gamma correction for the final color. Default: 1.0."
+        doc="Contrast of the colors, from 0.2 to 2. Default: 1."
     )
     saturation: rx.Var[int | float] = field(
-        doc="Saturation amount for the final color. Default: 1.0."
+        doc="Saturation of the colors, from 0 (grayscale) to 2. Default: 1."
     )
-    center_x: rx.Var[int | float] = field(
-        doc="Horizontal offset of the gradient center. Default: 0.0."
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different pattern of waves. Default: 0."
     )
-    center_y: rx.Var[int | float] = field(
-        doc="Vertical offset of the gradient center. Default: 0.0."
+    interactive: rx.Var[bool] = field(
+        doc="Lets the cursor drag the colors around like paint. The trail settles back after a moment. Default: true."
     )
-    zoom: rx.Var[int | float] = field(
-        doc="Zoom level for the gradient field. Default: 0.9."
+    stir: rx.Var[int | float] = field(
+        doc="How far the cursor drags the colors, from 0 to 2. Default: 1."
     )
-    color1: rx.Var[str] = field(
-        doc="Primary light color used in the gradient blend. Default: '#FF9FFC'."
+    click_swirl: rx.Var[bool] = field(
+        doc="Clicking twists the colors into a swirl that slowly unwinds. Default: true."
     )
-    color2: rx.Var[str] = field(
-        doc="Secondary accent color used in the gradient blend. Default: '#5227FF'."
-    )
-    color3: rx.Var[str] = field(
-        doc="Deep base color used in the gradient blend. Default: '#B497CF'."
+    intro: rx.Var[bool] = field(
+        doc="Blooms the colors out from the middle on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Builds a light version of the palette: the first color becomes white and the others run in reverse, deepest last. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class GridDistortion(ReactBitsComponent):
-    """Warped grid mesh distorts smoothly reacting to cursor.
+    """Image background that breaks into a grid of blocks under the cursor and settles back into place.
 
     Docs: https://reactbits.dev/backgrounds/grid-distortion
     """
@@ -1392,27 +2135,44 @@ class GridDistortion(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "GridDistortion"
     _rb_files = ('GridDistortion.css', 'GridDistortion.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
 
-    grid: rx.Var[int | float] = field(
-        doc="The number of cells present in the distortion grid. Default: 15."
+    image_src: rx.Var[str] = field(
+        doc="Image to distort. It covers the container. Default: -."
     )
-    mouse: rx.Var[int | float] = field(
-        doc="The size of the distortion effect that follows the cursor. Default: 0.1."
+    grid: rx.Var[int | float] = field(
+        doc="Number of cells across. Rows follow the container so cells stay square. Default: 15."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Reach of the pointer as a fraction of the container width. Default: 0.18."
     )
     strength: rx.Var[int | float] = field(
-        doc="The overall strength of the distortion effect. Default: 0.15."
+        doc="How far the pointer throws the cells. 0 turns the pointer off. Default: 0.15."
     )
     relaxation: rx.Var[int | float] = field(
-        doc="The speed at which grid cells return to their initial state. Default: 0.9."
+        doc="How much displacement each cell keeps per frame. Higher values settle more slowly. Default: 0.96."
     )
-    image_src: rx.Var[Any] = field(
-        doc="The `imageSrc` prop."
+    mode: rx.Var[Literal["drag", "push", "swirl"]] = field(
+        doc="Drag pulls cells along with the pointer, push throws them outward and swirl spins them around it. Default: 'drag'."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="Blends the crisp blocks into a smooth liquid warp, from 0 to 1. Default: 0."
+    )
+    chroma: rx.Var[int | float] = field(
+        doc="Splits the color channels on displaced cells, from 0 to 1. Default: 0."
+    )
+    idle: rx.Var[int | float] = field(
+        doc="A slow wandering distortion that keeps the image alive while the pointer rests. 0 turns it off. Default: 0.3."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Sends a ring of displaced cells out from every click. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Scrambles the cells when the image loads and lets them settle into place. Default: true."
     )
 
 
 class GridMotion(ReactBitsComponent):
-    """Perspective moving grid lines based on cusror position.
+    """A tilted wall of drifting tiles that slides with the pointer and lights up where it rests.
 
     Docs: https://reactbits.dev/backgrounds/grid-motion
     """
@@ -1423,115 +2183,158 @@ class GridMotion(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "GridMotion"
     _rb_files = ('GridMotion.css', 'GridMotion.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
 
-    items: rx.Var[list[Any]] = field(
-        doc="An array of items to display in the grid. Each item can be a string, JSX element, or an image URL. Default: []."
+    items: rx.Var[Component | str | list[Any]] = field(
+        doc="Tile content. Image URLs and paths render as photos, other strings as text, and JSX as is. Items repeat to fill the wall. Default: []."
     )
-    gradient_color: rx.Var[str] = field(
-        doc="Controls the color of the radial gradient used as the background. Default: 'black'."
+    rows: rx.Var[int | float] = field(
+        doc="Rows of tiles. More rows means smaller tiles. Default: 4."
+    )
+    aspect_ratio: rx.Var[int | float] = field(
+        doc="Width of each tile divided by its height. Below 1 gives portrait tiles. Default: 1.33."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between tiles in pixels. Default: 16."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius of the tiles in pixels. Large values give pills. Default: 14."
+    )
+    angle: rx.Var[int | float] = field(
+        doc="Rotation of the whole wall in degrees. Default: -12."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Leans the wall back in 3D, in degrees. 0 keeps it flat. Default: 0."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Drift speed of the rows in pixels per second. 0 keeps them still. Default: 24."
+    )
+    direction: rx.Var[Literal["alternate", "left", "right"]] = field(
+        doc="Which way the rows drift. Alternate sends neighbouring rows in opposite directions. Default: 'alternate'."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the rows slide against each other as the pointer moves across the page, from 0 to 1. Default: 0.5."
+    )
+    spotlight: rx.Var[int | float] = field(
+        doc="Size of the area around the pointer where dimmed or grayscale tiles come back to full color, from 0 to 1. 0 turns it off. Default: 0.6."
+    )
+    dim: rx.Var[int | float] = field(
+        doc="Fades the tiles outside the spotlight, which keeps text on top readable. From 0 to 1. Default: 0.35."
+    )
+    grayscale: rx.Var[bool] = field(
+        doc="Shows the tiles in grayscale until the spotlight brings their color back. Default: false."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges of the wall into the page, from 0 to 1. Default: 0.5."
+    )
+    tile_color: rx.Var[str] = field(
+        doc="Background of text and empty tiles. Follows the theme when not set. Default: -."
+    )
+    text_color: rx.Var[str] = field(
+        doc="Color of text tiles. Follows the theme when not set. Default: -."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Picks the default tile and text colors. Default: 'dark'."
     )
 
 
 class GridScan(ReactBitsComponent):
-    """Animated grid room 3D scan effect and cool interactions.
+    """A 3D grid room swept by a scanning light that follows your view.
 
     Docs: https://reactbits.dev/backgrounds/grid-scan
     """
 
     tag = "GridScan"
     alias = "ReactBitsGridScan"
-    is_default = False
+    is_default = True
     _rb_category = "Backgrounds"
     _rb_name = "GridScan"
     _rb_files = ('GridScan.css', 'GridScan.jsx')
-    lib_dependencies: list[str] = ['face-api.js@0.22.2', 'postprocessing@6.37.8', 'three@0.180.0']
 
-    enable_webcam: rx.Var[bool] = field(
-        doc="Enable face tracking via webcam. Default: false."
-    )
-    show_preview: rx.Var[bool] = field(
-        doc="Show webcam preview/debug HUD. Default: false."
-    )
-    models_path: rx.Var[str] = field(
-        doc="Path/URL to face-api.js models. Default: 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.j...."
-    )
-    sensitivity: rx.Var[int | float] = field(
-        doc="Overall responsiveness to input. Default: 0.55."
-    )
-    line_thickness: rx.Var[int | float] = field(
-        doc="Grid line thickness. Default: 1."
-    )
     lines_color: rx.Var[str] = field(
-        doc="Color of the grid lines. Default: '#2F293A'."
+        doc="Color of the grid lines. Light mode defaults to a pale gray. Default: '#4d4757'."
     )
     scan_color: rx.Var[str] = field(
-        doc="Color of the scan beam/aura. Default: '#FF9FFC'."
+        doc="Color of the scan, its trail, the points and the click ping. Light mode defaults to a deeper blue. Default: '#7dd3fc'."
     )
-    scan_opacity: rx.Var[int | float] = field(
-        doc="Opacity of the scan effect. Default: 0.4."
+    cells: rx.Var[int | float] = field(
+        doc="Number of grid cells from the floor to the ceiling. Default: 8."
     )
-    grid_scale: rx.Var[int | float] = field(
-        doc="Grid spacing scale (smaller = denser). Default: 0.1."
+    line_thickness: rx.Var[int | float] = field(
+        doc="Thickness of the grid lines in pixels. Default: 1."
     )
     line_style: rx.Var[Literal["solid", "dashed", "dotted"]] = field(
-        doc="Grid line style. Default: 'solid'."
+        doc="Style of the grid lines. Default: 'solid'."
     )
-    line_jitter: rx.Var[int | float] = field(
-        doc="Animated jitter along the grid lines. Default: 0.1."
+    depth: rx.Var[int | float] = field(
+        doc="How deep the room goes, relative to its height. High values turn it into a long corridor. Default: 3."
+    )
+    depth_fade: rx.Var[int | float] = field(
+        doc="How much the room fades into the distance, from 0 (evenly bright) to 1 (gone by the back wall). Default: 0.6."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the view shifts as the cursor moves, as if you were moving your head in front of a window. 0 keeps it still. Default: 1."
+    )
+    points: rx.Var[bool] = field(
+        doc="Scatters points over the walls that sparkle as the scan passes, like a LiDAR capture. Default: true."
+    )
+    reflection: rx.Var[int | float] = field(
+        doc="How much the glossy floor reflects the scan and pings, from 0 to 1. Default: 0.35."
+    )
+    shading: rx.Var[int | float] = field(
+        doc="Soft light and corner shadows on the walls, from 0 (pure wireframe) to 1. Default: 0.7."
     )
     scan_direction: rx.Var[Literal["forward", "backward", "pingpong"]] = field(
-        doc="Scan motion. Default: 'pingpong'."
-    )
-    enable_post: rx.Var[bool] = field(
-        doc="Enable post-processing effects. Default: true."
-    )
-    bloom_intensity: rx.Var[int | float] = field(
-        doc="Bloom strength. Default: 0."
-    )
-    bloom_threshold: rx.Var[int | float] = field(
-        doc="Bloom luminance threshold. Default: 0."
-    )
-    bloom_smoothing: rx.Var[int | float] = field(
-        doc="Bloom threshold smoothing. Default: 0."
-    )
-    chromatic_aberration: rx.Var[int | float] = field(
-        doc="Chromatic aberration offset (post). Default: 0.002."
-    )
-    noise_intensity: rx.Var[int | float] = field(
-        doc="Additive film grain intensity. Default: 0.01."
-    )
-    scan_glow: rx.Var[int | float] = field(
-        doc="Relative width/intensity of glow. Default: 0.5."
-    )
-    scan_softness: rx.Var[int | float] = field(
-        doc="Softness of scan band edges. Default: 2."
-    )
-    scan_phase_taper: rx.Var[int | float] = field(
-        doc="Fade-in/out window for the phase. Default: 0.9."
+        doc="Whether the scan travels into the room, out of it, or alternates. Default: 'forward'."
     )
     scan_duration: rx.Var[int | float] = field(
-        doc="Duration of a scan cycle (seconds). Default: 2.0."
+        doc="Seconds each scan takes to cross the room. Default: 2.4."
     )
     scan_delay: rx.Var[int | float] = field(
-        doc="Delay between scan cycles (seconds). Default: 2.0."
+        doc="Seconds between scans. Default: 1.6."
+    )
+    scan_width: rx.Var[int | float] = field(
+        doc="Thickness of the scan line, from 0.2 to 5. Default: 1."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long the walls keep glowing behind the scan, from 0 to 1. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Bloom around the scan line and points, from 0 to 1.5. Default: 0.6."
+    )
+    auto_scan: rx.Var[bool] = field(
+        doc="Runs scans on a loop. Turn it off to scan only on click. Default: true."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Moves the view with the cursor and lights up the walls under it. Default: true."
+    )
+    click_effect: rx.Var[Literal["ping", "scan", "none"]] = field(
+        doc="What a click does. Ping sends a ring of light across the walls from that spot, scan starts a new scan. Default: 'ping'."
+    )
+    enable_webcam: rx.Var[bool] = field(
+        doc="Moves the view with your head through the webcam. The face tracker is loaded from a CDN the first time it turns on. Default: false."
+    )
+    show_preview: rx.Var[bool] = field(
+        doc="Shows a small camera preview with the tracking status while the webcam is on. Default: false."
+    )
+    models_path: rx.Var[str] = field(
+        doc="Where the face tracking model is loaded from. Point it at your own copy to self-host. Default: MODELS_URL."
     )
     enable_gyro: rx.Var[bool] = field(
-        doc="Use device orientation for input. Default: false."
+        doc="Moves the view as a phone or tablet tilts. iOS asks for permission on the first tap. Default: false."
     )
-    scan_on_click: rx.Var[bool] = field(
-        doc="Trigger a scan when clicking. Default: false."
-    )
-    snap_back_delay: rx.Var[int | float] = field(
-        doc="Delay (ms) before input recenters. Default: 250."
+    intro: rx.Var[bool] = field(
+        doc="Reveals the room with a first scan on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Renders a bright room with dark shading for light backgrounds. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Hyperspeed(ReactBitsComponent):
-    """Animated lines continuously moving to simulate hyperspace travel on click hold.
+    """Night highway of glowing light trails on a winding road that warps into hyperspace while you hold.
 
     Docs: https://reactbits.dev/backgrounds/hyperspeed
     """
@@ -1541,46 +2344,103 @@ class Hyperspeed(ReactBitsComponent):
     is_default = True
     _rb_category = "Backgrounds"
     _rb_name = "Hyperspeed"
-    _rb_files = ('HyperSpeedPresets.js', 'Hyperspeed.css', 'Hyperspeed.jsx')
-    lib_dependencies: list[str] = ['postprocessing@6.37.8', 'three@0.180.0']
+    _rb_files = ('Hyperspeed.css', 'Hyperspeed.jsx')
+    lib_dependencies: list[str] = ['three@0.180.0']
 
-    effect_options: rx.Var[dict[str, Any]] = field(
-        doc="The highly customizable configuration object for the effect, controls things like colors, distortion, line properties, etc. Default: DEFAULT_EFFECT_OPTIONS."
+    curve: rx.Var[Literal["straight", "gentle", "winding", "hills", "racing", "deep"]] = field(
+        doc="Shape of the road. Switching between curves morphs the road smoothly. Default: 'winding'."
     )
-    light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+    curvature: rx.Var[int | float] = field(
+        doc="How strongly the road bends. 0 is straight. Default: 1."
     )
-
-    @classmethod
-    def create(cls, *children, preset: str | None = None, **props):
-        """Create the component.
-
-        Args:
-            *children: Children (unused).
-            preset: Name of a built-in React Bits preset ("one" .. "six"). Ignored if
-                ``effect_options`` is given.
-            **props: Component props.
-
-        Returns:
-            The component.
-        """
-        if preset is not None and "effect_options" not in props:
-            ensure_component_source(cls._rb_category, cls._rb_name, cls._rb_files)
-            props["effect_options"] = rx.Var(
-                f"hyperspeedPresets[{json.dumps(preset)}]",
-                _var_data=VarData(
-                    imports={
-                        f"$/public/{ASSETS_SUBDIR}/Backgrounds/Hyperspeed/HyperSpeedPresets.js": [
-                            ImportVar(tag="hyperspeedPresets")
-                        ]
-                    }
-                ),
-            )
-        return super().create(*children, **props)
+    speed: rx.Var[int | float] = field(
+        doc="Cruising speed of the traffic, poles and road markings. Default: 1."
+    )
+    boost: rx.Var[int | float] = field(
+        doc="Speed multiplier while the pointer is held down. The lights stretch into longer trails as it kicks in. Default: 3."
+    )
+    fov: rx.Var[int | float] = field(
+        doc="Camera field of view in degrees. Default: 90."
+    )
+    boost_fov: rx.Var[int | float] = field(
+        doc="Field of view while boosting. The camera springs between the two for a punchy warp. Default: 130."
+    )
+    lanes: rx.Var[int | float] = field(
+        doc="Lanes on each side of the road. Default: 3."
+    )
+    road_width: rx.Var[int | float] = field(
+        doc="Width of each side of the road. Default: 10."
+    )
+    median_width: rx.Var[int | float] = field(
+        doc="Width of the strip between the two sides. Default: 2."
+    )
+    density: rx.Var[int | float] = field(
+        doc="Cars on each side of the road, up to 160. Default: 40."
+    )
+    trail_length: rx.Var[int | float] = field(
+        doc="Length of the light trails. Default: 1."
+    )
+    light_size: rx.Var[int | float] = field(
+        doc="Thickness of the light trails. Default: 1."
+    )
+    poles: rx.Var[int | float] = field(
+        doc="Light poles on each shoulder, up to 80. 0 removes them. Default: 20."
+    )
+    pole_height: rx.Var[int | float] = field(
+        doc="Height of the light poles. Default: 1."
+    )
+    dust: rx.Var[int | float] = field(
+        doc="Speed streaks flying past in the air, up to 1500. They stretch into warp lines while boosting. Default: 100."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft bloom around every light. Dense traffic glows brighter. 0 turns it off. Default: 0.6."
+    )
+    reflections: rx.Var[int | float] = field(
+        doc="How much the lights reflect on the road, like wet asphalt at night. Default: 0.5."
+    )
+    steer: rx.Var[int | float] = field(
+        doc="How far the camera drifts and turns toward the pointer. Default: 0.35."
+    )
+    tail_colors: rx.Var[list[str]] = field(
+        doc="Colors of the lights moving away on the left road. Defaults to magentas and violet. Default: -."
+    )
+    head_colors: rx.Var[list[str]] = field(
+        doc="Colors of the oncoming lights on the right road. Defaults to cyan and deep blues. Default: -."
+    )
+    pole_colors: rx.Var[list[str]] = field(
+        doc="Colors of the light poles along both shoulders. Default: -."
+    )
+    road_color: rx.Var[str] = field(
+        doc="Color of the asphalt. The median strip takes a slightly lighter shade. Follows the theme when not set. Default: -."
+    )
+    road_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the road and its markings. Lower it to let your page show through under the traffic. Reflections fade with it. Default: 0.1."
+    )
+    line_color: rx.Var[str] = field(
+        doc="Color of the lane markings. Follows the theme when not set. Default: -."
+    )
+    background: rx.Var[str] = field(
+        doc="Color behind the road, which the road fades into. Leave it unset to keep the canvas transparent so your page shows through. Default: -."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Dark renders glowing light trails. Light renders crisp colored trails on a pale road. Default: 'dark'."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Click and hold to boost, and let the camera follow the pointer. Default: true."
+    )
+    boosting: rx.Var[bool] = field(
+        doc="Turns the boost on from your own code, for example while something loads. Default: false."
+    )
+    on_boost_start: rx.EventHandler[no_args_event_spec] = field(
+        doc="Called when the user starts boosting."
+    )
+    on_boost_end: rx.EventHandler[no_args_event_spec] = field(
+        doc="Called when the user lets go."
+    )
 
 
 class Iridescence(ReactBitsComponent):
-    """Slick iridescent shader with shifting waves.
+    """Liquid iridescent surface with shifting folds that you can stir with the cursor.
 
     Docs: https://reactbits.dev/backgrounds/iridescence
     """
@@ -1591,24 +2451,71 @@ class Iridescence(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Iridescence"
     _rb_files = ('Iridescence.css', 'Iridescence.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    color: rx.Var[list[int | float]] = field(
-        doc="Base color as an array of RGB values (each between 0 and 1). Default: [1, 1, 1]."
+    color: rx.Var[list[Any] | str] = field(
+        doc="Tint multiplied over the colors. Any CSS color, or an RGB array from 0 to 1. Default: [1, 1, 1]."
     )
     speed: rx.Var[int | float] = field(
-        doc="Speed multiplier for the animation. Default: 1.0."
+        doc="Animation speed. 0 holds the pattern still. Default: 1."
     )
     amplitude: rx.Var[int | float] = field(
-        doc="Amplitude for the mouse-driven effect. Default: 0.1."
+        doc="How far the pattern drifts toward the pointer. Default: 0.1."
     )
     mouse_react: rx.Var[bool] = field(
-        doc="Enable or disable mouse interaction with the shader. Default: true."
+        doc="Turns the pointer interactions on or off: parallax, stir and sheen. Default: true."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the pattern. Higher values give broader folds. Default: 1."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="How many layers of folds are stacked. Lower is softer, higher is more intricate. Default: 8."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Rotation of the pattern in degrees. Default: 0."
+    )
+    warp: rx.Var[int | float] = field(
+        doc="How strongly the folds bend into each other. Default: 1."
+    )
+    hue_shift: rx.Var[int | float] = field(
+        doc="Rotates the hues, in degrees. Default: 0."
+    )
+    saturation: rx.Var[int | float] = field(
+        doc="Color intensity. 0 gives a monochrome chrome look. Default: 1."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 1.5."
+    )
+    contrast: rx.Var[int | float] = field(
+        doc="Contrast between the folds. Default: 1."
+    )
+    stir: rx.Var[int | float] = field(
+        doc="Drags the folds along with the pointer like a liquid. 0 turns it off. Default: 0.5."
+    )
+    sheen: rx.Var[int | float] = field(
+        doc="Brightens the surface softly around the pointer. Default: 0.3."
+    )
+    click_swirl: rx.Var[bool] = field(
+        doc="Stirs a swirl into the surface wherever you click, which slowly unwinds. Default: true."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain over the surface, from 0 to 1. Default: 0."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. The canvas is transparent where it fades. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    resolution: rx.Var[int | float] = field(
+        doc="Render scale. Lower values trade sharpness for speed on large screens. Default: 1."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
     )
 
 
 class LetterGlitch(ReactBitsComponent):
-    """Matrix style letter animation.
+    """A calm field of letters that flicker, scramble and glitch in color, stirred by the cursor and torn by clicks.
 
     Docs: https://reactbits.dev/backgrounds/letter-glitch
     """
@@ -1618,36 +2525,75 @@ class LetterGlitch(ReactBitsComponent):
     is_default = True
     _rb_category = "Backgrounds"
     _rb_name = "LetterGlitch"
-    _rb_files = ('LetterGlitch.jsx',)
+    _rb_files = ('LetterGlitch.css', 'LetterGlitch.jsx')
 
     glitch_colors: rx.Var[list[str]] = field(
-        doc="Controls the colors of the letters rendered in the canvas. Default: ['#2b4539', '#61dca3', '#61b3dc']."
+        doc="Up to 8 colors that glitching letters light up in. Light mode defaults to dark ink tones. Default: ['#ffffff', '#61dca3']."
     )
-    glitch_speed: rx.Var[int | float] = field(
-        doc="Controls the speed at which letters scramble in the animation. Default: 50."
-    )
-    center_vignette: rx.Var[bool] = field(
-        doc="When true, renders a radial gradient in the center of the container. Default: false."
-    )
-    outer_vignette: rx.Var[bool] = field(
-        doc="When true, renders an inner radial gradient around the edges of the container. Default: true."
-    )
-    smooth: rx.Var[bool] = field(
-        doc="When true, smoothens the animation of the letters for a more subtle feel. Default: true."
-    )
-    light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
-    )
-    background_color: rx.Var[Any] = field(
-        doc="The `backgroundColor` prop."
+    base_color: rx.Var[str] = field(
+        doc="Color of the letters at rest. Light mode defaults to near black. Default: '#ffffff'."
     )
     characters: rx.Var[str] = field(
-        doc="String of characters to render in the canvas. Default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456...."
+        doc="Characters to draw. Repeat a character to make it appear more often. Default: DEFAULT_CHARACTERS."
+    )
+    font_family: rx.Var[str] = field(
+        doc="CSS font family for the letters. Web fonts are drawn once they have loaded. Default: DEFAULT_FONT."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Size of the letters in pixels. Default: 14."
+    )
+    spacing: rx.Var[int | float] = field(
+        doc="Room around each letter relative to the font size. 0 packs them like lines of text. Default: 0.6."
+    )
+    density: rx.Var[int | float] = field(
+        doc="Share of the grid that shows a letter at rest, from 0 to 1. Empty cells still flicker when they glitch. Default: 0.9."
+    )
+    base_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the letters at rest, from 0 to 1. Default: 0.16."
+    )
+    glitch_amount: rx.Var[int | float] = field(
+        doc="How often letters glitch, from 0 (never) to 1 (constantly). Default: 0.5."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Tempo of the scrambling and glitches. 0 freezes the letters. Default: 1."
+    )
+    smooth: rx.Var[bool] = field(
+        doc="Fades glitching letters in and out. When off, they flicker on and off instantly. Default: true."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Lights up and scrambles the letters near the cursor, leaving a trail of glitches when it moves. Default: true."
+    )
+    cursor_radius: rx.Var[int | float] = field(
+        doc="Radius of the area around the cursor that reacts, in pixels. Default: 140."
+    )
+    click_effect: rx.Var[Literal["tear", "burst", "none"]] = field(
+        doc="What a click does. Tear rips a horizontal glitch through the rows, burst sends glitches outward. Default: 'tear'."
+    )
+    flow: rx.Var[int | float] = field(
+        doc="Strength of the soft waves of light that drift across the letters, from 0 to 1. Default: 0.5."
+    )
+    edge_fade: rx.Var[int | float] = field(
+        doc="Fades the letters out toward the edges, from 0 to 0.5. Default: 0."
+    )
+    center_fade: rx.Var[int | float] = field(
+        doc="Clears the letters behind the middle of the container to keep content readable, from 0 to 1. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Boots the letters in with a flicker on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Switches the default colors to dark ink for light backgrounds. Default: false."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Paints an opaque background behind the letters. Leave it unset for a transparent canvas. Default: -."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class LightPillar(ReactBitsComponent):
-    """Vertical pillar of light with glow effects.
+    """A swirling pillar of light that ignites on load, leans toward the cursor and surges on click.
 
     Docs: https://reactbits.dev/backgrounds/light-pillar
     """
@@ -1658,51 +2604,77 @@ class LightPillar(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LightPillar"
     _rb_files = ('LightPillar.css', 'LightPillar.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
 
     top_color: rx.Var[str] = field(
-        doc="Hex color string for the top gradient color of the light pillar. Default: '#5227FF'."
+        doc="Color of the lower, denser part of the pillar. Default: '#5227FF'."
     )
     bottom_color: rx.Var[str] = field(
-        doc="Hex color string for the bottom gradient color of the light pillar. Default: '#FF9FFC'."
+        doc="Color the light fades into toward the top. Default: '#FF9FFC'."
     )
     intensity: rx.Var[int | float] = field(
-        doc="Controls the overall brightness and intensity of the effect. Default: 1.0."
+        doc="Overall brightness. Default: 1.0."
     )
     rotation_speed: rx.Var[int | float] = field(
-        doc="Speed multiplier for the pillar rotation animation. Default: 0.3."
+        doc="How fast the pillar turns. Also drives the overall animation speed. Default: 0.3."
+    )
+    flow: rx.Var[int | float] = field(
+        doc="How fast the light streams along the pillar, relative to the rotation. Default: 1."
     )
     interactive: rx.Var[bool] = field(
-        doc="Enable mouse interaction to control the pillar rotation. Default: false."
+        doc="The pillar leans, drifts and turns toward the cursor. Default: true."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a surge of light racing up the pillar. Default: true."
     )
     glow_amount: rx.Var[int | float] = field(
-        doc="Controls the glow intensity and spread of the light effect. Default: 0.005."
+        doc="How much light the strands gather. Higher values burn brighter and whiter. Default: 0.002."
+    )
+    bloom: rx.Var[int | float] = field(
+        doc="Soft halo around the brightest strands, from 0 to 1. Default: 0.5."
     )
     pillar_width: rx.Var[int | float] = field(
-        doc="Width/radius of the light pillar. Default: 3.0."
+        doc="Width of the pillar. Default: 3.0."
     )
     pillar_height: rx.Var[int | float] = field(
-        doc="Height scaling factor for the pillar distortion. Default: 0.4."
-    )
-    noise_intensity: rx.Var[int | float] = field(
-        doc="Intensity of the film grain noise postprocessing effect. Default: 0.5."
-    )
-    mix_blend_mode: rx.Var[str] = field(
-        doc="CSS mix-blend-mode property to control how the component blends with its background. Default: 'screen'."
+        doc="Vertical stretch of the strands. Higher values pack them tighter. Default: 0.4."
     )
     pillar_rotation: rx.Var[int | float] = field(
-        doc="Rotation angle of the pillar in degrees (0-360). Default: 0."
+        doc="Tilts the pillar, in degrees. Default: 25."
+    )
+    twist: rx.Var[int | float] = field(
+        doc="How much the strands swirl around each other. Default: 0.4."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="Layers of turbulence in the strands, from 1 to 6. Fewer layers are smoother and faster. Default: 4."
+    )
+    noise_intensity: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.5."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The pillar ignites from the bottom and widens when it first appears. Default: true."
+    )
+    mix_blend_mode: rx.Var[str] = field(
+        doc="CSS blend mode for the canvas. Screen lets the page show through the dark areas. Default: 'screen'."
     )
     quality: rx.Var[Literal["low", "medium", "high"]] = field(
-        doc="Rendering quality level. Lower settings improve performance on mobile devices. Mobile devices automatically downgrade from high to medium. Default: 'high'."
+        doc="Render resolution of the light. The pillar is soft, so lower settings look almost the same. Default: 'high'."
+    )
+    resolution: rx.Var[int | float] = field(
+        doc="Exact render scale relative to the element size, from 0.25 to 2. Overrides quality. Default: -."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the pillar as colored light on a white background. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
     )
 
 
 class LightRays(ReactBitsComponent):
-    """Volumetric light rays/beams with customizable direction.
+    """Volumetric light rays from any edge, with source glow and haze. The cursor steers the beam and casts a shadow.
 
     Docs: https://reactbits.dev/backgrounds/light-rays
     """
@@ -1713,51 +2685,86 @@ class LightRays(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LightRays"
     _rb_files = ('LightRays.css', 'LightRays.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     rays_origin: rx.Var[str] = field(
-        doc="Origin position of the light rays. Options: 'top-center', 'top-left', 'top-right', 'right', 'left', 'bottom-center', 'bottom-right', 'bottom-left'. Default: 'top-center'."
+        doc="Where the light comes from: 'top-center', 'top-left', 'top-right', 'left', 'right', 'bottom-center', 'bottom-left' or 'bottom-right'. Default: 'top-center'."
     )
     rays_color: rx.Var[str] = field(
-        doc="Color of the light rays in hex format. Default: DEFAULT_COLOR."
+        doc="Color of the light. Default: '#ffffff'."
     )
     rays_speed: rx.Var[int | float] = field(
-        doc="Animation speed of the rays. Default: 1."
+        doc="Animation speed. 0 freezes the rays. Default: 1."
     )
     light_spread: rx.Var[int | float] = field(
-        doc="How wide the light rays spread. Lower values = tighter rays, higher values = wider spread. Default: 1."
+        doc="How wide the beam opens. Lower values give a tight spotlight. Default: 0.5."
     )
     ray_length: rx.Var[int | float] = field(
-        doc="Maximum length/reach of the rays. Default: 2."
+        doc="How far the rays reach, in container widths. Default: 3."
+    )
+    ray_density: rx.Var[int | float] = field(
+        doc="How many separate shafts the beam splits into. Default: 1."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Turns the beam by this many degrees. Default: 0."
+    )
+    ray_sharpness: rx.Var[int | float] = field(
+        doc="How crisp the edges of the shafts are, from 0 to 1. Default: 0.35."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Brightness of the glow around the light source. Default: 0.6."
+    )
+    haze: rx.Var[int | float] = field(
+        doc="Drifting haze that breaks the shafts up, like dust in the air, from 0 to 1. Default: 0.25."
+    )
+    atmosphere: rx.Var[int | float] = field(
+        doc="How much the light cools toward blue as it travels away from the source, from 0 to 1. Default: 1."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="Overall brightness of the light. Default: 1."
     )
     pulsating: rx.Var[bool] = field(
-        doc="Enable pulsing animation effect. Default: false."
+        doc="The rays slowly breathe brighter and dimmer. Default: false."
     )
     fade_distance: rx.Var[int | float] = field(
-        doc="How far rays fade out from origin. Default: 1.0."
+        doc="How far the rays travel before they dim, in container widths. Default: 1."
     )
     saturation: rx.Var[int | float] = field(
-        doc="Color saturation level (0-1). Default: 1.0."
+        doc="Color saturation of the light. Default: 1."
     )
     follow_mouse: rx.Var[bool] = field(
-        doc="Make rays rotate towards the mouse cursor. Default: true."
+        doc="The beam turns toward the cursor. Default: true."
     )
     mouse_influence: rx.Var[int | float] = field(
-        doc="How much mouse affects rays (0-1). Default: 0.1."
+        doc="How far the beam turns toward the cursor, from 0 to 1. Default: 0.1."
+    )
+    cursor_shadow: rx.Var[bool] = field(
+        doc="The cursor blocks the light and casts a soft shadow down the rays. Default: true."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a wave of light down the rays. Default: true."
     )
     noise_amount: rx.Var[int | float] = field(
-        doc="Add noise/grain to rays (0-1). Default: 0.0."
+        doc="Film grain over the rays, from 0 to 1. Default: 0."
     )
     distortion: rx.Var[int | float] = field(
-        doc="Apply wave distortion to rays. Default: 0.0."
+        doc="Makes the rays waver as if seen through heat. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The rays grow out from the source on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Prints the light as soft colored ink so it sits on light pages. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class LightTunnel(ReactBitsComponent):
-    """A radial fibre-optic tunnel with light pulses racing into depth.
+    """A swirling fibre-optic tunnel where comets of light race into depth, steered by the cursor.
 
     Docs: https://reactbits.dev/backgrounds/light-tunnel
     """
@@ -1768,99 +2775,116 @@ class LightTunnel(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LightTunnel"
     _rb_files = ('LightTunnel.css', 'LightTunnel.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     cable_color: rx.Var[str] = field(
-        doc="Base color of the fibre-optic cables. Default: '#A855F7'."
+        doc="Color of the fibres. Default: '#ffffff'."
     )
     pulse_color: rx.Var[str] = field(
-        doc="Color of the light pulses travelling along each cable. Default: '#A855F7'."
+        doc="Color of the light pulses. Default: '#ffffff'."
     )
     tunnel_color: rx.Var[str] = field(
-        doc="Tint color of the cable body fill (visible when tunnelOpacity is above 0). Default: '#5227FF'."
+        doc="Color of the soft glow around the fibres, shown when tunnelOpacity is above 0. Default: '#ffffff'."
     )
     tunnel_opacity: rx.Var[int | float] = field(
-        doc="Opacity of the cable body fill. 0 leaves the tunnel see-through so only rims and pulses show. Default: 0."
+        doc="Strength of the soft glow around the fibres that tints the tunnel walls. Default: 0."
     )
     speed: rx.Var[int | float] = field(
-        doc="Overall scroll speed of the pulses down the tunnel. Default: 0.1."
+        doc="Overall speed of the tunnel. Default: 0.1."
     )
     flow_direction: rx.Var[Literal["inward", "outward"]] = field(
-        doc="Whether the light travels toward or away from the vanishing point. Default: 'outward'."
+        doc="Whether the pulses race into the tunnel or rush out toward you. Default: 'inward'."
     )
     pulse_speed: rx.Var[int | float] = field(
-        doc="Speed multiplier for the individual light pulses. Default: 2."
+        doc="How fast the pulses travel. Default: 2."
     )
     pulse_length: rx.Var[int | float] = field(
-        doc="Length of the glowing pulse along each cable. Default: 0.28."
+        doc="Length of each pulse and its tail. Default: 0.28."
     )
     pulse_blend: rx.Var[int | float] = field(
-        doc="How softly the pulse fades out at its edges \u2014 low is a crisp packet, high is a long smooth trail. Default: 1."
+        doc="Softness of the pulses, from crisp sparks (0) to long soft streaks (1). Default: 0.6."
     )
     pulse_width: rx.Var[int | float] = field(
-        doc="How much of the cable cross-section the pulse lights up \u2014 1 fills the cable, lower narrows it to a filament. Default: 1."
+        doc="Width of the pulses relative to the fibres. Default: 1."
+    )
+    pulse_density: rx.Var[int | float] = field(
+        doc="How many pulses are travelling at once, from 0 to 1. Default: 0.5."
     )
     cable_count: rx.Var[int | float] = field(
-        doc="Number of cables radiating around the tunnel. Default: 20."
+        doc="Number of fibres around the tunnel. Default: 56."
     )
     thickness: rx.Var[int | float] = field(
-        doc="Thickness of each cable core. Default: 0.35."
+        doc="Thickness of the fibres. Default: 0.35."
     )
     rim_width: rx.Var[int | float] = field(
-        doc="Width of the soft outline glow around each cable. Default: 0.15."
+        doc="How far the glow spreads around each pulse. Default: 0.15."
     )
     waviness: rx.Var[int | float] = field(
-        doc="Amount of wavy distortion applied along the tunnel depth. Default: 0.3."
+        doc="How much the fibres swirl along the tunnel. Default: 0.3."
     )
     sway: rx.Var[int | float] = field(
-        doc="Strength of the gentle rotational sway of the tunnel. Default: 0.5."
+        doc="How much the tunnel slowly rocks back and forth. Default: 0.5."
+    )
+    bend: rx.Var[int | float] = field(
+        doc="How much the far end of the tunnel drifts and curves. Default: 0.4."
     )
     size: rx.Var[int | float] = field(
-        doc="Zoom / scale of the tunnel field. Default: 1.0."
+        doc="Scale of the tunnel. Default: 1."
     )
     center_x: rx.Var[int | float] = field(
-        doc="Horizontal offset of the vanishing point. Default: 0.0."
+        doc="Horizontal offset of the tunnel center. Default: 0."
     )
     center_y: rx.Var[int | float] = field(
-        doc="Vertical offset of the vanishing point. Default: 0.0."
+        doc="Vertical offset of the tunnel center. Default: 0."
     )
     glow: rx.Var[int | float] = field(
-        doc="Intensity of the cable rim glow. Default: 1.0."
+        doc="Strength of the glow around the pulses. Default: 1."
     )
     fade_near: rx.Var[int | float] = field(
-        doc="Radius over which the tunnel fades in near the center. Default: 0.5."
+        doc="How far from the center the tunnel fades in. Higher values keep the middle clear. Default: 0.5."
     )
     fade_far: rx.Var[int | float] = field(
-        doc="Radius at which the tunnel fades out toward the edges. Default: 2."
+        doc="Distance at which the tunnel fades out at the edges. Default: 2."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier of the effect. Default: 1.0."
+        doc="Overall brightness. Default: 1."
     )
     color_variance: rx.Var[bool] = field(
-        doc="Adds subtle per-cable color variation so cables are not uniform. Default: true."
+        doc="Gives every fibre a slightly different brightness. Default: true."
     )
     grain: rx.Var[bool] = field(
-        doc="Adds a whisper-subtle animated film grain to break up banding in the gradients. Default: true."
+        doc="Adds a fine film grain to the light. Default: false."
     )
     grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+        doc="Strength of the grain. Default: 0.05."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Global opacity of the rendered tunnel. Default: 1.0."
+        doc="Opacity of the whole effect. Default: 1."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables gentle parallax of the vanishing point toward the pointer. Default: true."
+        doc="Steers the far end of the tunnel toward the cursor. Default: true."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Magnitude of the cursor parallax drift. Default: 0.1."
+        doc="How far the cursor steers the tunnel. Default: 0.1."
+    )
+    click_surge: rx.Var[bool] = field(
+        doc="Clicking sends a ring of light down the tunnel. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Grows the tunnel out from the center on mount. Default: true."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different arrangement of fibres and pulses. Default: 0."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the tunnel as ink for light backgrounds. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Lightfall(ReactBitsComponent):
-    """Colorful light streaks raining down a glowing tunnel with a cursor light.
+    """Streaks of light falling down a curved tunnel, bending around the cursor and stretching into warp trails on hold.
 
     Docs: https://reactbits.dev/backgrounds/lightfall
     """
@@ -1871,72 +2895,92 @@ class Lightfall(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Lightfall"
     _rb_files = ('Lightfall.css', 'Lightfall.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    dpr: rx.Var[int | float] = field(
-        doc="Overrides device pixel ratio; lower for performance, higher for sharpness. Default: window.devicePixelRatio."
-    )
-    paused: rx.Var[bool] = field(
-        doc="If true, stops rendering updates (freezing the current frame). Default: false."
-    )
     colors: rx.Var[list[str]] = field(
-        doc="Array of hex colors (up to 8) used to tint the falling light streaks. Each streak is randomly but evenly assigned one of the colors; a single color makes the whole effect uniform. Default: ['#A6C8FF', '#5227FF', '#FF9FFC']."
+        doc="Colors of the falling streaks, up to 8. Each streak picks one. Default: ['#ffffff']."
     )
     background_color: rx.Var[str] = field(
-        doc="Hex color of the soft ambient glow behind the streaks. Default: '#0A29FF'."
+        doc="Color of the soft light glowing at the top, where the streaks come from. Default: '#94a3b8'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Multiplier for how fast the light streaks fall. Default: 0.5."
+        doc="How fast the streaks fall. Default: 0.3."
     )
     streak_count: rx.Var[int | float] = field(
-        doc="Number of streak layers rendered per cell (1\u201316). Higher = busier. Default: 2."
+        doc="Layers of streaks, from 1 to 16. More layers fill the tunnel. Default: 2."
     )
     streak_width: rx.Var[int | float] = field(
-        doc="Thickness of each light streak. Default: 1."
+        doc="Thickness of the streaks. Default: 0.8."
     )
     streak_length: rx.Var[int | float] = field(
-        doc="Length of the glowing tail trailing each streak. Default: 1."
+        doc="Length of the glowing tails. Default: 1."
     )
     glow: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier applied before tone mapping. Default: 1."
+        doc="Overall brightness. Default: 1."
     )
     density: rx.Var[int | float] = field(
-        doc="Vertical frequency of streaks. Higher values pack more streaks into view. Default: 0.6."
+        doc="How closely the streaks follow each other down the tunnel. Default: 0.6."
     )
     twinkle: rx.Var[int | float] = field(
-        doc="Amount of per\u2011streak brightness flicker. 0 = constant brightness. Default: 1."
+        doc="How much the streaks flicker, from 0 to 1. Default: 0.3."
     )
     zoom: rx.Var[int | float] = field(
         doc="Field of view into the tunnel. Higher values zoom further in. Default: 3."
     )
     background_glow: rx.Var[int | float] = field(
-        doc="Intensity of the ambient background glow. Default: 0.5."
+        doc="Brightness of the soft light at the top. 0 turns it off. Default: 0.1."
+    )
+    head_glow: rx.Var[int | float] = field(
+        doc="How white-hot the leading tips burn, from 0 to 1. Default: 0.6."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="Dims streaks deep in the tunnel so the near ones stand out. Default: 0.5."
+    )
+    bloom: rx.Var[int | float] = field(
+        doc="Soft glow around the brightest tips. Default: 0.35."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Overall alpha of the rendered canvas. Default: 1."
+        doc="Opacity of the whole effect. Default: 1."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables a soft light that follows the cursor and flares nearby streaks (no warping). Default: true."
+        doc="The cursor bends the falling light like a lens and brightens the streaks near it. Default: true."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Intensity of the cursor light. Default: 0.5."
+        doc="How much the cursor brightens nearby streaks. Default: 0.4."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Falloff radius of the cursor light. Default: 1."
+        doc="Reach of the cursor light. Default: 0.45."
     )
     mouse_dampening: rx.Var[int | float] = field(
-        doc="Easing time constant (seconds) for the cursor light to follow the pointer. 0 = immediate. Default: 0.15."
+        doc="How long the cursor light takes to catch up, in seconds. 0 follows instantly. Default: 0.15."
+    )
+    lens: rx.Var[int | float] = field(
+        doc="How strongly the cursor bends the streaks. Default: 0.5."
+    )
+    hold_to_warp: rx.Var[bool] = field(
+        doc="Holding the pointer down speeds the streaks up into warp trails. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The light arrives at warp speed and slows to a steady fall. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the streaks as colored light on a white background. Default: false."
     )
     mix_blend_mode: rx.Var[str] = field(
-        doc="CSS mix-blend-mode applied to the canvas (e.g. 'screen', 'lighten')."
+        doc="CSS blend mode for the canvas, such as screen or lighten."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Lightning(ReactBitsComponent):
-    """Procedural lightning bolts with branching and glow flicker.
+    """Crackling, branching lightning that bends toward the cursor and strikes wherever you click.
 
     Docs: https://reactbits.dev/backgrounds/lightning
     """
@@ -1948,25 +2992,73 @@ class Lightning(ReactBitsComponent):
     _rb_name = "Lightning"
     _rb_files = ('Lightning.css', 'Lightning.jsx')
 
-    hue: rx.Var[int | float] = field(
-        doc="Hue of the lightning in degrees (0 to 360). Default: 230."
+    color: rx.Var[str] = field(
+        doc="Color of the lightning. The hottest parts glow white. Default: '#4d6bff'."
+    )
+    bolts: rx.Var[int | float] = field(
+        doc="How many bolts to draw, from 1 to 4. Default: 1."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="Space between bolts when there is more than one. Default: 0.6."
+    )
+    branches: rx.Var[int | float] = field(
+        doc="How many side branches split off and flash along the bolts, from 0 to 1. Default: 0.5."
     )
     x_offset: rx.Var[int | float] = field(
-        doc="Horizontal offset of the lightning in normalized units. Default: 0."
+        doc="Moves the bolts sideways. Default: 0."
     )
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier for the lightning. Default: 1."
-    )
-    intensity: rx.Var[int | float] = field(
-        doc="Brightness multiplier for the lightning. Default: 1."
+    angle: rx.Var[int | float] = field(
+        doc="Tilts the bolts, in degrees. 90 runs them across. Default: 0."
     )
     size: rx.Var[int | float] = field(
-        doc="Scale factor for the bolt size. Default: 1."
+        doc="Scale of the jagged path. Higher is more crooked. Default: 1."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Thickness of the bright core. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="How far the glow spreads around the bolts. Default: 1."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 1."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the bolts crawl. The motion loops seamlessly every 10 seconds at 1. Default: 1."
+    )
+    flicker: rx.Var[int | float] = field(
+        doc="Strength of the flicker and sudden flashes, from 0 to 1. Default: 0.6."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Bolts bend toward the cursor, crackle and grow extra branches near it. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the bolts bend toward the cursor. Default: 1."
+    )
+    click_strike: rx.Var[bool] = field(
+        doc="Clicking calls down a bolt that strikes the spot and briefly flashes the others. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Lets the bolts descend from the top on first load. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the lightning as crisp ink strokes for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class LineWaves(ReactBitsComponent):
-    """Animated line wave pattern with colorful warped distortion.
+    """Fine lines that flow in silky waves while a band of light drifts through them.
 
     Docs: https://reactbits.dev/backgrounds/line-waves
     """
@@ -1977,54 +3069,77 @@ class LineWaves(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LineWaves"
     _rb_files = ('LineWaves.css', 'LineWaves.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    speed: rx.Var[int | float] = field(
-        doc="Overall animation speed multiplier. Default: 0.3."
-    )
-    inner_line_count: rx.Var[int | float] = field(
-        doc="Number of lines in the inner (center) wave region. Default: 32.0."
-    )
-    outer_line_count: rx.Var[int | float] = field(
-        doc="Number of lines in the outer (edge) wave region. Default: 36.0."
-    )
-    warp_intensity: rx.Var[int | float] = field(
-        doc="Intensity of the wave distortion effect. Default: 1.0."
-    )
-    rotation: rx.Var[int | float] = field(
-        doc="Rotation of the wave pattern in degrees. Default: -45."
-    )
-    edge_fade_width: rx.Var[int | float] = field(
-        doc="Width of the edge fade between inner and outer regions. Default: 0.0."
-    )
-    color_cycle_speed: rx.Var[int | float] = field(
-        doc="Speed of color cycling animation. Default: 1.0."
-    )
-    brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier. Default: 0.2."
-    )
     color1: rx.Var[str] = field(
-        doc="First color channel in HEX format. Default: '#ffffff'."
+        doc="First color the lines blend through. Default: '#ffffff'."
     )
     color2: rx.Var[str] = field(
-        doc="Second color channel in HEX format. Default: '#ffffff'."
+        doc="Second color the lines blend through. Default: '#ffffff'."
     )
     color3: rx.Var[str] = field(
-        doc="Third color channel in HEX format. Default: '#ffffff'."
+        doc="Third color the lines blend through. Default: '#ffffff'."
+    )
+    color_cycle_speed: rx.Var[int | float] = field(
+        doc="How fast the colors drift across the lines. 0 keeps them in place. Default: 1."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the waves flow. 0 freezes them. Default: 0.3."
+    )
+    line_count: rx.Var[int | float] = field(
+        doc="Number of lines across the height of the container. Default: 72."
+    )
+    line_width: rx.Var[int | float] = field(
+        doc="Thickness of the lines, in px. Default: 1.3."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the soft glow around each line. Default: 0.6."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness of the lines. Default: 1."
+    )
+    highlight: rx.Var[int | float] = field(
+        doc="Strength of the band of light that drifts through the lines, from 0 to 1. At 0 every line is lit evenly. Default: 1."
+    )
+    highlight_width: rx.Var[int | float] = field(
+        doc="Width of the band of light. Higher values light more lines at once. Default: 1."
+    )
+    warp_intensity: rx.Var[int | float] = field(
+        doc="How strongly the lines bend into waves. Default: 1."
+    )
+    warp_scale: rx.Var[int | float] = field(
+        doc="Size of the waves. Higher values give broad, sweeping curves. Default: 1."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Angle of the lines, in degrees. Default: -33."
+    )
+    edge_fade: rx.Var[int | float] = field(
+        doc="Fades the lines out toward the edges of the container, from 0 to 1. Default: 0."
     )
     enable_mouse_interaction: rx.Var[bool] = field(
-        doc="Enable cursor-reactive wave distortion. Default: true."
+        doc="The lines spread apart and light up around the cursor. Default: true."
     )
     mouse_influence: rx.Var[int | float] = field(
-        doc="Strength of mouse influence on the wave pattern. Default: 2.0."
+        doc="How strongly the lines react to the cursor. Default: 2."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a smooth wave rolling out through the lines. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The lines draw in across the container on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the lines as ink for light backgrounds. Colors turn into deeper inks of the same hue. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class LiquidChrome(ReactBitsComponent):
-    """Liquid metallic chrome shader with flowing reflective surface.
+    """Soft ribbons of liquid chrome that swirl through a dark pool, ripple under the cursor and catch the light as it moves.
 
     Docs: https://reactbits.dev/backgrounds/liquid-chrome
     """
@@ -2035,30 +3150,62 @@ class LiquidChrome(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LiquidChrome"
     _rb_files = ('LiquidChrome.css', 'LiquidChrome.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    base_color: rx.Var[list[int | float]] = field(
-        doc="Base color of the component. Specify as an RGB array. Default: [0.1, 0.1, 0.1]."
+    color: rx.Var[str] = field(
+        doc="Color of the metal. White is polished chrome, warmer tones give gold or copper. Default: '#ffffff'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier. Default: 0.2."
+        doc="How fast the chrome flows. 0 freezes it. Default: 0.2."
     )
     amplitude: rx.Var[int | float] = field(
-        doc="Amplitude of the distortion. Default: 0.3."
+        doc="How strongly the flow swirls and folds. Default: 0.3."
     )
     frequency_x: rx.Var[int | float] = field(
-        doc="Frequency modifier for the x distortion. Default: 3."
+        doc="How tightly the flow folds horizontally. Default: 3."
     )
     frequency_y: rx.Var[int | float] = field(
-        doc="Frequency modifier for the y distortion. Default: 3."
+        doc="How tightly the flow folds vertically. Default: 3."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="Layers of swirl, from 1 to 8. Low values give smooth, heavy shapes, high values intricate ones. Default: 4."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Width of the chrome ribbons. Default: 1."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How steeply the chrome rises from the surface. Higher values catch more reflections. Default: 1."
+    )
+    roughness: rx.Var[int | float] = field(
+        doc="Softens the reflections, from a sharp mirror at 0 to a soft, frosted sheen at 1. Default: 0.3."
+    )
+    exposure: rx.Var[int | float] = field(
+        doc="Brightness of the reflections. Default: 1."
     )
     interactive: rx.Var[bool] = field(
-        doc="Enable mouse/touch interaction. Default: true."
+        doc="The cursor leaves a wake in the liquid, clicks send ripples out and the reflections follow the cursor. Default: true."
+    )
+    ripple_strength: rx.Var[int | float] = field(
+        doc="How visible the wake and ripples are. Default: 1."
+    )
+    ripple_size: rx.Var[int | float] = field(
+        doc="Size of the wake and ripples. Default: 1."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="How much the reflections sway and turn toward the cursor. 0 keeps the light still. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The chrome rises from the surface when it mounts. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Lights the chrome for light pages, with soft gray contours instead of a dark studio. Default: false."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class LiquidEther(ReactBitsComponent):
-    """Interactive liquid shader with flowing distortion and customizable colors.
+    """A glowing liquid that swirls under the cursor, colored by how fast it flows.
 
     Docs: https://reactbits.dev/backgrounds/liquid-ether
     """
@@ -2069,70 +3216,345 @@ class LiquidEther(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "LiquidEther"
     _rb_files = ('LiquidEther.css', 'LiquidEther.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
-    _rename_props = {'bfecc': 'BFECC'}
 
+    colors: rx.Var[list[str]] = field(
+        doc="Colors from slow to fast flow. Calm areas take the first color, the fastest currents the last. Default: ['#5227FF', '#FF9FFC', '#B497CF']."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="Brightness of the flow. Default: 1."
+    )
     mouse_force: rx.Var[int | float] = field(
-        doc="Strength multiplier applied to mouse / touch movement when injecting velocity. Default: 20."
+        doc="How strongly the cursor pushes the liquid. Default: 20."
     )
     cursor_size: rx.Var[int | float] = field(
-        doc="Radius (in pixels at base resolution) of the force brush. Default: 100."
+        doc="Size of the area the cursor stirs, in px. Default: 100."
     )
-    is_viscous: rx.Var[bool] = field(
-        doc="Toggle iterative viscosity solve (smoother, thicker motion when enabled). Default: false."
+    persistence: rx.Var[int | float] = field(
+        doc="How long the motion lingers before it settles, from 0 to 1. Default: 0.75."
     )
-    viscous: rx.Var[int | float] = field(
-        doc="Viscosity coefficient used when isViscous is true. Default: 30."
-    )
-    iterations_viscous: rx.Var[int | float] = field(
-        doc="Number of Gauss-Seidel iterations for viscosity (higher = smoother, slower). Default: 32."
-    )
-    iterations_poisson: rx.Var[int | float] = field(
-        doc="Number of pressure Poisson iterations to enforce incompressibility. Default: 32."
-    )
-    dt: rx.Var[int | float] = field(
-        doc="Fixed simulation timestep used inside the advection / diffusion passes. Default: 0.014."
-    )
-    bfecc: rx.Var[bool] = field(
-        doc="Enable BFECC advection (error-compensated) for crisper flow; disable for slight performance gain. Default: true."
+    viscosity: rx.Var[int | float] = field(
+        doc="How thick the liquid is, from 0 to 1. Thicker liquid moves in broad, slow swirls. Default: 0."
     )
     resolution: rx.Var[int | float] = field(
-        doc="Simulation texture scale relative to canvas size (lower = better performance, more blur). Default: 0.5."
+        doc="Detail of the simulation, from 0.1 to 1. Lower values are faster and softer. Default: 0.5."
     )
-    is_bounce: rx.Var[bool] = field(
-        doc="If true, shows bounce boundaries (velocity clamped at edges). Default: false."
+    bounce_edges: rx.Var[bool] = field(
+        doc="The liquid bounces off the edges instead of flowing out of view. Default: false."
     )
-    colors: rx.Var[list[str]] = field(
-        doc="Array of hex color stops used to build the velocity-to-color palette. Default: ['#5227FF', '#FF9FFC', '#B497CF']."
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking shoots a puff of liquid in the direction the cursor was moving. Default: true."
     )
     auto_demo: rx.Var[bool] = field(
-        doc="Enable idle auto-driving of the pointer when no user interaction. Default: true."
+        doc="Stirs the liquid on its own while the cursor is away. Default: true."
     )
     auto_speed: rx.Var[int | float] = field(
-        doc="Speed (normalized units/sec) for auto pointer motion. Default: 0.5."
+        doc="Speed of the automatic stirring. Default: 0.5."
     )
     auto_intensity: rx.Var[int | float] = field(
-        doc="Multiplier applied to velocity delta while in auto mode. Default: 2.2."
-    )
-    takeover_duration: rx.Var[int | float] = field(
-        doc="Seconds to interpolate from auto pointer to real cursor when user moves mouse. Default: 0.25."
+        doc="Strength of the automatic stirring compared with the cursor. Default: 2.2."
     )
     auto_resume_delay: rx.Var[int | float] = field(
-        doc="Milliseconds of inactivity before auto mode resumes. Default: 1000."
+        doc="Milliseconds without input before the automatic stirring resumes. Default: 1000."
     )
-    auto_ramp_duration: rx.Var[int | float] = field(
-        doc="Seconds to ramp auto movement speed from 0 to full after activation. Default: 0.6."
-    )
-    background_color: rx.Var[str] = field(
-        doc="The `backgroundColor` prop. Default: '#FFFFFF'."
+    intro: rx.Var[bool] = field(
+        doc="A swirl sweeps out from the center on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Renders the flow as soft ink for light backgrounds. Default: false."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Solid color behind the flow. Leave transparent to show the page through. Default: 'transparent'."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
+    )
+
+
+class MagicRings(ReactBitsComponent):
+    """Glowing rings that pulse outward in a wave, swell toward the cursor and flare on click.
+
+    Docs: https://reactbits.dev/backgrounds/magic-rings
+    """
+
+    tag = "MagicRings"
+    alias = "ReactBitsMagicRings"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "MagicRings"
+    _rb_files = ('MagicRings.css', 'MagicRings.jsx')
+
+    color: rx.Var[str] = field(
+        doc="Color of the innermost ring. Default: '#A855F7'."
+    )
+    color_two: rx.Var[str] = field(
+        doc="Color of the outermost ring. The rings in between blend from one to the other. Default: '#6366F1'."
+    )
+    ring_count: rx.Var[int | float] = field(
+        doc="Number of rings, from 1 to 12. Default: 6."
+    )
+    motion: rx.Var[Literal["pulse", "ripple", "breathe"]] = field(
+        doc="How the rings move: a wave that lights them one by one, rings flowing outward from the center, or all rings gently breathing. Default: 'pulse'."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Animation speed. 0 freezes the rings. Default: 1."
+    )
+    line_thickness: rx.Var[int | float] = field(
+        doc="Thickness of the rings in px. Rings are thickest at the sides and taper toward the top and bottom. Default: 2."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Size and strength of the glow around the rings. Default: 1."
+    )
+    base_radius: rx.Var[int | float] = field(
+        doc="Radius of the innermost ring, as a share of the smaller side of the container. Default: 0.35."
+    )
+    radius_step: rx.Var[int | float] = field(
+        doc="Space between neighboring rings. Default: 0.1."
+    )
+    expansion: rx.Var[int | float] = field(
+        doc="How far each ring drifts outward while it glows. Default: 0.1."
+    )
+    taper: rx.Var[int | float] = field(
+        doc="How quickly outer rings shorten into side arcs. 1 keeps every ring the same length. Default: 1.5."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Rotates the whole pattern, in degrees. Default: 0."
+    )
+    spin: rx.Var[int | float] = field(
+        doc="Spins the arcs around the center, neighbors turning in opposite directions. Negative values reverse it. Default: 0."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Leans the rings back in 3D, in degrees, like a portal seen at an angle. Default: 0."
+    )
+    dispersion: rx.Var[int | float] = field(
+        doc="Splits each ring into rainbow fringes like light through a prism, from 0 to 1. Default: 0."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain over the glow, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    follow_mouse: rx.Var[bool] = field(
+        doc="The rings drift toward the cursor. Default: false."
+    )
+    mouse_influence: rx.Var[int | float] = field(
+        doc="How far the rings drift when followMouse is on. Default: 0.2."
+    )
+    hover_scale: rx.Var[int | float] = field(
+        doc="How much the rings swell on hover. Default: 1.2."
+    )
+    hover_intensity: rx.Var[int | float] = field(
+        doc="How much the rings brighten and thicken near the cursor. Default: 1."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How much the rings shift and lean with the cursor, outer rings the most, for a sense of depth. Default: 0.05."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking sends a bright ring racing outward that lights up the rings as it passes. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The rings open from the sides one by one when they mount. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Glowing light for dark pages, or crisp ink with a soft halo for light ones. Default: 'dark'."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
+    )
+
+
+class MagnetLines(ReactBitsComponent):
+    """A field of magnetic lines that swing toward the cursor, ripple outward and spin with every click.
+
+    Docs: https://reactbits.dev/backgrounds/magnet-lines
+    """
+
+    tag = "MagnetLines"
+    alias = "ReactBitsMagnetLines"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "MagnetLines"
+    _rb_files = ('MagnetLines.css', 'MagnetLines.jsx')
+
+    spacing: rx.Var[int | float] = field(
+        doc="Distance between lines in px. The grid fills the area with as many lines as fit. Default: 30."
+    )
+    rows: rx.Var[int | float] = field(
+        doc="Exact number of rows. Overrides spacing. Default: -."
+    )
+    columns: rx.Var[int | float] = field(
+        doc="Exact number of columns. Overrides spacing. Default: -."
+    )
+    container_size: rx.Var[int | float | str] = field(
+        doc="Draws a square field of this width instead of filling the parent. Numbers are in px; strings take any CSS length. Default: -."
+    )
+    line_color: rx.Var[str] = field(
+        doc="Color of the lines. Default: '#efefef'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color lines take on near the cursor. Compass needles use it for their north half. Default: -."
+    )
+    line_width: rx.Var[int | float | str] = field(
+        doc="Thickness of each line. Numbers are in px; strings take any CSS length. Default: 2."
+    )
+    line_height: rx.Var[int | float | str] = field(
+        doc="Length of each line. Numbers are in px; strings take any CSS length. Default: 18."
+    )
+    base_angle: rx.Var[int | float] = field(
+        doc="Resting angle of the lines in degrees, used before the intro and outside the reach. Default: -10."
+    )
+    mode: rx.Var[Literal["orbit", "attract", "spiral", "dipole"]] = field(
+        doc="Shape of the field: rings around the cursor, lines aiming at it, a vortex, or a bar magnet that turns with your movement. Default: 'orbit'."
+    )
+    shape: rx.Var[Literal["line", "arrow", "needle"]] = field(
+        doc="Draws each line as a rounded bar, an arrow showing the field direction, or a two-tone compass needle. Default: 'line'."
+    )
+    rainbow: rx.Var[bool] = field(
+        doc="Colors every line by the direction it points, so the field becomes a color wheel. Default: false."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Size of the area around the cursor where lines are brightest and longest, in px. Default: 200."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="How much lines dim away from the cursor, from 0 to 1. 0 keeps every line at full strength. Default: 0.65."
+    )
+    edge_fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much lines grow near the cursor, from 0 to 2. Default: 0.4."
+    )
+    reach: rx.Var[int | float] = field(
+        doc="Distance in px within which lines follow the cursor. Lines farther out settle back to their resting angle. 0 means every line follows. Default: 0."
+    )
+    scatter: rx.Var[int | float] = field(
+        doc="Randomizes the resting angle of each line, from 0 to 1, like loose iron filings. Pairs well with reach. Default: 0."
+    )
+    inertia: rx.Var[int | float] = field(
+        doc="How slowly the lines swing into place, from 0 to 1. 0 snaps them instantly. Default: 0.35."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the lines overshoot and wobble as they settle, from 0 to 1. Default: 0.3."
+    )
+    ripple: rx.Var[int | float] = field(
+        doc="Delays lines by their distance from the cursor so movement ripples outward, from 0 to 1. Default: 0.3."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a ring that spins the lines as it travels outward. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Lines fade in from the center and swing into place when the field mounts. Default: true."
+    )
+    idle: rx.Var[bool] = field(
+        doc="Moves the field on its own when the cursor is away. Default: false."
+    )
+    tilt_x: rx.Var[int | float] = field(
+        doc="Tilts the field back in 3D around the horizontal axis, in degrees. A full-size field stretches to the horizon. Default: 0."
+    )
+    tilt_y: rx.Var[int | float] = field(
+        doc="Tilts the field in 3D around the vertical axis, in degrees. Default: 0."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
+    )
+
+
+class MicroSlats(ReactBitsComponent):
+    """A wall of tiny slats that becomes a rolling sea in perspective, with glinting crests.
+
+    Docs: https://reactbits.dev/backgrounds/micro-slats
+    """
+
+    tag = "MicroSlats"
+    alias = "ReactBitsMicroSlats"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "MicroSlats"
+    _rb_files = ('MicroSlats.css', 'MicroSlats.jsx')
+    lib_dependencies: list[str] = ['ogl@1.0.11']
+
+    preset: rx.Var[Literal["swell", "tide", "storm", "signal"]] = field(
+        doc="A starting look for the sea. Every wave prop below overrides the preset value when you pass it. Signal turns the field into a flat, equalizer style wall. Default: 'swell'."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the slats. Default: '#A855F7'."
+    )
+    glint_color: rx.Var[str] = field(
+        doc="Color the slats shift towards on wave crests and in the light the cursor leaves. Default: '#ffffff'."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Color behind the slats. Pass transparent to show the page through. Default: '#000000'."
+    )
+    slat_width: rx.Var[int | float] = field(
+        doc="Width of one slat in CSS pixels. Default: 10."
+    )
+    slat_height: rx.Var[int | float] = field(
+        doc="Full height of one slat in CSS pixels. Default: 25."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between slats in CSS pixels. Default: 3."
+    )
+    roundness: rx.Var[int | float] = field(
+        doc="Corner rounding of each slat, from square at 0 to a full pill at 1. Default: 0.75."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the swell. Larger values give longer, calmer waves. Default: from preset."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the waves roll. 0 freezes the sea while the cursor can still stir it. Default: from preset."
+    )
+    direction: rx.Var[int | float] = field(
+        doc="Heading of the swell in degrees. 270 rolls straight towards the viewer. Default: from preset."
+    )
+    chop: rx.Var[int | float] = field(
+        doc="Sharpens the crests and flattens the troughs, like wind on the water. Default: from preset."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How much each slat grows and shrinks with the wave under it. 0 keeps every slat full length. Default: from preset."
+    )
+    glint: rx.Var[int | float] = field(
+        doc="Strength of the light caught on the crests. Default: from preset."
+    )
+    contrast: rx.Var[int | float] = field(
+        doc="Spread between dark troughs and bright crests. Default: from preset."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="How far the sea recedes towards a horizon above the top edge. 0 is a flat wall. Default: from preset."
+    )
+    fog: rx.Var[int | float] = field(
+        doc="Haze that fades the far rows into the background. Default: from preset."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Lets the cursor stir the water. Moving it pushes a real fluid that bends the swell and carries a swirling trail of light, and a click spins out a splash. Default: true."
+    )
+    cursor_strength: rx.Var[int | float] = field(
+        doc="Brightness of the light the cursor leaves in the water. Default: 1."
+    )
+    cursor_size: rx.Var[int | float] = field(
+        doc="Radius of the patch of water the cursor pushes, in CSS pixels. Default: 40."
+    )
+    swirl: rx.Var[int | float] = field(
+        doc="How strongly the stirred water curls into eddies. Default: 0."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long the stirred water and its light linger, in seconds. Default: 1.4."
+    )
+    lean: rx.Var[int | float] = field(
+        doc="How far the slats tilt with the current. 0 keeps them upright. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Rolls the sea in from the horizon on mount, unfolding the slats row by row. Default: true."
+    )
+    intro_duration: rx.Var[int | float] = field(
+        doc="Length of the intro in seconds. Default: 1.5."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the waves. The cursor can still stir the water. Default: false."
     )
 
 
 class MoltenMetal(ReactBitsComponent):
-    """Swirling caustic plasma filaments with molten, white-hot cores.
+    """Swirling caustic filaments with white-hot cores that heat up under the cursor and flare on click.
 
     Docs: https://reactbits.dev/backgrounds/molten-metal
     """
@@ -2143,72 +3565,89 @@ class MoltenMetal(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "MoltenMetal"
     _rb_files = ('MoltenMetal.css', 'MoltenMetal.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    color1: rx.Var[str] = field(
-        doc="Shadow color for the dim caustic glow. Default: '#5227FF'."
+    colors: rx.Var[list[str]] = field(
+        doc="Gradient the metal heats through, from the dim glow to the hot body. Up to five colors. Default: ['#5227FF', '#FF9FFC']."
     )
-    color2: rx.Var[str] = field(
-        doc="Midtone color for the flowing filaments. Default: '#FF9FFC'."
-    )
-    color3: rx.Var[str] = field(
-        doc="Highlight color for the hot filament cores. Default: '#FFFFFF'."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed of the liquid motion. Default: 0.35."
-    )
-    scale: rx.Var[int | float] = field(
-        doc="Zoom of the caustic field (higher = more detail on screen). Default: 4."
-    )
-    detail: rx.Var[int | float] = field(
-        doc="Number of domain-folding iterations (1-8). Default: 3."
-    )
-    glow: rx.Var[int | float] = field(
-        doc="Gain applied to the accumulated filament glow. Default: 1.6."
-    )
-    core_size: rx.Var[int | float] = field(
-        doc="Thickness of the bright filament cores. Default: 0.1."
-    )
-    swirl: rx.Var[int | float] = field(
-        doc="Amount of rotational swirl across the field. Default: 1."
-    )
-    fold: rx.Var[int | float] = field(
-        doc="Turbulence / fold strength of the iterative warp. Default: -0.2."
-    )
-    black_point: rx.Var[int | float] = field(
-        doc="Raises the dark floor so shadows fade to transparent. Default: 0.05."
-    )
-    brightness: rx.Var[int | float] = field(
-        doc="Overall brightness of the effect. Default: 1.3."
-    )
-    color_mode: rx.Var[str] = field(
-        doc="Palette mapping: molten, ember, or frost. Default: 'molten'."
-    )
-    grain: rx.Var[bool] = field(
-        doc="Adds subtle animated film grain. Default: true."
-    )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
-    )
-    mouse_interaction: rx.Var[bool] = field(
-        doc="Enables gentle drift of the field toward the cursor. Default: true."
-    )
-    mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the cursor drift. Default: 0.3."
-    )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect over the page. Default: 1.0."
+    core_color: rx.Var[str] = field(
+        doc="Color of the white-hot cores at the end of the gradient. Default: '#FFFFFF'."
     )
     background_color: rx.Var[str] = field(
-        doc="The `backgroundColor` prop. Default: '#FFFFFF'."
+        doc="Fills the canvas behind the metal. Transparent lets the page show through. Default: 'transparent'."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the flow as colored ink for light pages. Pair it with mid-tone colors that deepen toward the core. Default: false."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the metal flows. Default: 0.35."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Zoom of the flow. Higher fits more of it on screen. Default: 4."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="Layers of folded filaments, from 1 to 8. Fractions blend between layers. Default: 3."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="How much heat the filaments carry. Default: 1.6."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Width of the filaments and their white-hot cores. Default: 1."
+    )
+    swirl: rx.Var[int | float] = field(
+        doc="How tightly the flow spirals. Default: 1."
+    )
+    turbulence: rx.Var[int | float] = field(
+        doc="How strongly each layer folds the flow. Default: 0.2."
+    )
+    haze: rx.Var[int | float] = field(
+        doc="Soft glow between the filaments. 0 leaves only the filaments. Default: 0.75."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 1.3."
+    )
+    color_mode: rx.Var[Literal["molten", "ember", "frost"]] = field(
+        doc="Balance of the gradient. Ember runs hotter, frost stays cooler. Default: 'molten'."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Rotation of the whole flow in degrees. Default: 0."
+    )
+    offset_x: rx.Var[int | float] = field(
+        doc="Moves the flow sideways, as a fraction of the width. Default: 0."
+    )
+    offset_y: rx.Var[int | float] = field(
+        doc="Moves the flow up or down, as a fraction of the height. Default: 0."
+    )
+    drift: rx.Var[int | float] = field(
+        doc="How far the flow drifts as the cursor moves. 0 keeps it still. Default: 0.3."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain in the glow. 0 turns it off. Default: 0.05."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Ignites the metal from its hottest cores outward the first time it comes into view. Default: true."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The cursor heats the filaments it passes over, leaving a trail that slowly cools. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How hot the cursor runs. Default: 0.5."
+    )
+    flare_on_click: rx.Var[bool] = field(
+        doc="Clicking flares the nearby filaments white-hot before they cool back down. Default: true."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the flow. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio of the canvas. Default: 2."
     )
 
 
 class Orb(ReactBitsComponent):
-    """Floating energy orb with customizable hover effect.
+    """A glowing ring of swirling color that breathes, trails an orbiting light and reaches toward the cursor.
 
     Docs: https://reactbits.dev/backgrounds/orb
     """
@@ -2219,27 +3658,74 @@ class Orb(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Orb"
     _rb_files = ('Orb.css', 'Orb.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
+    colors: rx.Var[list[str]] = field(
+        doc="Two colors that swirl around the ring, then the deep color of the glow behind it. Default: ['#9c43fe', '#4cc2e9', '#101499']."
+    )
     hue: rx.Var[int | float] = field(
-        doc="The base hue for the orb (in degrees). Default: 0."
-    )
-    hover_intensity: rx.Var[int | float] = field(
-        doc="Controls the intensity of the hover distortion effect. Default: 0.2."
-    )
-    rotate_on_hover: rx.Var[bool] = field(
-        doc="Toggle to enable or disable continuous rotation on hover. Default: true."
-    )
-    force_hover_state: rx.Var[bool] = field(
-        doc="Force hover animations even when the orb is not actually hovered. Default: false."
+        doc="Shifts the hue of every color, in degrees. Default: 0."
     )
     background_color: rx.Var[str] = field(
-        doc="The background color of the container. Default: '#000000'."
+        doc="Color the orb sits on. Light colors switch it to a soft, filled style. Default: '#000000'."
+    )
+    size: rx.Var[int | float] = field(
+        doc="Size of the orb relative to the container. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="How soft and wide the glow around the ring is. Default: 1."
+    )
+    bleed: rx.Var[int | float] = field(
+        doc="How far the glow bleeds into the inside of the orb. 0 keeps a tight ring. Default: 1."
+    )
+    wobble: rx.Var[int | float] = field(
+        doc="How much the ring breathes and warps at rest. Default: 1."
+    )
+    highlight: rx.Var[int | float] = field(
+        doc="Brightness of the light that orbits the ring. Default: 1."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="Length of the glowing tail behind the orbiting light. 0 removes it. Default: 1."
+    )
+    tilt_x: rx.Var[int | float] = field(
+        doc="Tilts the ring back in perspective, in degrees. Positive values push the top away. Default: 0."
+    )
+    tilt_y: rx.Var[int | float] = field(
+        doc="Turns the ring sideways in perspective, in degrees. Default: 0."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the swirl, the orbiting light and the breathing. Default: 1."
+    )
+    hover_intensity: rx.Var[int | float] = field(
+        doc="How far the ring reaches toward the cursor and how brightly it lights up there. Default: 1."
+    )
+    rotate_on_hover: rx.Var[bool] = field(
+        doc="Slowly turns the orb while it is hovered. Default: true."
+    )
+    force_hover_state: rx.Var[bool] = field(
+        doc="Keeps the hover effect on without hovering. Default: false."
+    )
+    follow_cursor: rx.Var[bool] = field(
+        doc="The orbiting light swings toward the cursor while the orb is hovered. Default: true."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking the orb makes it pulse and swirl. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Powers the orb on with a spring and a swirl. Default: true."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Particles(ReactBitsComponent):
-    """Configurable particle system.
+    """A drifting 3D field of particles with glow, twinkle, constellation lines and cursor interaction.
 
     Docs: https://reactbits.dev/backgrounds/particles
     """
@@ -2250,48 +3736,180 @@ class Particles(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Particles"
     _rb_files = ('Particles.css', 'Particles.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     particle_count: rx.Var[int | float] = field(
-        doc="The number of particles to generate. Default: 200."
+        doc="How many particles there are. Default: 200."
     )
     particle_spread: rx.Var[int | float] = field(
-        doc="Controls how far particles are spread from the center. Default: 10."
+        doc="How far the particles spread out from the center. Default: 10."
     )
     speed: rx.Var[int | float] = field(
-        doc="Speed factor controlling the animation pace. Default: 0.1."
+        doc="Speed of the floating motion, twinkle and rotation. Default: 0.1."
     )
     particle_colors: rx.Var[list[str]] = field(
-        doc="An array of hex color strings used to color the particles. Default: ['#ffffff']."
+        doc="Colors the particles are picked from. Default: ['#ffffff']."
     )
     move_particles_on_hover: rx.Var[bool] = field(
-        doc="Determines if particles should move in response to mouse hover. Default: false."
+        doc="Lets the cursor move the particles. Default: true."
     )
     particle_hover_factor: rx.Var[int | float] = field(
-        doc="Multiplier for the particle movement when hovering. Default: 1."
+        doc="Strength of the hover effect. Default: 1."
     )
     alpha_particles: rx.Var[bool] = field(
-        doc="If true, particles are rendered with varying transparency; otherwise, as solid circles. Default: false."
+        doc="Draws softer, slightly see-through particles. Default: false."
     )
     particle_base_size: rx.Var[int | float] = field(
-        doc="The base size of the particles. Default: 100."
+        doc="Base size of the particles. Nearer particles are drawn larger. Default: 100."
     )
     size_randomness: rx.Var[int | float] = field(
-        doc="Controls the variation in particle sizes (0 means all particles have the same size). Default: 1."
+        doc="How much particle sizes vary. 0 draws every particle at the base size in px. Default: 1."
     )
     camera_distance: rx.Var[int | float] = field(
-        doc="Distance from the camera to the particle system. Default: 20."
+        doc="Distance from the camera to the particles. Lower values feel closer and deeper. Default: 20."
     )
     disable_rotation: rx.Var[bool] = field(
-        doc="If true, stops the particle system from rotating. Default: false."
+        doc="Stops the slow rotation of the whole field. Default: false."
     )
     pixel_ratio: rx.Var[int | float] = field(
-        doc="Sets the pixel ratio for sharper rendering on high-DPI screens. Default: 1."
+        doc="Maximum device pixel ratio. Defaults to the screen's, capped at 2. Default: auto."
+    )
+    shape: rx.Var[Literal["circle", "square", "ring", "sparkle"]] = field(
+        doc="Shape of each particle. Default: 'circle'."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around each particle. Default: 0.5."
+    )
+    twinkle: rx.Var[int | float] = field(
+        doc="How much the particles flicker, from 0 to 1. Default: 0.3."
+    )
+    depth_of_field: rx.Var[int | float] = field(
+        doc="Blurs the nearest particles into soft bokeh, like a camera lens. Default: 0."
+    )
+    connections: rx.Var[bool] = field(
+        doc="Joins nearby particles with thin lines, like a constellation. Default: false."
+    )
+    connection_distance: rx.Var[int | float] = field(
+        doc="How close particles need to be to connect, in px. Default: 110."
+    )
+    hover_effect: rx.Var[Literal["parallax", "repel", "attract"]] = field(
+        doc="Parallax shifts the whole field away from the cursor. Repel and attract push or pull nearby particles. Default: 'parallax'."
+    )
+    hover_radius: rx.Var[int | float] = field(
+        doc="Radius around the cursor that repel and attract reach, in px. Default: 140."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking sends a burst of light rippling through the particles. Default: true."
+    )
+    drift: rx.Var[Literal["none", "up", "down", "forward"]] = field(
+        doc="Sends the particles drifting up like embers, down like snow, or toward you like a starfield. Default: 'none'."
+    )
+    drift_speed: rx.Var[int | float] = field(
+        doc="How fast the particles drift. Default: 1."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different particle layout. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Flies the particles in from the distance on mount. Default: true."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the particles as ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+
+
+class PatternWaves(ReactBitsComponent):
+    """A lit halftone surface of dots, lines or glyphs that moves like draped silk.
+
+    Docs: https://reactbits.dev/backgrounds/pattern-waves
+    """
+
+    tag = "PatternWaves"
+    alias = "ReactBitsPatternWaves"
+    is_default = True
+    _rb_category = "Backgrounds"
+    _rb_name = "PatternWaves"
+    _rb_files = ('PatternWaves.css', 'PatternWaves.jsx')
+    lib_dependencies: list[str] = ['ogl@1.0.11']
+
+    preset: rx.Var[Literal["silk", "ocean", "pond", "lines", "terminal", "mesh"]] = field(
+        doc="A complete starting look. Every pattern, wave and light prop below overrides the preset value when you pass it. Default: 'silk'."
+    )
+    pattern: rx.Var[Literal["dot", "square", "plus", "line", "glyph"]] = field(
+        doc="The mark that draws the surface. Line traces it as flowing contour lines, glyph uses characters picked by brightness. Default: from preset."
+    )
+    wave: rx.Var[Literal["silk", "swell", "ripple"]] = field(
+        doc="The shape of the moving surface. Silk is draped fabric folds, swell is rolling parallel waves, ripple is rings travelling in from off screen. Default: from preset."
+    )
+    spacing: rx.Var[int | float] = field(
+        doc="Distance between marks in CSS pixels. Smaller values give a finer print. Default: from preset."
+    )
+    mark_size: rx.Var[int | float] = field(
+        doc="Largest mark as a fraction of the spacing. Default: from preset."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How tall the surface is. Deeper surfaces cast stronger shading and lift the marks along the crests. Default: from preset."
+    )
+    light: rx.Var[int | float] = field(
+        doc="Angle of the light across the waves in degrees, from -90 to 90. 0 lights the folds head on, larger values graze them. Default: from preset."
+    )
+    shine: rx.Var[int | float] = field(
+        doc="Strength of the glints where the surface catches the light. Default: from preset."
+    )
+    contrast: rx.Var[int | float] = field(
+        doc="Spread between the quiet shadows and the lit areas. Default: from preset."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the surface moves. 0 freezes it while the cursor keeps working. Default: from preset."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the waves. Larger values give broader, calmer forms. Default: from preset."
+    )
+    direction: rx.Var[int | float] = field(
+        doc="Direction the waves travel in degrees. The light turns with it. Default: from preset."
+    )
+    color: rx.Var[str] = field(
+        doc="The one color of the pattern. Shadows, midtones and highlights are all derived from it. A color darker than the background prints like ink. Default: '#ffffff'."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Color behind the pattern. Pass transparent to show the page through. Default: '#000000'."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity of the pattern, from 0 to 1. Default: 1."
+    )
+    fade: rx.Var[Literal["edges", "center", "bottom", "top", "none"]] = field(
+        doc="Where the pattern fades into the background. Center keeps the middle calm for a headline, bottom and top fade towards that edge. Default: 'edges'."
+    )
+    fade_size: rx.Var[int | float] = field(
+        doc="How far the fade reaches, from 0.05 to 1. Default: 0.5."
+    )
+    characters: rx.Var[str] = field(
+        doc="Characters for the glyph pattern, ordered from the lightest to the densest. Default: DEFAULT_CHARACTERS."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Lets the cursor disturb the surface. Moving it leaves a wake of ripples that catch the light, a click drops a splash. Default: true."
+    )
+    cursor_size: rx.Var[int | float] = field(
+        doc="Radius of the patch of surface the cursor pushes, in CSS pixels. Default: 50."
+    )
+    cursor_strength: rx.Var[int | float] = field(
+        doc="How hard the cursor pushes the surface, from 0 to 1. Default: 0.6."
+    )
+    intro: rx.Var[bool] = field(
+        doc="On mount the marks fade in from the center, then the surface rises and the light sweeps across it. Default: true."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the surface. The cursor ripples keep working. Default: false."
     )
 
 
 class PixelBlast(ReactBitsComponent):
-    """Exploding pixel particle bursts with optional liquid postprocessing.
+    """Dithered pixel clouds that drift, shimmer and light up under the cursor, with ripples, shapes and a perspective floor.
 
     Docs: https://reactbits.dev/backgrounds/pixel-blast
     """
@@ -2302,72 +3920,104 @@ class PixelBlast(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "PixelBlast"
     _rb_files = ('PixelBlast.css', 'PixelBlast.jsx')
-    lib_dependencies: list[str] = ['postprocessing@6.37.8', 'three@0.180.0']
 
-    variant: rx.Var[Literal["square", "circle", "triangle", "diamond"]] = field(
-        doc="Pixel shape variant. Default: 'square'."
+    variant: rx.Var[Literal["square", "circle", "triangle", "diamond", "cross", "ring"]] = field(
+        doc="Shape of each pixel. Default: 'square'."
     )
     pixel_size: rx.Var[int | float] = field(
-        doc="Base pixel size (auto scaled for DPI). Default: 3."
+        doc="Size of each pixel, in px. Default: 3."
     )
     color: rx.Var[str] = field(
-        doc="Pixel color. Default: '#B497CF'."
+        doc="Color of the pixels. Default: '#B497CF'."
     )
-    antialias: rx.Var[bool] = field(
-        doc="The `antialias` prop. Default: true."
+    accent_color: rx.Var[str] = field(
+        doc="Color the densest areas, ripples and the area under the cursor shift toward. Default: color."
     )
     pattern_scale: rx.Var[int | float] = field(
-        doc="Noise/pattern scale. Default: 2."
+        doc="Zoom of the cloud pattern. Higher values make smaller, busier clouds. Default: 2."
     )
     pattern_density: rx.Var[int | float] = field(
-        doc="Pattern density adjustment. Default: 1."
-    )
-    liquid: rx.Var[bool] = field(
-        doc="Enable liquid distortion effect. Default: false."
-    )
-    liquid_strength: rx.Var[int | float] = field(
-        doc="Liquid distortion strength. Default: 0.1."
-    )
-    liquid_radius: rx.Var[int | float] = field(
-        doc="Liquid touch brush radius scale. Default: 1."
+        doc="How many pixels light up. Higher values fill more of the area. Default: 1."
     )
     pixel_size_jitter: rx.Var[int | float] = field(
-        doc="Random jitter applied to coverage. Default: 0."
+        doc="Random size variation between pixels, from 0 to 1. Default: 0."
     )
     enable_ripples: rx.Var[bool] = field(
-        doc="Enable click ripple waves. Default: true."
+        doc="Clicking sends a ring of pixels out from the click. Default: true."
     )
     ripple_intensity_scale: rx.Var[int | float] = field(
-        doc="Ripple intensity multiplier. Default: 1."
+        doc="Brightness of ripples. Default: 1."
     )
     ripple_thickness: rx.Var[int | float] = field(
-        doc="Ripple ring thickness. Default: 0.1."
+        doc="Width of the ripple ring. Default: 0.1."
     )
     ripple_speed: rx.Var[int | float] = field(
-        doc="Ripple propagation speed. Default: 0.3."
-    )
-    liquid_wobble_speed: rx.Var[int | float] = field(
-        doc="Liquid wobble frequency. Default: 4.5."
+        doc="How fast ripples spread. Default: 0.3."
     )
     auto_pause_offscreen: rx.Var[bool] = field(
-        doc="The `autoPauseOffscreen` prop. Default: true."
+        doc="Stops rendering while the background is scrolled out of view. Default: true."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation time scale. Default: 0.5."
+        doc="How fast the clouds change shape. Default: 0.5."
     )
     transparent: rx.Var[bool] = field(
-        doc="Transparent background. Default: true."
+        doc="Shows the page behind the pixels. Turn off for a solid black, or white in light mode, backdrop. Default: true."
     )
     edge_fade: rx.Var[int | float] = field(
-        doc="Edge fade distance (0-1). Default: 0.5."
+        doc="Fades the pixels out toward the edges, from 0 to 1. Default: 0.5."
     )
     noise_amount: rx.Var[int | float] = field(
-        doc="Post noise amount. Default: 0."
+        doc="Film grain on the pixels. Default: 0."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="Lets pixels grow and shrink smoothly as the pattern moves, instead of popping on and off. Default: 0.6."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="Smooths the edges of the clouds. 0 keeps the original blocky steps. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft light behind the densest areas, and a hot core in ripples. Default: 0.4."
+    )
+    twinkle: rx.Var[int | float] = field(
+        doc="Lets pixels shimmer at their own pace, from 0 to 1. Default: 0.25."
+    )
+    drift: rx.Var[int | float] = field(
+        doc="How fast the clouds slide across the area. 0 keeps them in place. Default: 0.2."
+    )
+    drift_angle: rx.Var[int | float] = field(
+        doc="Direction of the drift, in degrees. Default: 30."
+    )
+    hover_effect: rx.Var[Literal["reveal", "grow", "none"]] = field(
+        doc="What the cursor does: light up more pixels around it, or make nearby pixels swell and brighten. Default: 'reveal'."
+    )
+    hover_radius: rx.Var[int | float] = field(
+        doc="Size of the area the cursor affects, in px. Default: 140."
+    )
+    auto_ripple: rx.Var[int | float] = field(
+        doc="Sends a ripple from a random spot about this many seconds apart. 0 turns it off. Default: 0."
+    )
+    tilt_x: rx.Var[int | float] = field(
+        doc="Tilts the pixels back into a floor that fades toward the horizon, in degrees. Default: 0."
+    )
+    tilt_y: rx.Var[int | float] = field(
+        doc="Turns the pixels sideways in perspective, in degrees. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Blasts the pixels out from the center in a ring on mount. Default: true."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a fixed pattern. Leave it out for a different one on every mount. Default: random."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Darkens hot pixels instead of brightening them, for light pages. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class PixelSnow(ReactBitsComponent):
-    """Falling pixelated snow effect with customizable density and speed.
+    """Pixel-art snowflakes drifting down in layers of depth, brushed aside by the cursor.
 
     Docs: https://reactbits.dev/backgrounds/pixel-snow
     """
@@ -2378,48 +4028,71 @@ class PixelSnow(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "PixelSnow"
     _rb_files = ('PixelSnow.css', 'PixelSnow.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
 
     color: rx.Var[str] = field(
-        doc="Color of the snowflakes (hex or CSS color). Default: '#ffffff'."
+        doc="Color of the snow. Default: '#ffffff'."
     )
-    flake_size: rx.Var[int | float] = field(
-        doc="Size of snowflakes in scene units. Default: 0.01."
-    )
-    min_flake_size: rx.Var[int | float] = field(
-        doc="Minimum flake size in pixels on screen. Default: 1.25."
-    )
-    pixel_resolution: rx.Var[int | float] = field(
-        doc="Pixel resolution - lower values create larger pixels for a more retro look. Default: 200."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier. Default: 1.25."
-    )
-    depth_fade: rx.Var[int | float] = field(
-        doc="Depth fade intensity - higher values make distant flakes fade faster. Default: 8."
-    )
-    far_plane: rx.Var[int | float] = field(
-        doc="Far plane distance for rendering - higher values show more distant flakes. Default: 20."
-    )
-    brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier. Default: 1."
-    )
-    gamma: rx.Var[int | float] = field(
-        doc="Gamma correction value for final color output. Default: 0.4545."
+    variant: rx.Var[Literal["snowflake", "square", "round"]] = field(
+        doc="Shape of the flakes: pixel crystals, square pixels or round pixels. Default: 'snowflake'."
     )
     density: rx.Var[int | float] = field(
-        doc="Probability of snowflakes appearing (0-1) - lower values = fewer flakes. Default: 0.3."
+        doc="How much snow is falling, from 0 to 1. Default: 0.5."
     )
-    variant: rx.Var[Literal["square", "round", "snowflake"]] = field(
-        doc="Shape of the snowflakes - square, round, or snowflake pattern. Default: 'square'."
+    speed: rx.Var[int | float] = field(
+        doc="How fast the snow falls. Negative values make it rise. Default: 1."
     )
-    direction: rx.Var[int | float] = field(
-        doc="Wind direction angle in degrees (0-360). Default: 125."
+    wind: rx.Var[int | float] = field(
+        doc="Sideways drift. Negative values blow to the left. Default: 0.25."
+    )
+    sway: rx.Var[int | float] = field(
+        doc="How much each flake swings as it falls. Default: 0.5."
+    )
+    flake_size: rx.Var[int | float] = field(
+        doc="Size of the flakes, from 0 for mostly tiny specks to 2 for mostly large crystals. Default: 1."
+    )
+    pixel_size: rx.Var[int | float] = field(
+        doc="Size of one snow pixel in px. Default: 3."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How strongly far flakes fall slower and dimmer than near ones, from 0 to 1. Default: 0.6."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness of the snow. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the soft light around each flake. Default: 0.8."
+    )
+    twinkle: rx.Var[int | float] = field(
+        doc="How often flakes catch the light and sparkle, from 0 to 1. Default: 0.35."
+    )
+    accumulate: rx.Var[bool] = field(
+        doc="Lets the snow pile up in soft drifts along the bottom edge. Default: false."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Lets the cursor brush the snow aside and stir it as it moves. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Lets the snow drift in from the top on mount. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the snow as colored pixels for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the snow in place. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Plasma(ReactBitsComponent):
-    """Organic plasma gradients swirl + morph with smooth turbulence.
+    """Folds of satin light twisting slowly through the dark, turning to follow the cursor.
 
     Docs: https://reactbits.dev/backgrounds/plasma
     """
@@ -2430,45 +4103,65 @@ class Plasma(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Plasma"
     _rb_files = ('Plasma.css', 'Plasma.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     color: rx.Var[str] = field(
-        doc="Optional hex color to tint the plasma effect. If not provided, uses original colors. Default: '#ffffff'."
+        doc="Color of the plasma. Highlights are derived from it. Default: '#a6a3b8'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier. Higher values = faster animation. Default: 1."
+        doc="Animation speed. Default: 1."
     )
     direction: rx.Var[Literal["forward", "reverse", "pingpong"]] = field(
-        doc="Animation direction. 'pingpong' oscillates back and forth. Default: 'forward'."
+        doc="Which way the plasma flows. Ping pong eases back and forth. Default: 'forward'."
     )
     scale: rx.Var[int | float] = field(
-        doc="Zoom level of the plasma pattern. Higher values zoom in. Default: 1."
+        doc="Zoom of the plasma. Higher values zoom in. Default: 1."
     )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect (0-1). Default: 1."
+    twist: rx.Var[int | float] = field(
+        doc="How tightly the plasma spirals. Default: 1."
+    )
+    wave: rx.Var[int | float] = field(
+        doc="How much the plasma ripples as it flows. Default: 1."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How soft the folds of light are, from 0 for crisp to 1 for misty. Default: 0.5."
+    )
+    shine: rx.Var[int | float] = field(
+        doc="Strength of the bright highlights along the folds. Default: 1."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 1."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.04."
+    )
+    quality: rx.Var[int | float] = field(
+        doc="Render resolution, from 0.25 to 1. Lower values run faster on slow devices. Default: 0.75."
     )
     mouse_interactive: rx.Var[bool] = field(
-        doc="Whether the plasma responds to mouse movement. Default: true."
+        doc="Turns the plasma in 3D to follow the cursor and brightens it nearby. Default: true."
     )
-    render_scale: rx.Var[int | float] = field(
-        doc="Internal render resolution multiplier. 1 = full res, 0.5 = quarter the pixels. Lower values improve performance. Default: 0.55."
+    intro: rx.Var[bool] = field(
+        doc="Fades the plasma in as it twists into place. Default: true."
     )
-    max_dpr: rx.Var[int | float] = field(
-        doc="Hard cap on devicePixelRatio used for rendering. Lower values improve performance on high-DPI screens. Default: 1.5."
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
     )
-    target_fps: rx.Var[int | float] = field(
-        doc="Target frame rate for the animation loop. Lower values reduce CPU/GPU load. Default: 60."
-    )
-    iterations: rx.Var[int | float] = field(
-        doc="Raymarch step count \u2014 lower is cheaper but less detailed. Higher values produce smoother plasma. Default: 60."
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the plasma as tinted satin for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class PlasmaWave(ReactBitsComponent):
-    """Raymarched plasma waves with dual-wave interference and OGL.
+    """Two ribbons of plasma curling through each other, with soft glow and white-hot cores.
 
     Docs: https://reactbits.dev/backgrounds/plasma-wave
     """
@@ -2479,45 +4172,83 @@ class PlasmaWave(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "PlasmaWave"
     _rb_files = ('PlasmaWave.css', 'PlasmaWave.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    x_offset: rx.Var[int | float] = field(
-        doc="Horizontal offset of the viewport. Default: 0."
+    colors: rx.Var[list[str]] = field(
+        doc="Colors of the two waves of plasma. Default: ['#A855F7', '#06B6D4']."
     )
-    y_offset: rx.Var[int | float] = field(
-        doc="Vertical offset of the viewport. Default: 0."
-    )
-    rotation_deg: rx.Var[int | float] = field(
-        doc="Rotation angle of the scene in degrees. Default: 0."
-    )
-    focal_length: rx.Var[int | float] = field(
-        doc="Focal length of the camera projection. Default: 0.8."
+    speed: rx.Var[int | float] = field(
+        doc="Overall speed of the animation. Default: 1."
     )
     speed1: rx.Var[int | float] = field(
-        doc="Speed of the first plasma wave. Default: 0.05."
+        doc="How fast the first wave travels. Default: 0.05."
     )
     speed2: rx.Var[int | float] = field(
-        doc="Speed of the second plasma wave. Default: 0.05."
+        doc="How fast the second wave travels. Default: 0.05."
     )
     dir2: rx.Var[int | float] = field(
-        doc="Direction multiplier for the second wave. Use -1 to reverse. Default: 1.0."
+        doc="Direction of the second wave. Use -1 to make it travel against the first. Default: 1."
     )
     bend1: rx.Var[int | float] = field(
-        doc="Bend intensity of the first wave. Default: 1."
+        doc="How far the first wave curls around its path. Default: 1."
     )
     bend2: rx.Var[int | float] = field(
-        doc="Bend intensity of the second wave. Default: 0.5."
+        doc="How far the second wave curls around its path. Default: 0.5."
     )
-    colors: rx.Var[list[str]] = field(
-        doc="Array of two hex colors \u2014 one for each plasma wave band. Default: ['#A855F7', '#06B6D4']."
+    thickness: rx.Var[int | float] = field(
+        doc="Thickness of the plasma ribbons. Default: 0.3."
+    )
+    focal_length: rx.Var[int | float] = field(
+        doc="Camera lens. Lower values give a wider, deeper view. Default: 1.25."
+    )
+    rotation_deg: rx.Var[int | float] = field(
+        doc="Rotation of the whole effect, in degrees. Default: 0."
+    )
+    x_offset: rx.Var[int | float] = field(
+        doc="Horizontal shift of the view, in px. Default: 0."
+    )
+    y_offset: rx.Var[int | float] = field(
+        doc="Vertical shift of the view, in px. Default: 0."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Brightness of the plasma. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the soft light spilling around the plasma. Default: 1."
+    )
+    core: rx.Var[int | float] = field(
+        doc="How white-hot the brightest parts of the plasma get, from 0 to 1. Default: 0.6."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.03."
+    )
+    quality: rx.Var[int | float] = field(
+        doc="Detail of the plasma, from 0.25 to 1. Lower values render faster on slow devices. Default: 1."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Swells and brightens the plasma near the cursor. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Unfolds the plasma and fades it in on mount. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the plasma as glowing glass with white cores for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Prism(ReactBitsComponent):
-    """Rotating prism with configurable intensity, size, and colors.
+    """Rotating prism of glowing spectral light with configurable shape, colors and motion.
 
     Docs: https://reactbits.dev/backgrounds/prism
     """
@@ -2528,60 +4259,68 @@ class Prism(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Prism"
     _rb_files = ('Prism.css', 'Prism.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     height: rx.Var[int | float] = field(
-        doc="Apex height of the prism (world units). Default: 3.5."
+        doc="Height of the prism from its base to its tip. Default: 3.5."
     )
     base_width: rx.Var[int | float] = field(
-        doc="Total base width across X/Z (world units). Default: 5.5."
+        doc="Width of the prism at its base. Default: 5.5."
     )
-    animation_type: rx.Var[Literal["rotate", "hover", "3drotate"]] = field(
-        doc="Animation mode: shader wobble, pointer hover tilt, or full 3D rotation. Default: 'rotate'."
+    animation_type: rx.Var[Literal["rotate", "3drotate", "hover", "static"]] = field(
+        doc="Rotate spins the prism in place, 3D rotate tumbles it, hover turns it only toward the cursor. Default: 'rotate'."
     )
     glow: rx.Var[int | float] = field(
-        doc="Glow/bleed intensity multiplier. Default: 1."
+        doc="Brightness of the light. Default: 1."
     )
     offset: rx.Var[dict[str, Any]] = field(
-        doc="Pixel offset within the canvas (x\u2192right, y\u2192down). Default: { x: 0, y: 0 }."
+        doc="Moves the prism by a number of pixels, x to the right and y down. Default: { x: 0, y: 0 }."
     )
     noise: rx.Var[int | float] = field(
-        doc="Film-grain noise amount added to final color (0 disables). Default: 0.5."
-    )
-    transparent: rx.Var[bool] = field(
-        doc="Whether the canvas has an alpha channel (transparent background). Default: true."
+        doc="Film grain over the light, from 0 to 1. Default: 0."
     )
     scale: rx.Var[int | float] = field(
-        doc="Overall screen-space scale of the prism (bigger = larger). Default: 3.6."
+        doc="Size of the prism on screen. Larger values zoom in. Default: 3.6."
     )
     hue_shift: rx.Var[int | float] = field(
-        doc="Hue rotation (radians) applied to final color. Default: 0."
+        doc="Rotates every color around the color wheel, in degrees. Default: 0."
     )
     color_frequency: rx.Var[int | float] = field(
-        doc="Frequency of internal sine bands controlling color variation. Default: 1."
+        doc="How quickly the colors change through the light. Higher values show more bands. Default: 1."
     )
-    hover_strength: rx.Var[int | float] = field(
-        doc="Sensitivity of hover tilt (pitch/yaw amplitude). Default: 2."
+    colors: rx.Var[list[str]] = field(
+        doc="Custom colors for the light, cycled through the color bands. Leave empty for the original spectrum. Default: []."
     )
-    inertia: rx.Var[int | float] = field(
-        doc="Easing factor for hover (0..1, higher = snappier). Default: 0.05."
-    )
-    bloom: rx.Var[int | float] = field(
-        doc="Extra bloom factor layered on top of glow. Default: 1."
-    )
-    suspend_when_offscreen: rx.Var[bool] = field(
-        doc="Pause rendering when the element is not in the viewport. Default: false."
+    saturation: rx.Var[int | float] = field(
+        doc="Color intensity, from 0 (grayscale) to 2. Default: 1.5."
     )
     time_scale: rx.Var[int | float] = field(
-        doc="Global time multiplier for animations (0=frozen, 1=normal). Default: 0.5."
+        doc="Speed of the rotation. 0 holds it still. Default: 0.5."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Tilts the prism toward the cursor in every animation mode. Default: true."
+    )
+    hover_strength: rx.Var[int | float] = field(
+        doc="How far the prism turns toward the cursor. Default: 2."
+    )
+    inertia: rx.Var[int | float] = field(
+        doc="How quickly the prism follows the cursor, from 0.01 (slow and smooth) to 1 (instant). Default: 0.05."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the light in on mount. Default: true."
+    )
+    resolution: rx.Var[int | float] = field(
+        doc="Fraction of the screen resolution the light is rendered at, from 0.25 to 1. The glow is soft, so 0.5 looks the same as full resolution and runs about four times faster. Default: 0.5."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the light as colored ink for light backgrounds. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class PrismaticBurst(ReactBitsComponent):
-    """Burst of light rays with controllable color, distortion, amount.
+    """A burst of prismatic light rays that leans toward the cursor and sends a wave of light outward on click.
 
     Docs: https://reactbits.dev/backgrounds/prismatic-burst
     """
@@ -2592,45 +4331,89 @@ class PrismaticBurst(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "PrismaticBurst"
     _rb_files = ('PrismaticBurst.css', 'PrismaticBurst.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
+    colors: rx.Var[list[str]] = field(
+        doc="Colors blended through the rays, up to 64. Leave empty for a full spectrum."
+    )
     intensity: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier applied after accumulation. Default: 2."
+        doc="Overall brightness of the rays. Default: 2."
     )
     speed: rx.Var[int | float] = field(
-        doc="Global time multiplier controlling ray motion & distortion. Default: 0.5."
+        doc="How fast the burst turns and shifts. Default: 0.5."
     )
     animation_type: rx.Var[Literal["rotate", "rotate3d", "hover"]] = field(
-        doc="Core motion style: planar rotation, full 3D rotation, or pointer hover orbit. Default: 'rotate3d'."
-    )
-    colors: rx.Var[list[str]] = field(
-        doc="Optional array of hex colors used as a gradient (otherwise spectral). Default: []."
+        doc="Flat rotation, full 3D rotation, or a burst that turns to follow the cursor. Default: 'rotate3d'."
     )
     distort: rx.Var[int | float] = field(
-        doc="Amount of bend/distortion applied to marching space (adds organic wobble). Default: 0."
-    )
-    paused: rx.Var[bool] = field(
-        doc="Freeze time progression when true (animation stops). Default: false."
-    )
-    offset: rx.Var[dict[str, Any]] = field(
-        doc="Pixel (or CSS length) offset of focal origin from center. Default: { x: 0, y: 0 }."
-    )
-    hover_dampness: rx.Var[int | float] = field(
-        doc="Smoothing factor (0-1) for pointer tracking when animationType='hover'. Default: 0."
+        doc="Bends the rays into flowing, organic shapes. Default: 0."
     )
     ray_count: rx.Var[int | float] = field(
-        doc="If > 0 applies an angular comb filter to produce discrete ray spokes."
+        doc="Splits the light into this many evenly spaced spokes. 0 keeps it organic. Default: 0."
     )
-    mix_blend_mode: rx.Var[str] = field(
-        doc="Canvas CSS mix-blend-mode (e.g. lighten, screen) or 'none' for normal. Default: 'lighten'."
+    ray_width: rx.Var[int | float] = field(
+        doc="Thickness of the rays, from thin threads to broad beams. Default: 1."
+    )
+    zoom: rx.Var[int | float] = field(
+        doc="How close the burst is. Higher values zoom in. Default: 1."
+    )
+    twist: rx.Var[int | float] = field(
+        doc="Swirls the rays into a spiral. Negative values turn the other way. Default: 0."
+    )
+    flow: rx.Var[int | float] = field(
+        doc="Streams the colors through the burst. Negative values reverse the direction. Default: 0."
+    )
+    center_fade: rx.Var[int | float] = field(
+        doc="Size of the dark core at the heart of the burst, from 0.5 to 3. Default: 1."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain over the light, from 0.3 to 1. Default: 0.8."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft bloom around the brightest rays. Default: 0."
+    )
+    offset: rx.Var[dict[str, Any]] = field(
+        doc="Moves the center of the burst, in pixels. Positive y moves it up. Default: { x: 0, y: 0 }."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The burst leans toward the cursor and the rays near it brighten. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the burst reacts to the cursor. Default: 0.5."
+    )
+    hover_dampness: rx.Var[int | float] = field(
+        doc="How smoothly the burst follows the cursor, from 0 to 1. Higher values feel heavier. Default: 0.25."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking sends a wave of light racing out along the rays. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The burst ignites from the center when it mounts. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    quality: rx.Var[Literal["low", "medium", "high"]] = field(
+        doc="Render resolution. Lower settings are lighter on slower devices. Default: 'high'."
+    )
+    resolution: rx.Var[int | float] = field(
+        doc="Exact render scale from 0.2 to 1. Overrides quality."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the burst as colored ink on a white background. Default: false."
+    )
+    mix_blend_mode: rx.Var[str] = field(
+        doc="CSS blend mode for the canvas, such as screen or lighten."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Radar(ReactBitsComponent):
-    """Radar sweep effect with concentric rings, radial spokes, and a rotating beam.
+    """A radar scope whose sweep leaves a phosphor afterglow and picks up moving contacts.
 
     Docs: https://reactbits.dev/backgrounds/radar
     """
@@ -2641,60 +4424,89 @@ class Radar(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Radar"
     _rb_files = ('Radar.css', 'Radar.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    speed: rx.Var[int | float] = field(
-        doc="Overall animation speed multiplier. Default: 1.0."
-    )
-    scale: rx.Var[int | float] = field(
-        doc="Zoom level of the radar pattern. Default: 0.5."
-    )
-    ring_count: rx.Var[int | float] = field(
-        doc="Number of concentric rings. Default: 10.0."
-    )
-    spoke_count: rx.Var[int | float] = field(
-        doc="Number of radial spoke lines. Default: 10.0."
-    )
-    ring_thickness: rx.Var[int | float] = field(
-        doc="Thickness of the concentric ring lines. Default: 0.05."
-    )
-    spoke_thickness: rx.Var[int | float] = field(
-        doc="Thickness of the radial spoke lines. Default: 0.01."
-    )
-    sweep_speed: rx.Var[int | float] = field(
-        doc="Rotation speed of the sweep beam. Default: 1.0."
-    )
-    sweep_width: rx.Var[int | float] = field(
-        doc="Width of the sweep trail (higher = thinner). Default: 2.0."
-    )
-    sweep_lobes: rx.Var[int | float] = field(
-        doc="Number of sweep beams around the radar. Default: 1.0."
-    )
     color: rx.Var[str] = field(
-        doc="Primary radar color in HEX format. Default: '#9f29ff'."
+        doc="Color of the sweep and the contacts. Default: '#3ef09a'."
     )
     background_color: rx.Var[str] = field(
-        doc="Background color in HEX format. Default: '#000000'."
+        doc="Fills the canvas behind the radar. Leave it transparent to let the page show through. Default: 'transparent'."
     )
-    falloff: rx.Var[int | float] = field(
-        doc="Edge fade intensity based on distance from center. Default: 2.0."
+    mode: rx.Var[Literal["sweep", "pulse"]] = field(
+        doc="A rotating beam, or sonar rings that expand from the center. Default: 'sweep'."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the sweep. Negative values sweep counterclockwise. Default: 1."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long the afterglow lingers behind the sweep, from 0 to 1. Default: 0.35."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size of the radar, relative to the shorter side of the view. Default: 0.9."
+    )
+    ring_count: rx.Var[int | float] = field(
+        doc="Number of range rings. Default: 6."
+    )
+    spoke_count: rx.Var[int | float] = field(
+        doc="Number of faint bearing lines. 0 hides them. Default: 12."
+    )
+    ticks: rx.Var[bool] = field(
+        doc="Shows the bearing scale around the edge. Default: true."
+    )
+    targets: rx.Var[int | float] = field(
+        doc="Number of moving contacts the sweep picks up, up to 16. Default: 6."
+    )
+    clutter: rx.Var[int | float] = field(
+        doc="Amount of speckled returns the sweep lights up, from 0 to 1. Default: 0.35."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the soft light around the beam and contacts. Default: 1."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier. Default: 1.0."
+        doc="Overall brightness. Default: 1."
     )
-    enable_mouse_interaction: rx.Var[bool] = field(
-        doc="Enable cursor-reactive center offset. Default: true."
+    grid_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the rings, ticks and lines, from 0 to 2. Default: 1."
     )
-    mouse_influence: rx.Var[int | float] = field(
-        doc="Strength of the mouse offset effect. Default: 0.1."
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the grid lines in px. Default: 1."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Tilts the radar back in perspective like a floor, in degrees. Default: 0."
+    )
+    center_x: rx.Var[int | float] = field(
+        doc="Horizontal position of the radar center, from 0 to 1. Default: 0.5."
+    )
+    center_y: rx.Var[int | float] = field(
+        doc="Vertical position of the radar center, from 0 at the top to 1 at the bottom. Default: 0.5."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Lights up the grid near the cursor, and the sweep picks the cursor up as a contact. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Draws the rings in and starts the sweep on mount. Default: true."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.03."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the radar as ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class RippleGrid(ReactBitsComponent):
-    """A grid that continuously animates with a ripple effect.
+    """A crisp grid that ripples like water, bending and lighting up as waves pass through it.
 
     Docs: https://reactbits.dev/backgrounds/ripple-grid
     """
@@ -2705,51 +4517,71 @@ class RippleGrid(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "RippleGrid"
     _rb_files = ('RippleGrid.css', 'RippleGrid.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    enable_rainbow: rx.Var[bool] = field(
-        doc="Enables rainbow color cycling animation for the grid. Default: false."
+    color: rx.Var[str] = field(
+        doc="Color of the grid. Light mode derives its ink from it. Default: '#ffffff'."
     )
-    grid_color: rx.Var[str] = field(
-        doc="Color of the grid when rainbow mode is disabled. Default: '#ffffff'."
+    variant: rx.Var[Literal["lines", "dots", "cross"]] = field(
+        doc="Draws the grid as lines, dots at each crossing, or small crosses. Default: 'lines'."
     )
-    ripple_intensity: rx.Var[int | float] = field(
-        doc="Controls the intensity of the ripple effect from the center. Default: 0.05."
+    cell_size: rx.Var[int | float] = field(
+        doc="Size of each grid cell, in px. Default: 48."
     )
-    grid_size: rx.Var[int | float] = field(
-        doc="Controls the density/size of the grid pattern. Default: 10.0."
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the lines, in px. Default: 1."
     )
-    grid_thickness: rx.Var[int | float] = field(
-        doc="Controls the thickness of the grid lines. Default: 15.0."
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around the lines. Default: 0.6."
     )
-    fade_distance: rx.Var[int | float] = field(
-        doc="Controls how far the fade effect extends from the center. Default: 1.5."
+    ripple_strength: rx.Var[int | float] = field(
+        doc="How far ripples bend the grid and how brightly their crests light it. Default: 1."
     )
-    vignette_strength: rx.Var[int | float] = field(
-        doc="Controls the intensity of the vignette (edge darkening) effect. Default: 2.0."
+    ripple_speed: rx.Var[int | float] = field(
+        doc="How fast ripples travel outward. Default: 1."
     )
-    glow_intensity: rx.Var[int | float] = field(
-        doc="Adds a glow effect to the grid lines. Default: 0.1."
+    ripple_size: rx.Var[int | float] = field(
+        doc="Wavelength of the ripples. Default: 1."
     )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the entire effect. Default: 1.0."
+    auto_ripple: rx.Var[Literal["center", "random", "none"]] = field(
+        doc="Where idle ripples start: from the center, at random spots, or not at all. Default: 'center'."
     )
-    grid_rotation: rx.Var[int | float] = field(
-        doc="Rotate the entire grid pattern by degrees. Default: 0."
+    ripple_interval: rx.Var[int | float] = field(
+        doc="Seconds between idle ripples. Default: 2.6."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Lays the grid back in perspective, like a floor, in degrees. Default: 0."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Turns the grid, in degrees. Default: 0."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enable mouse/touch interaction to create ripples. Default: true."
+        doc="The cursor leaves a wake of small ripples and lights up the lines nearby. Default: true."
     )
-    mouse_interaction_radius: rx.Var[int | float] = field(
-        doc="Controls the radius of the mouse interaction effect. Default: 1."
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a strong ripple. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Reveals the grid with a ripple from the center. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0.5."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the grid as ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Scanner(ReactBitsComponent):
-    """Calm interference bands sweeping across the screen like an oscilloscope.
+    """Glowing interference lines swept by a scan beam, with a CRT finish, cursor lensing and click pings.
 
     Docs: https://reactbits.dev/backgrounds/scanner
     """
@@ -2760,90 +4592,104 @@ class Scanner(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Scanner"
     _rb_files = ('Scanner.css', 'Scanner.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     color1: rx.Var[str] = field(
-        doc="Deep violet base color of the scanning field. Default: '#5227FF'."
+        doc="Color of the resting lines. Default: '#5227FF'."
     )
     color2: rx.Var[str] = field(
-        doc="Pink color of the interference bands. Default: '#FF9FFC'."
+        doc="Color the lines take as the scan lights them. Default: '#FF9FFC'."
     )
     color3: rx.Var[str] = field(
-        doc="White color used for the brightest signal peaks. Default: '#FFFFFF'."
+        doc="Color of the hot scan head itself. Default: '#FFFFFF'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Overall animation speed of the signal. Default: 0.5."
+        doc="How fast the wave moves through the lines. Default: 0.5."
     )
     sweep_speed: rx.Var[int | float] = field(
-        doc="Rate of the scan band travelling across the field. Default: 0.25."
+        doc="How fast the scan travels across. Default: 0.25."
     )
     sweep_width: rx.Var[int | float] = field(
-        doc="Spacing between successive scan bands. Default: 1.6."
+        doc="Distance between one scan and the next. Larger values leave longer dark gaps. Default: 1.6."
     )
-    sweep_falloff: rx.Var[int | float] = field(
-        doc="How tightly the sweep concentrates; higher values give a narrower band. Default: 6."
+    trail: rx.Var[int | float] = field(
+        doc="Length of the afterglow the scan leaves behind, from 0 to 1. Default: 0.5."
+    )
+    reverse: rx.Var[bool] = field(
+        doc="Runs the scan in the opposite direction. Default: false."
     )
     scale: rx.Var[int | float] = field(
-        doc="Zoom level of the signal field. Default: 1.5."
+        doc="Zooms the whole pattern in or out. Default: 1.5."
     )
     frequency: rx.Var[int | float] = field(
-        doc="Spatial frequency of the underlying signal that bends the scan lines. Default: 2."
+        doc="How many waves fit across the field. Default: 2."
     )
     ripple: rx.Var[int | float] = field(
-        doc="How strongly the signal bends the scan lines out of straight. Default: 0.22."
+        doc="How tall the waves are. 0 keeps the lines straight. Default: 0.22."
     )
     band_density: rx.Var[int | float] = field(
-        doc="Number of scan lines packed across the field. Default: 11."
+        doc="How many lines fill the field. Default: 11."
     )
-    line_sharpness: rx.Var[int | float] = field(
-        doc="Thins the scan lines into a crisp trace; lower values give a soft glow. Default: 5.5."
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the resting lines, in px. Lit lines get thicker. Default: 1.2."
     )
     glow: rx.Var[int | float] = field(
-        doc="Soft fill between the lines, giving the band volume. Default: 0.22."
+        doc="Soft glow around the lit lines. Default: 0.6."
     )
-    scan_direction: rx.Var[str] = field(
-        doc="Direction of the scan: 'vertical', 'horizontal', or 'diagonal'. Default: 'vertical'."
+    scan_direction: rx.Var[Literal["vertical", "horizontal", "diagonal"]] = field(
+        doc="Direction the scan travels in. The lines run across it. Default: 'vertical'."
     )
     color_spread: rx.Var[int | float] = field(
-        doc="Amount of chromatic separation between the violet and pink channels. Default: 0.7."
+        doc="Fine color fringes on the edges of lit lines, from 0 to 1. Default: 0.7."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness of the field. Default: 1.0."
-    )
-    contrast: rx.Var[int | float] = field(
-        doc="Contrast between the base tone and the bright peaks. Default: 1.15."
-    )
-    softness: rx.Var[int | float] = field(
-        doc="Anti-alias rolloff; higher values calm high-frequency shimmer. Default: 1.4."
+        doc="Overall brightness of the lines. Default: 1."
     )
     vignette: rx.Var[int | float] = field(
-        doc="Strength of the edge fade around the field. Default: 0.45."
+        doc="Fades the lines out toward the edges, from 0 to 1. Default: 0.3."
     )
     scanline: rx.Var[bool] = field(
-        doc="Overlays fine CRT raster lines across the field. Default: true."
+        doc="Turns on the CRT look: fine horizontal scanlines across the field. Default: true."
+    )
+    scanline_intensity: rx.Var[int | float] = field(
+        doc="How dark the scanlines are, from 0 to 1. Default: 0.5."
     )
     grain: rx.Var[bool] = field(
-        doc="Adds a subtle animated grain. Default: true."
+        doc="Adds a little film grain. Default: true."
     )
     grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+        doc="Strength of the grain. Default: 0.04."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect. Default: 1.0."
+        doc="Overall opacity of the effect. Default: 1."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enables the soft scan focus that follows the pointer. Default: true."
+        doc="The lines bend around the cursor and light up near it. Default: true."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Radius of the pointer focus region. Default: 0.5."
+        doc="Size of the area around the cursor. Default: 0.5."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the pointer focus brightening. Default: 0.5."
+        doc="How strongly the cursor bends the lines. Default: 0.7."
+    )
+    mouse_mode: rx.Var[Literal["repel", "attract"]] = field(
+        doc="Lines part around the cursor, or pinch in toward it. Default: 'repel'."
+    )
+    click_effect: rx.Var[Literal["ping", "none"]] = field(
+        doc="Clicking sends a ring of light rippling out through the lines. Default: 'ping'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The lines power on with a first scan on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the lines as crisp ink for light backgrounds instead of glowing light. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class ShapeGrid(ReactBitsComponent):
-    """Animated grid with shape variants (square, hexagon, circle, triangle) + direction customization.
+    """A drifting grid of shapes that lights up under the cursor, with perspective tilt and rainbow trails.
 
     Docs: https://reactbits.dev/backgrounds/shape-grid
     """
@@ -2855,31 +4701,79 @@ class ShapeGrid(ReactBitsComponent):
     _rb_name = "ShapeGrid"
     _rb_files = ('ShapeGrid.css', 'ShapeGrid.jsx')
 
-    direction: rx.Var[str] = field(
-        doc="Direction of square animation. Options: 'diagonal', 'up', 'right', 'down', 'left'. Default: 'right'."
+    shape: rx.Var[Literal["square", "tile", "hexagon", "triangle", "diamond", "circle", "cross", "dot"]] = field(
+        doc="Shape of the cells. Cross and dot draw markers where the grid lines would meet. Default: 'square'."
+    )
+    cell_size: rx.Var[int | float] = field(
+        doc="Size of each cell, in px. Default: 40."
+    )
+    line_width: rx.Var[int | float] = field(
+        doc="Thickness of the grid lines, in px. Default: 1."
+    )
+    direction: rx.Var[Literal["diagonal", "up", "down", "left", "right", "none"]] = field(
+        doc="Which way the grid drifts. None holds it still. Default: 'diagonal'."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed multiplier. Default: 1."
+        doc="How fast the grid drifts. Default: 0.5."
     )
-    border_color: rx.Var[str] = field(
-        doc="Color of the square borders. Default: '#999'."
+    line_color: rx.Var[str] = field(
+        doc="Color of the grid lines. Default: '#2a2734'."
     )
-    square_size: rx.Var[int | float] = field(
-        doc="Size of individual squares in pixels. Default: 40."
+    hover_color: rx.Var[str] = field(
+        doc="Color the cell borders light up in under the cursor. Default: '#ffffff'."
     )
     hover_fill_color: rx.Var[str] = field(
-        doc="Fill color when hovering over squares. Default: '#222'."
+        doc="Color that fills the inside of lit cells. Follows hoverColor when not set. Default: hoverColor."
     )
-    shape: rx.Var[str] = field(
-        doc="Shape of the grid tiles. Options: 'square', 'hexagon', 'circle', 'triangle'. Default: 'square'."
+    fill_opacity: rx.Var[int | float] = field(
+        doc="How solid the inside of lit cells gets, from 0 for outlines only to 1 for solid cells. Default: 0.15."
     )
-    hover_trail_amount: rx.Var[int | float] = field(
-        doc="Number of previously hovered shapes to keep visible as a fading trail. 0 disables the trail. Default: 0."
+    rainbow: rx.Var[bool] = field(
+        doc="Lights cells in shifting rainbow colors instead of the hover color. Default: false."
+    )
+    tilt_x: rx.Var[int | float] = field(
+        doc="Tilts the grid back in perspective, in degrees. Positive values push the top away. Default: 0."
+    )
+    tilt_y: rx.Var[int | float] = field(
+        doc="Turns the grid sideways in perspective, in degrees. Positive values push the right side away. Default: 0."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Size of the light around the cursor, in cells. 0 lights only the cell under it. Default: 1.5."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long lit cells take to fade after the cursor moves on, in seconds. Default: 0.6."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around lit cells, from 0 to 1. Default: 0.35."
+    )
+    twinkle: rx.Var[int | float] = field(
+        doc="Lets random cells light up on their own now and then, from 0 to 1. Default: 0."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the grid out toward the edges, from 0 to 1. Default: 1."
+    )
+    click_cascade: rx.Var[bool] = field(
+        doc="Clicking sends a ring of lit cells rolling out across the grid. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Draws the grid in from the middle when it first appears. Default: true."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole grid. Default: 1."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Color behind the grid. By default the canvas is transparent. Default: 'transparent'."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the drift and the lights. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class ShapeWaves(ReactBitsComponent):
-    """A WebGPU field of triangles, circles and squares that brighten and grow along rolling waves, with an optional text cutout the waves flow around.
+    """A field of triangles, circles and squares that brighten and grow along rolling waves.
 
     Docs: https://reactbits.dev/backgrounds/shape-waves
     """
@@ -2973,7 +4867,7 @@ class ShapeWaves(ReactBitsComponent):
 
 
 class SideRays(ReactBitsComponent):
-    """Animated light rays emanating from the side with customizable colors and speed.
+    """Shafts of light that fan in from a corner or side, shimmer slowly and lean toward the cursor.
 
     Docs: https://reactbits.dev/backgrounds/side-rays
     """
@@ -2984,45 +4878,71 @@ class SideRays(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "SideRays"
     _rb_files = ('SideRays.css', 'SideRays.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed of the rays. Default: 2.5."
-    )
     ray_color1: rx.Var[str] = field(
-        doc="Color of the first ray layer in hex format. Default: '#EAB308'."
+        doc="Color of the first layer of rays, on the upper side of the fan. Default: '#FFC46B'."
     )
     ray_color2: rx.Var[str] = field(
-        doc="Color of the second ray layer in hex format. Default: '#96c8ff'."
-    )
-    intensity: rx.Var[int | float] = field(
-        doc="Overall brightness of the rays. Default: 2."
-    )
-    spread: rx.Var[int | float] = field(
-        doc="Angular width of the ray fan \u2014 higher values create a wider spread between the two ray layers. Default: 2."
-    )
-    origin: rx.Var[Literal["top-right", "top-left", "bottom-right", "bottom-left"]] = field(
-        doc="Corner of the canvas from which the rays emerge. Default: 'top-right'."
-    )
-    tilt: rx.Var[int | float] = field(
-        doc="Rotation of the ray fan in degrees \u2014 positive values tilt clockwise. Default: 0."
-    )
-    saturation: rx.Var[int | float] = field(
-        doc="Color saturation of the rays \u2014 0 renders in grayscale, values above 1 boost color. Default: 1.5."
+        doc="Color of the second layer of rays, on the lower side of the fan. Default: '#96c8ff'."
     )
     blend: rx.Var[int | float] = field(
-        doc="Balance between the two ray layers \u2014 0 is all ray 1, 1 is all ray 2. Default: 0.75."
+        doc="Balance between the two layers, from 0 (only the first color) to 1 (only the second). Default: 0.6."
+    )
+    origin: rx.Var[Literal["top-right", "top-left", "bottom-right", "bottom-left", "right", "left"]] = field(
+        doc="Corner or side the light shines in from. Default: 'top-right'."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the rays shimmer and sway. 0 freezes them. Default: 2.5."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="Brightness of the light. Default: 2."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="How wide the rays fan out. Default: 2."
+    )
+    density: rx.Var[int | float] = field(
+        doc="How many separate rays the light breaks into. Higher values give finer rays. Default: 5."
+    )
+    sharpness: rx.Var[int | float] = field(
+        doc="How crisp the edges of the rays are, from soft haze at 0 to defined beams at 1. Default: 0.5."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Rotates the rays, in degrees. Default: 0."
     )
     falloff: rx.Var[int | float] = field(
-        doc="How steeply brightness diminishes with distance from the source \u2014 higher = tighter glow. Default: 1.6."
+        doc="How quickly the light fades with distance. Lower values let the rays reach further. Default: 1.6."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Brightness of the glow where the light enters. Default: 1."
+    )
+    saturation: rx.Var[int | float] = field(
+        doc="Color saturation of the light. 0 is grayscale. Default: 1."
+    )
+    dust: rx.Var[int | float] = field(
+        doc="Amount of dust drifting in the light, from 0 to 1. Specks only show inside the rays. Default: 0."
+    )
+    follow_mouse: rx.Var[bool] = field(
+        doc="The rays lean toward the cursor and the ray under it brightens. Default: true."
+    )
+    mouse_influence: rx.Var[int | float] = field(
+        doc="How strongly the rays follow the cursor, from 0 to 1. Default: 0.5."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The rays grow out from their source on mount. Default: true."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Renders the rays as soft tinted light for light backgrounds. Default: false."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect. Default: 1.0."
+        doc="Overall opacity, from 0 to 1. Default: 1."
+    )
+    max_device_pixel_ratio: rx.Var[int | float] = field(
+        doc="Highest pixel ratio the canvas renders at. Default: 2."
     )
 
 
 class Silk(ReactBitsComponent):
-    """Smooth waves background with soft lighting.
+    """Flowing satin folds with glossy highlights that turn toward the cursor and ripple on click.
 
     Docs: https://reactbits.dev/backgrounds/silk
     """
@@ -3032,31 +4952,72 @@ class Silk(ReactBitsComponent):
     is_default = True
     _rb_category = "Backgrounds"
     _rb_name = "Silk"
-    _rb_files = ('Silk.jsx',)
-    lib_dependencies: list[str] = ['@react-three/fiber@9.3.0', 'three@0.180.0']
+    _rb_files = ('Silk.css', 'Silk.jsx')
 
     speed: rx.Var[int | float] = field(
-        doc="Controls the animation speed of the silk effect. Default: 5."
+        doc="How fast the folds flow. Default: 5."
     )
     scale: rx.Var[int | float] = field(
-        doc="Controls the scale of the silk pattern. Default: 1."
+        doc="Size of the folds. Higher values pack more in. Default: 1."
     )
     color: rx.Var[str] = field(
-        doc="Hex color code for the silk pattern. Default: '#7B7481'."
+        doc="Color of the silk. Default: '#7B7481'."
+    )
+    sheen_color: rx.Var[str] = field(
+        doc="Tint of the glossy highlights, blended with the silk color. Default: '#ffffff'."
     )
     noise_intensity: rx.Var[int | float] = field(
-        doc="Controls the intensity of the noise effect. Default: 1.5."
+        doc="Strength of the fine grain over the fabric. Default: 1.5."
     )
     rotation: rx.Var[int | float] = field(
-        doc="Controls the rotation of the silk pattern (in radians). Default: 0."
+        doc="Turns the folds, in radians. Default: 0."
+    )
+    sheen: rx.Var[int | float] = field(
+        doc="Strength of the glossy highlights that run along the folds. Default: 0.5."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How deep the folds look, from flat at 0 to deep, shaded creases at 1. Default: 0.5."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Soft glow around the brightest folds. Default: 0.3."
+    )
+    ripple: rx.Var[int | float] = field(
+        doc="Strength of the fine ripples running through the folds. 0 smooths them out. Default: 1."
+    )
+    wave: rx.Var[int | float] = field(
+        doc="How much the folds sway as they flow. Default: 1."
+    )
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different arrangement of folds. Any number works. Default: 0."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The light turns to follow the cursor and the fabric drags along with it. Default: true."
+    )
+    interaction_strength: rx.Var[int | float] = field(
+        doc="How strongly the cursor moves the fabric and its light. Default: 1."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a ripple rolling through the fabric. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The folds rise out of the dark and settle when the silk first appears. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws pale silk with white highlights for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class SlicedWaves(ReactBitsComponent):
-    """A grid of soft glowing bars rippling like a slatted equalizer.
+    """Waves of colored light sliced into glowing bars, seen in depth with a focus that follows the cursor.
 
     Docs: https://reactbits.dev/backgrounds/sliced-waves
     """
@@ -3067,76 +5028,87 @@ class SlicedWaves(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "SlicedWaves"
     _rb_files = ('SlicedWaves.css', 'SlicedWaves.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     color1: rx.Var[str] = field(
-        doc="Highlight color for bars at the top of their travel. Default: '#FF9FFC'."
+        doc="First color of the light. Default: '#ffd9a8'."
     )
     color2: rx.Var[str] = field(
-        doc="Deep color for bars at the bottom of their travel. Default: '#5227FF'."
+        doc="Second color of the light. Default: '#ff5fa2'."
     )
     color3: rx.Var[str] = field(
-        doc="Accent tint blended across the grid. Default: '#B497CF'."
+        doc="Third color of the light. Default: '#5b8cff'."
     )
-    columns: rx.Var[int | float] = field(
-        doc="Number of grid columns. Default: 14."
+    ribbons: rx.Var[int | float] = field(
+        doc="Number of waves of light, from 1 to 6. Default: 3."
     )
-    rows: rx.Var[int | float] = field(
-        doc="Number of grid rows. Default: 8."
+    spacing: rx.Var[int | float] = field(
+        doc="Distance between the bars in the middle of the view, in px. Default: 28."
     )
-    bar_thickness: rx.Var[int | float] = field(
-        doc="Thickness of each bar relative to its cell. Default: 0.1."
+    bar_width: rx.Var[int | float] = field(
+        doc="Width of each bar, as a share of the spacing. Default: 0.5."
+    )
+    ribbon_height: rx.Var[int | float] = field(
+        doc="Height of each wave, as a fraction of the view height. Default: 0.26."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="Vertical distance between the waves, as a fraction of the view height. Default: 0.1."
+    )
+    amplitude: rx.Var[int | float] = field(
+        doc="How far the waves rise and fall, as a fraction of the view height. Default: 0.1."
+    )
+    frequency: rx.Var[int | float] = field(
+        doc="How many waves fit across the view. Default: 1."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed of the travelling wave. Default: 0.35."
+        doc="Animation speed. Negative values reverse the waves. Default: 1."
     )
-    travel: rx.Var[int | float] = field(
-        doc="How far each bar moves within its cell. Default: 0.7."
+    perspective: rx.Var[int | float] = field(
+        doc="How much the strip of bars turns away from you, from 0 to 1. Default: 0.45."
     )
-    wave_spread: rx.Var[int | float] = field(
-        doc="Phase step between columns; controls how tight the wave is. Default: 0.9."
+    curve: rx.Var[int | float] = field(
+        doc="How much the strip bends in depth, from 0 to 1. Default: 0.5."
     )
-    row_offset: rx.Var[int | float] = field(
-        doc="Per-row phase offset that staggers the bars. Default: 1.0."
-    )
-    softness: rx.Var[int | float] = field(
-        doc="Edge softness; higher values turn bars into glowing bands. Default: 0.05."
+    blur: rx.Var[int | float] = field(
+        doc="Depth of field. Bars away from the focus soften, and the focus follows the cursor. Default: 0.6."
     )
     glow: rx.Var[int | float] = field(
-        doc="Soft halo emitted around each bar. Default: 0."
+        doc="Strength of the soft light around each bar. Default: 1."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness of the bars. Default: 1.0."
+        doc="Overall brightness. Where waves overlap, the light burns to white. Default: 1.25."
     )
-    contrast: rx.Var[int | float] = field(
-        doc="Color contrast applied to the final render. Default: 1.0."
+    position: rx.Var[int | float] = field(
+        doc="Vertical position of the waves, from 0 at the top to 1 at the bottom. Default: 0.78."
     )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect. Default: 0.5."
+    rotation: rx.Var[int | float] = field(
+        doc="Rotation of the whole effect, in degrees. Default: 0."
     )
-    orientation: rx.Var[str] = field(
-        doc="Bar orientation: 'horizontal' slats move vertically, 'vertical' slats move horizontally. Default: 'horizontal'."
+    slices: rx.Var[int | float] = field(
+        doc="Cuts the bars into segments like an LED display. 0 keeps them solid. Default: 0."
     )
-    alternate: rx.Var[bool] = field(
-        doc="Reverse the travel direction on alternating rows. Default: false."
+    grain: rx.Var[int | float] = field(
+        doc="Strength of the film grain. Default: 0.08."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Enable cursor-proximity brightening and thickening. Default: true."
+        doc="Pulls the focus to the bars under the cursor and lights them up. Default: true."
     )
-    mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the cursor-proximity response. Default: 1."
+    intro: rx.Var[bool] = field(
+        doc="Grows the bars in across the view on mount. Default: true."
     )
-    mouse_radius: rx.Var[int | float] = field(
-        doc="Radius of the cursor influence falloff. Default: 0.3."
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
     )
-    grain: rx.Var[bool] = field(
-        doc="Adds a subtle animated grain. Default: true."
-    )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the bars as colored ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
@@ -3152,57 +5124,71 @@ class SoftAurora(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "SoftAurora"
     _rb_files = ('SoftAurora.css', 'SoftAurora.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
     speed: rx.Var[int | float] = field(
-        doc="Overall animation speed multiplier. Default: 0.6."
+        doc="Overall animation speed. Default: 0.6."
     )
     scale: rx.Var[int | float] = field(
-        doc="Scale of the noise pattern. Default: 1.5."
+        doc="Scale of the noise that shapes the band. Default: 1.5."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier. Default: 1.0."
+        doc="Overall brightness. Default: 1.0."
     )
     color1: rx.Var[str] = field(
-        doc="Tint color for the first aurora layer. Default: '#f7f7f7'."
+        doc="Tint of the first aurora layer. Default: '#f7f7f7'."
     )
     color2: rx.Var[str] = field(
-        doc="Tint color for the second aurora layer. Default: '#e100ff'."
+        doc="Tint of the second aurora layer. Default: '#e100ff'."
     )
     noise_frequency: rx.Var[int | float] = field(
-        doc="Base frequency of the Perlin noise. Default: 2.5."
+        doc="How tightly the band ripples. Default: 2.5."
     )
     noise_amplitude: rx.Var[int | float] = field(
-        doc="Base amplitude of the Perlin noise. Default: 1.0."
+        doc="How far the band waves up and down. Default: 1.0."
     )
     band_height: rx.Var[int | float] = field(
-        doc="Vertical position of the aurora band (0-1). Default: 0.5."
+        doc="Vertical position of the band, from 0 at the bottom to 1 at the top. Default: 0.5."
     )
     band_spread: rx.Var[int | float] = field(
-        doc="Vertical spread of the aurora glow. Default: 1.0."
+        doc="How tight and bright the band is. Lower values spread it into a wide, soft glow. Default: 1.0."
     )
     octave_decay: rx.Var[int | float] = field(
-        doc="Amplitude decay per noise octave. Default: 0.1."
+        doc="How much fine ripple sits on top of the large waves. Default: 0.1."
     )
     layer_offset: rx.Var[int | float] = field(
-        doc="Time offset between the two aurora layers. Default: 0."
+        doc="Shifts the second layer in time so the two separate. Default: 0."
     )
     color_speed: rx.Var[int | float] = field(
-        doc="Speed of palette color shifting. Default: 1.0."
+        doc="How fast the colors drift along the band. Default: 1.0."
+    )
+    spectrum: rx.Var[int | float] = field(
+        doc="How much of the shifting rainbow shows through the tints, from 0 to 1. 0 uses the two colors as they are. Default: 1."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Tilts the band by this many degrees. Default: 0."
     )
     enable_mouse_interaction: rx.Var[bool] = field(
-        doc="Enable cursor-reactive aurora offset. Default: true."
+        doc="The aurora drifts with the cursor and reaches toward it when it comes close. Default: true."
     )
     mouse_influence: rx.Var[int | float] = field(
-        doc="Strength of the mouse offset effect. Default: 0.25."
+        doc="Strength of the cursor drift and reach. Default: 0.25."
+    )
+    click_pulse: rx.Var[bool] = field(
+        doc="Clicking sends a soft pulse of light along the band. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The band starts as a thin line and blooms in on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Prints the aurora as soft colored ink so it sits on light pages. Default: false."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Overall opacity, from 0 to 1. Default: 1."
     )
 
 
 class Threads(ReactBitsComponent):
-    """Animated pattern of lines forming a fabric-like motion.
+    """Flowing threads that fray apart and part around the cursor, from fine silk to contour lines.
 
     Docs: https://reactbits.dev/backgrounds/threads
     """
@@ -3213,24 +5199,71 @@ class Threads(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Threads"
     _rb_files = ('Threads.css', 'Threads.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    color: rx.Var[list[int | float]] = field(
-        doc="Customizes the color of the lines (RGB). Default: [1, 1, 1]."
+    color: rx.Var[list[Any] | str] = field(
+        doc="Color of the threads. Any CSS color, or an RGB array from 0 to 1. Default: [1, 1, 1]."
+    )
+    accent_color: rx.Var[list[Any]] = field(
+        doc="Color the outer threads blend toward. Leave it out for a single color. Default: -."
     )
     amplitude: rx.Var[int | float] = field(
-        doc="Adjusts the intensity of the wave effect on the lines. Default: 1."
+        doc="Height of the waves. Default: 1.7."
     )
     distance: rx.Var[int | float] = field(
-        doc="Controls the spacing between the lines. A value of 0 means no offset. Default: 0."
+        doc="Spacing between the threads. 0 starts them all from a single line. Default: 0.4."
     )
     enable_mouse_interaction: rx.Var[bool] = field(
-        doc="Enables smooth mouse hover effects that modulate the line's movement and amplitude. Default: false."
+        doc="Lets the cursor steer the waves: moving sideways shifts them and moving up and down changes their height. Default: false."
+    )
+    line_count: rx.Var[int | float] = field(
+        doc="Number of threads. Default: 90."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Width of the threads. Default: 0.6."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How much the threads soften as they separate. 0 keeps every thread crisp. Default: 1.3."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Animation speed. 0 holds the threads still. Default: 0.6."
+    )
+    waves: rx.Var[int | float] = field(
+        doc="How many waves run along each thread. Default: 1.05."
+    )
+    split: rx.Var[int | float] = field(
+        doc="Where the first thread leaves the bundle, from 0 at the start to 1 at the end. Default: 0.04."
+    )
+    fray: rx.Var[int | float] = field(
+        doc="How gradually the other threads peel away after the first one. Default: 0.5."
+    )
+    angle: rx.Var[int | float] = field(
+        doc="Direction of the threads in degrees. Default: 25."
+    )
+    seed: rx.Var[int | float] = field(
+        doc="Changes the wave pattern. Default: 0."
+    )
+    parting: rx.Var[int | float] = field(
+        doc="How far the threads move aside around the cursor, from 0 to 1. Default: 0."
+    )
+    taper: rx.Var[int | float] = field(
+        doc="How much the outer threads fade away, from 0 for all equally bright to 1. Default: 0.85."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Brightness of the threads, from 0.25 to 2. Default: 1.4."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the animation. Default: false."
     )
 
 
 class Topography(ReactBitsComponent):
-    """A living contour map with glowing, elevation-tinted lines.
+    """A 3D landscape drawn in glowing contour lines that rises under the cursor, with light pulses on click.
 
     Docs: https://reactbits.dev/backgrounds/topography
     """
@@ -3241,78 +5274,98 @@ class Topography(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Topography"
     _rb_files = ('Topography.css', 'Topography.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    low_color: rx.Var[str] = field(
-        doc="Color used for the lowest elevation bands. Default: '#5227FF'."
+    color: rx.Var[str] = field(
+        doc="Color of the contour lines. The brightest lines glow toward white. Default: '#4f7cff'."
     )
-    mid_color: rx.Var[str] = field(
-        doc="Color used for the mid elevation bands. Default: '#FF9FFC'."
+    line_count: rx.Var[int | float] = field(
+        doc="How many contour lines stack up the tallest mountain. Default: 22."
     )
-    high_color: rx.Var[str] = field(
-        doc="Color used for the highest ridge lines. Default: '#FFFFFF'."
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the lines in px. Nearer lines draw a little thicker. Default: 1.2."
     )
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed of the morphing elevation field. Default: 0.35."
+    major_lines: rx.Var[bool] = field(
+        doc="Draws every fifth line bolder and brighter, like the index lines on a map. Default: true."
     )
-    morph_amount: rx.Var[int | float] = field(
-        doc="Amplitude of the field morphing (how much the terrain shifts). Default: 3.0."
+    elevation: rx.Var[int | float] = field(
+        doc="How tall the mountains rise. 0 lays the map flat. Default: 1."
     )
-    morph_speed: rx.Var[int | float] = field(
-        doc="How differently each control point animates over time. Default: 0.05."
-    )
-    bands: rx.Var[int | float] = field(
-        doc="Contour line density (number of elevation bands). Default: 2.0."
-    )
-    thickness: rx.Var[int | float] = field(
-        doc="Thickness of the contour lines. Default: 0.01."
+    foreground: rx.Var[int | float] = field(
+        doc="How much height the land keeps as it reaches the camera. Low values settle it flat so the view stays clear. Default: 0.2."
     )
     scale: rx.Var[int | float] = field(
-        doc="Zoom level of the topographic field. Default: 1.0."
+        doc="Size of the landforms. Larger values give broader mountains. Default: 1."
     )
-    pixel_size: rx.Var[int | float] = field(
-        doc="Retro pixelation step (1 = smooth, higher = chunkier). Default: 1.0."
+    detail: rx.Var[int | float] = field(
+        doc="Fine wobble in the lines and small rings on the plains, from 0 to 1. Default: 0.35."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Camera angle in degrees, from a low view across the land to 90 for straight down. Default: 32."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the camera glides over the land. Default: 0.25."
+    )
+    direction: rx.Var[Literal["forward", "backward", "left", "right"]] = field(
+        doc="Which way the camera travels. Default: 'forward'."
+    )
+    morph: rx.Var[int | float] = field(
+        doc="How quickly the landforms reshape over time. 0 keeps the terrain still. Default: 0.2."
     )
     glow: rx.Var[int | float] = field(
-        doc="Soft bloom radius around the contour lines. Default: 0.5."
+        doc="Soft bloom around the lit lines. Default: 0.6."
     )
-    color_mode: rx.Var[str] = field(
-        doc="Line coloring mode: 'elevation', 'uniform', or 'alternating'. Default: 'elevation'."
+    depth_of_field: rx.Var[int | float] = field(
+        doc="Softens lines away from the focus point, which follows the cursor. Default: 0.4."
     )
-    contrast: rx.Var[int | float] = field(
-        doc="Contrast of the line coverage (sharpens or softens lines). Default: 3.0."
+    fog: rx.Var[int | float] = field(
+        doc="How quickly the land fades into the distance. 1 leaves only the foreground. Default: 0.35."
     )
     brightness: rx.Var[int | float] = field(
-        doc="Overall brightness of the contour lines. Default: 1.0."
-    )
-    fill_bands: rx.Var[bool] = field(
-        doc="Softly tint the areas between contour lines by elevation. Default: false."
+        doc="Overall brightness of the lines. Default: 1."
     )
     opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect. Default: 1.0."
-    )
-    grain: rx.Var[bool] = field(
-        doc="Whisper-subtle animated film grain over the effect. Default: true."
-    )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
+        doc="Overall opacity of the effect. Default: 1."
     )
     mouse_interaction: rx.Var[bool] = field(
-        doc="Lift the elevation field gently around the cursor. Default: true."
+        doc="Lets the cursor light and shape the terrain, and tilts the camera toward it. Default: true."
+    )
+    hover_effect: rx.Var[Literal["lift", "trace", "light"]] = field(
+        doc="Lift raises the land under the cursor, trace lights the contour at its height, light only lights it. Default: 'lift'."
     )
     mouse_radius: rx.Var[int | float] = field(
-        doc="Radius of the cursor elevation bump. Default: 0.3."
+        doc="Size of the area the cursor affects. Default: 1."
     )
     mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the cursor elevation bump. Default: 0.4."
+        doc="How high the land lifts and how brightly it lights. Default: 0.6."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long the lifted land takes to settle back, from 0 to 1. Default: 0.3."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the camera leans toward the cursor, from 0 to 1. Default: 0.5."
+    )
+    click_effect: rx.Var[Literal["pulse", "peak", "none"]] = field(
+        doc="Pulse sends a ring of light rolling out over the land, peak raises a new mountain. Default: 'pulse'."
+    )
+    markers: rx.Var[Literal["none", "plus", "dots"]] = field(
+        doc="Survey markers on a grid across the land. A few blink, and the ones near the cursor get a target frame. Default: 'none'."
+    )
+    glitch: rx.Var[int | float] = field(
+        doc="How often brief data glitches slice through the lines, from 0 to 1. Clicks set one off too. Default: 0."
+    )
+    intro: rx.Var[bool] = field(
+        doc="The map fades in flat and rises into mountains on mount. Default: true."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws the lines as crisp ink for light backgrounds instead of glowing light. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class Waves(ReactBitsComponent):
-    """Layered lines that form smooth wave patterns with animation.
+    """Dense flowing lines that sway like silk, bend around the cursor and spring back into place.
 
     Docs: https://reactbits.dev/backgrounds/waves
     """
@@ -3325,42 +5378,81 @@ class Waves(ReactBitsComponent):
     _rb_files = ('Waves.css', 'Waves.jsx')
 
     line_color: rx.Var[str] = field(
-        doc="Defines the color of the wave lines drawn on the canvas. Default: 'black'."
+        doc="Color of the lines. Default: '#ffffff'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color the lines take on where the cursor or a click pushes them. Default: lineColor."
     )
     background_color: rx.Var[str] = field(
-        doc="Sets the background color of the waves container. Default: 'transparent'."
+        doc="Background behind the lines. Default: 'transparent'."
     )
-    wave_speed_x: rx.Var[int | float] = field(
-        doc="Horizontal speed factor for the wave animation. Default: 0.0125."
+    line_style: rx.Var[Literal["solid", "dashed"]] = field(
+        doc="Draws solid lines, or dashes that stream along them. Default: 'solid'."
     )
-    wave_speed_y: rx.Var[int | float] = field(
-        doc="Vertical speed factor for the wave animation. Default: 0.005."
+    spacing: rx.Var[int | float] = field(
+        doc="Space between the lines, in px. Default: 10."
     )
-    wave_amp_x: rx.Var[int | float] = field(
-        doc="Horizontal amplitude of each wave. Default: 32."
+    line_width: rx.Var[int | float] = field(
+        doc="Width of the lines, in px. Default: 1."
     )
-    wave_amp_y: rx.Var[int | float] = field(
-        doc="Vertical amplitude of each wave. Default: 16."
+    rotation: rx.Var[int | float] = field(
+        doc="Turns the lines, in degrees. 90 lays them flat. Default: 0."
     )
-    x_gap: rx.Var[int | float] = field(
-        doc="Horizontal gap between individual wave lines. Default: 10."
+    amplitude: rx.Var[int | float] = field(
+        doc="How far the lines sway, in px. Default: 32."
     )
-    y_gap: rx.Var[int | float] = field(
-        doc="Vertical gap between points on each wave line. Default: 32."
+    scale: rx.Var[int | float] = field(
+        doc="Size of the wave pattern. Higher values make broader, calmer waves. Default: 1."
     )
-    friction: rx.Var[int | float] = field(
-        doc="Controls how quickly the cursor effect slows down. Default: 0.925."
+    twist: rx.Var[int | float] = field(
+        doc="How much the waves twist the lines, gathering them into bright folds. Default: 1."
     )
-    tension: rx.Var[int | float] = field(
-        doc="Determines the 'springiness' of the cursor effect on points. Default: 0.005."
+    speed: rx.Var[int | float] = field(
+        doc="How fast the waves flow. 0 holds them still. Default: 1."
     )
-    max_cursor_move: rx.Var[int | float] = field(
-        doc="Limits how far each point can shift due to cursor movement. Default: 100."
+    variation: rx.Var[int | float] = field(
+        doc="Picks a different wave pattern. Default: 0."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="Moving the cursor drags the lines along with it. Default: true."
+    )
+    mouse_radius: rx.Var[int | float] = field(
+        doc="Radius around the cursor that drags the lines, in px. Default: 175."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How hard a moving cursor drags the lines. Default: 1."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much the lines overshoot and wobble as they settle, from 0 to 1. Default: 0.5."
+    )
+    return_duration: rx.Var[int | float] = field(
+        doc="Roughly how long the lines take to settle back, in seconds. Default: 1.4."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking parts the lines in a soft ripple. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Opens the lines from the center and swells the waves in on mount. Default: true."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the edges into the page, from 0 to 1. Default: 0."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    light_mode: rx.Var[bool] = field(
+        doc="Draws the lines as ink for light backgrounds. Default: false."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the waves. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio, capped at 2. Default: auto."
     )
 
 
 class WebThreads(ReactBitsComponent):
-    """Glowing sine threads woven through a luminous convergence point.
+    """Glowing threads woven through luminous pinch points that light up under the cursor and carry light on click.
 
     Docs: https://reactbits.dev/backgrounds/web-threads
     """
@@ -3371,81 +5463,102 @@ class WebThreads(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "WebThreads"
     _rb_files = ('WebThreads.css', 'WebThreads.jsx')
-    lib_dependencies: list[str] = ['ogl@1.0.11']
 
-    color1: rx.Var[str] = field(
-        doc="Color of the first thread; threads blend from this toward color2. Default: '#5227FF'."
+    colors: rx.Var[list[str]] = field(
+        doc="Gradient across the threads, from the first thread to the last. Up to six colors. Default: ['#5227FF', '#FF9FFC']."
     )
-    color2: rx.Var[str] = field(
-        doc="Color of the last thread; threads blend toward this hue. Default: '#FF9FFC'."
-    )
-    color3: rx.Var[str] = field(
-        doc="Hot-core color mixed into the brightest parts of the threads. Default: '#FFFFFF'."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Animation speed of the weaving motion. Default: 0.2."
-    )
-    thread_count: rx.Var[int | float] = field(
-        doc="Number of glowing threads (1\u201310). Default: 6."
-    )
-    frequency: rx.Var[int | float] = field(
-        doc="Number of sine waves across the screen width. Default: 5.0."
-    )
-    spread: rx.Var[int | float] = field(
-        doc="How far the threads fan out away from the pinch point. Default: 0.18."
-    )
-    taper: rx.Var[int | float] = field(
-        doc="Per-thread amplitude growth; higher values fan later threads out more. Default: 1.0."
-    )
-    position: rx.Var[int | float] = field(
-        doc="Vertical position of the woven strand (0 bottom, 1 top). Default: 0.5."
-    )
-    fan_mode: rx.Var[str] = field(
-        doc="Where the threads pinch together: center, left, or right. Default: 'center'."
-    )
-    glow: rx.Var[int | float] = field(
-        doc="Brightness of the glow radiating from each thread. Default: 0.02."
-    )
-    falloff: rx.Var[int | float] = field(
-        doc="How tightly the glow hugs the thread (higher = thinner filament). Default: 0.6."
-    )
-    thickness: rx.Var[int | float] = field(
-        doc="Core thickness of each thread. Default: 1.1."
-    )
-    brightness: rx.Var[int | float] = field(
-        doc="Overall brightness multiplier. Default: 0.6."
-    )
-    opacity: rx.Var[int | float] = field(
-        doc="Overall opacity of the effect (0\u20131). Default: 1.0."
-    )
-    mirror: rx.Var[bool] = field(
-        doc="Mirror the wave phase across the pinch point for a woven look. Default: true."
-    )
-    shimmer: rx.Var[bool] = field(
-        doc="Add a subtle per-thread phase shimmer. Default: false."
-    )
-    grain: rx.Var[bool] = field(
-        doc="Overlay a whisper-subtle animated film grain on the threads. Default: true."
-    )
-    grain_intensity: rx.Var[int | float] = field(
-        doc="Amplitude of the grain overlay. 0 disables it entirely. Default: 0.05."
-    )
-    mouse_interaction: rx.Var[bool] = field(
-        doc="Let the pinch point drift toward the cursor with a soft brightness bloom. Default: true."
-    )
-    mouse_strength: rx.Var[int | float] = field(
-        doc="Strength of the cursor influence on the pinch point and bloom. Default: 0.3."
+    core_color: rx.Var[str] = field(
+        doc="Hot color where threads overlap and converge. Default: '#FFFFFF'."
     )
     background_color: rx.Var[str] = field(
-        doc="The `backgroundColor` prop. Default: '#FFFFFF'."
+        doc="Fills the canvas behind the threads. Transparent lets the page show through. Default: 'transparent'."
     )
     light_mode: rx.Var[bool] = field(
-        doc="The `lightMode` prop. Default: false."
+        doc="Draws crisp ink strokes for light backgrounds instead of glowing light. Default: false."
+    )
+    thread_count: rx.Var[int | float] = field(
+        doc="Number of threads, up to 24. Default: 6."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="How fast the threads weave. Default: 0.2."
+    )
+    frequency: rx.Var[int | float] = field(
+        doc="How many waves fit across the width. Default: 5."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="How far the threads fan away from the pinch. Default: 0.18."
+    )
+    taper: rx.Var[int | float] = field(
+        doc="How much wider each next thread swings, nesting them inside each other. Default: 1."
+    )
+    position: rx.Var[int | float] = field(
+        doc="Height of the weave, from bottom 0 to top 1. Default: 0.5."
+    )
+    pinch: rx.Var[int | float] = field(
+        doc="Where the threads converge across the width, from 0 to 1. Default: 0.5."
+    )
+    nodes: rx.Var[int | float] = field(
+        doc="Number of pinch points. More than one braids the threads through each of them. Default: 1."
+    )
+    angle: rx.Var[int | float] = field(
+        doc="Rotation of the whole weave in degrees. Default: 0."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="Strength of the light around each thread. Default: 0.02."
+    )
+    falloff: rx.Var[int | float] = field(
+        doc="How quickly the glow fades. Higher is tighter. Default: 0.6."
+    )
+    thickness: rx.Var[int | float] = field(
+        doc="Width of the threads. Default: 1.1."
+    )
+    brightness: rx.Var[int | float] = field(
+        doc="Overall brightness. Default: 0.6."
+    )
+    opacity: rx.Var[int | float] = field(
+        doc="Opacity of the whole effect. Default: 1."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="Twists the threads in 3D, so strands behind the bundle turn thinner and dimmer. Default: 0."
+    )
+    pulses: rx.Var[int | float] = field(
+        doc="Strength of light pulses that travel along the threads toward the pinch. Default: 0."
+    )
+    mirror: rx.Var[bool] = field(
+        doc="Weaves each side of the pinch as a mirror. Default: true."
+    )
+    shimmer: rx.Var[bool] = field(
+        doc="Adds a gentle, uneven sway to each thread. Default: false."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="Fades the threads out toward both ends so they melt into the page. Default: 0."
+    )
+    grain: rx.Var[int | float] = field(
+        doc="Film grain in the light. 0 turns it off. Default: 0.05."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Draws the threads in one after another the first time they come into view, each led by a soft light. Default: true."
+    )
+    mouse_interaction: rx.Var[bool] = field(
+        doc="The strand nearest the cursor lights up while the others recede. Default: true."
+    )
+    mouse_strength: rx.Var[int | float] = field(
+        doc="How strongly the focused strand stands out from the rest. Default: 0.5."
+    )
+    pulse_on_click: rx.Var[bool] = field(
+        doc="Clicking sends light along every thread, gathering in the pinch and fading out the far side. Default: true."
+    )
+    paused: rx.Var[bool] = field(
+        doc="Freezes the weaving. Default: false."
+    )
+    dpr: rx.Var[int | float] = field(
+        doc="Maximum device pixel ratio of the canvas. Default: 2."
     )
 
 
 acid_squares = AcidSquares.create
 aero_shards = AeroShards.create
+antigravity = Antigravity.create
 aurora = Aurora.create
 balatro = Balatro.create
 ballpit = Ballpit.create
@@ -3460,8 +5573,10 @@ evil_eye = EvilEye.create
 faulty_terminal = FaultyTerminal.create
 ferrofluid = Ferrofluid.create
 floating_lines = FloatingLines.create
+flux_lines = FluxLines.create
 galaxy = Galaxy.create
 ghost_fibers = GhostFibers.create
+gradient_ascii = GradientASCII.create
 gradient_blinds = GradientBlinds.create
 gradient_waves = GradientWaves.create
 grainient = Grainient.create
@@ -3479,9 +5594,13 @@ lightning = Lightning.create
 line_waves = LineWaves.create
 liquid_chrome = LiquidChrome.create
 liquid_ether = LiquidEther.create
+magic_rings = MagicRings.create
+magnet_lines = MagnetLines.create
+micro_slats = MicroSlats.create
 molten_metal = MoltenMetal.create
 orb = Orb.create
 particles = Particles.create
+pattern_waves = PatternWaves.create
 pixel_blast = PixelBlast.create
 pixel_snow = PixelSnow.create
 plasma = Plasma.create
