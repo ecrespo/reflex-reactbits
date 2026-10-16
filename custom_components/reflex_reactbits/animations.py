@@ -29,7 +29,7 @@ class AnimatedContent(ReactBitsComponent):
     _rb_category = "Animations"
     _rb_name = "AnimatedContent"
     _rb_files = ('AnimatedContent.jsx',)
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     container: rx.Var[Any] = field(
         doc="Scroll container that drives the animation, as a selector or an element. Defaults to the page. Default: window."
@@ -123,7 +123,7 @@ class BlobCursor(ReactBitsComponent):
     _rb_category = "Animations"
     _rb_name = "BlobCursor"
     _rb_files = ('BlobCursor.css', 'BlobCursor.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
+    lib_dependencies: list[str] = ['three@0.186.1']
 
     material: rx.Var[Literal["chrome", "jelly", "pearl", "ink"]] = field(
         doc="What the blob is made of. Chrome is liquid metal, jelly a glossy colored gel, pearl an iridescent shell and ink a flat goo. Default: 'chrome'."
@@ -853,7 +853,7 @@ class FadeContent(ReactBitsComponent):
     _rb_category = "Animations"
     _rb_name = "FadeContent"
     _rb_files = ('FadeContent.jsx',)
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     container: rx.Var[Any] = field(
         doc="Scroll container that drives the fade, as a selector or an element. Defaults to the page. Default: window."
@@ -1286,7 +1286,7 @@ class ImageTrail(ReactBitsComponent):
     _rb_category = "Animations"
     _rb_name = "ImageTrail"
     _rb_files = ('ImageTrail.css', 'ImageTrail.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     items: rx.Var[list[str]] = field(
         doc="Image URLs shown in the trail, in order. Default: []."

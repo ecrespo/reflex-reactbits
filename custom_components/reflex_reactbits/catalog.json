@@ -182,7 +182,7 @@
   "description": "Text starts blurred then crisply resolves for a soft-focus reveal effect.",
   "docs_url": "https://reactbits.dev/text-animations/blur-text",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -358,7 +358,7 @@
   "description": "Layouts characters around a circle with optional rotation animation.",
   "docs_url": "https://reactbits.dev/text-animations/circular-text",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -504,7 +504,7 @@
   "description": "Animated number counter supporting formatting and decimals.",
   "docs_url": "https://reactbits.dev/text-animations/count-up",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -798,7 +798,7 @@
   "description": "Hacker-style decryption cycling random glyphs until resolving to real text.",
   "docs_url": "https://reactbits.dev/text-animations/decrypted-text",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -1454,7 +1454,7 @@
   "description": "Lines unfold into place like creased paper opening flat.",
   "docs_url": "https://reactbits.dev/text-animations/fold-text",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -2056,7 +2056,7 @@
   "description": "A headline with a drifting colour mesh or image showing through, revealed word by word.",
   "docs_url": "https://reactbits.dev/text-animations/masked-heading",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -2460,7 +2460,7 @@
   "description": "Cycles through multiple phrases with 3D rotate / flip transitions.",
   "docs_url": "https://reactbits.dev/text-animations/rotating-text",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -2656,7 +2656,7 @@
   "description": "Detects cursor position and applies a distortion effect to text.",
   "docs_url": "https://reactbits.dev/text-animations/scrambled-text",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -2770,7 +2770,7 @@
   "description": "Text gently floats / parallax shifts on scroll.",
   "docs_url": "https://reactbits.dev/text-animations/scroll-float",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -2916,7 +2916,7 @@
   "description": "Text gently unblurs and reveals on scroll.",
   "docs_url": "https://reactbits.dev/text-animations/scroll-reveal",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -3068,7 +3068,7 @@
   "description": "Text marquee animatio - speed and distortion scale with user's scroll velocity.",
   "docs_url": "https://reactbits.dev/text-animations/scroll-velocity",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -3395,7 +3395,7 @@
   "docs_url": "https://reactbits.dev/text-animations/shuffle",
   "npm": [
    "@gsap/react@2.1.2",
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -3791,7 +3791,7 @@
   "docs_url": "https://reactbits.dev/text-animations/split-text",
   "npm": [
    "@gsap/react@2.1.2",
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -3971,7 +3971,7 @@
   "description": "Outlined letterforms draw themselves on, then flood with fill.",
   "docs_url": "https://reactbits.dev/text-animations/stroke-text",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -4529,7 +4529,7 @@
   "description": "A seamless text marquee that flows along curved SVG paths.",
   "docs_url": "https://reactbits.dev/text-animations/text-loop",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -4916,7 +4916,7 @@
   "description": "Typewriter effect with blinking cursor and adjustable typing cadence.",
   "docs_url": "https://reactbits.dev/text-animations/text-type",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -5127,7 +5127,7 @@
   "description": "Applies dynamic blur / clarity based over a series of words in order.",
   "docs_url": "https://reactbits.dev/text-animations/true-focus",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -5556,7 +5556,7 @@
   "description": "Wrapper that reveals its content on scroll with slides, blur, 3D tilts, soft wipes and staggered children.",
   "docs_url": "https://reactbits.dev/animations/animated-content",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -5773,7 +5773,7 @@
   "description": "Liquid metal blob cursor that stretches, sloshes and bursts into droplets, in chrome, jelly, pearl or ink.",
   "docs_url": "https://reactbits.dev/animations/blob-cursor",
   "npm": [
-   "three@0.180.0"
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -7380,7 +7380,7 @@
   "description": "Wrapper that fades content in on scroll, plain or out of focus, from washed-out gray, or through grain, mist and pixel blocks.",
   "docs_url": "https://reactbits.dev/animations/fade-content",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -8349,7 +8349,7 @@
   "description": "Cursor-based image trail with several built-in variants.",
   "docs_url": "https://reactbits.dev/animations/image-trail",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -11785,7 +11785,7 @@
   "description": "Panels expand on hover or focus, revealing parallax imagery and captions.",
   "docs_url": "https://reactbits.dev/components/accordion-gallery",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -12434,7 +12434,7 @@
   "description": "Floating circular expanding menu with staggered item reveal.",
   "docs_url": "https://reactbits.dev/components/bubble-menu",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -14369,7 +14369,7 @@
   "description": "Cards recede into depth on a 3D rail, with drag, keyboard and auto-advance.",
   "docs_url": "https://reactbits.dev/components/depth-carousel",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -17539,7 +17539,7 @@
   "description": "Swinging 3D badge on a stretchy woven band that you can drag, throw or click to flip.",
   "docs_url": "https://reactbits.dev/components/lanyard",
   "npm": [
-   "three@0.180.0"
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -18219,9 +18219,9 @@
   "description": "A product-style 3D model viewer that frames itself and floats over a soft shadow.",
   "docs_url": "https://reactbits.dev/components/model-viewer",
   "npm": [
-   "@react-three/drei@10.7.6",
-   "@react-three/fiber@9.3.0",
-   "three@0.180.0"
+   "@react-three/drei@10.7.9",
+   "@react-three/fiber@9.8.2",
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -18427,7 +18427,7 @@
   "description": "WebGL slider that melts between images with a displacement transition.",
   "docs_url": "https://reactbits.dev/components/morph-slider",
   "npm": [
-   "gsap@3.13.0",
+   "gsap@3.15.0",
    "ogl@1.0.11"
   ],
   "props": [
@@ -20018,7 +20018,7 @@
   "description": "Pile of cards you can drag, flick or click through, with thrown cards tucking underneath.",
   "docs_url": "https://reactbits.dev/components/stack",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -20160,7 +20160,7 @@
   "description": "Menu with staggered item animations and smooth transitions on open/close.",
   "docs_url": "https://reactbits.dev/components/staggered-menu",
   "npm": [
-   "gsap@3.13.0"
+   "gsap@3.15.0"
   ],
   "props": [
    {
@@ -22494,7 +22494,7 @@
   "description": "Vibrant color bends with smooth flowing animation.",
   "docs_url": "https://reactbits.dev/backgrounds/color-bends",
   "npm": [
-   "three@0.180.0"
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -26067,7 +26067,7 @@
   "description": "Night highway of glowing light trails on a winding road that warps into hyperspace while you hold.",
   "docs_url": "https://reactbits.dev/backgrounds/hyperspeed",
   "npm": [
-   "three@0.180.0"
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -33353,7 +33353,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -33932,7 +33932,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -34129,7 +34129,7 @@
   "description": "Tick-ring dial you flick by angle, with a comet that streaks behind the lit head.",
   "docs_url": "https://reactbits.dev/micro/comet-dial",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -34317,7 +34317,7 @@
   "description": "Wrapper that makes any child dodge the pointer until it relents and glides home.",
   "docs_url": "https://reactbits.dev/micro/dodge-field",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -34463,7 +34463,7 @@
   "description": "Two-faced card that flips in 3D on a click, drag or flick and settles on a spring.",
   "docs_url": "https://reactbits.dev/micro/flip-card",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -35515,7 +35515,7 @@
   "description": "Radio group of chips where the chosen one swells and barges its neighbours outward.",
   "docs_url": "https://reactbits.dev/micro/jelly-radio",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -35865,7 +35865,7 @@
   "description": "An image that crumples into a textured 3D sheet while you hold and drag it.",
   "docs_url": "https://reactbits.dev/micro/paper-crumple",
   "npm": [
-   "three@0.180.0"
+   "three@0.186.1"
   ],
   "props": [
    {
@@ -36337,7 +36337,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -36892,7 +36892,7 @@
   "description": "Segmented control whose rubber thumb stretches across the gap and squashes into place.",
   "docs_url": "https://reactbits.dev/micro/rubber-segment",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -37060,7 +37060,7 @@
   "description": "Number chip you drag to scrub, with rubber-band limits and click to type.",
   "docs_url": "https://reactbits.dev/micro/scrub-field",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -37441,7 +37441,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -37611,7 +37611,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -37917,7 +37917,7 @@
   "docs_url": "https://reactbits.dev/micro/spring-check",
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -38062,7 +38062,7 @@
   "description": "Switch whose thumb stretches with speed and squashes against the end when you flick it.",
   "docs_url": "https://reactbits.dev/micro/squish-switch",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -38219,7 +38219,7 @@
   "description": "Agent task status glyph that morphs from an idle ring to a progress arc, then a check.",
   "docs_url": "https://reactbits.dev/micro/status-mark",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -38368,7 +38368,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -38586,7 +38586,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -38769,7 +38769,7 @@
   "description": "Ticket whose perforated stub tears off by hand, fibre by fibre, and drops away.",
   "docs_url": "https://reactbits.dev/micro/tear-ticket",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -39071,7 +39071,7 @@
   "npm": [
    "@hugeicons/core-free-icons@4.3.3",
    "@hugeicons/react@1.1.10",
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -39459,7 +39459,7 @@
   "description": "Thumbless range slider of thin bars where drag speed raises a wake behind the handle.",
   "docs_url": "https://reactbits.dev/micro/wake-slider",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -39650,7 +39650,7 @@
   "description": "Tooltip group where the first label waits, then its siblings open instantly while warm.",
   "docs_url": "https://reactbits.dev/micro/warm-tooltip",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "props": [
    {
@@ -39806,7 +39806,7 @@
   "description": "Groups WarmTooltips so moving between them skips the open delay.",
   "docs_url": "https://reactbits.dev/micro/warm-tooltip",
   "npm": [
-   "motion@12.23.21"
+   "motion@14.3.0"
   ],
   "sub": true,
   "props": [

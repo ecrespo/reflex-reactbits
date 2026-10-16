@@ -65,6 +65,20 @@ DROPPED_DEPS: set[str] = set()
 # Declared without a version so they resolve against whatever Reflex installs.
 EXTRA_DEPS: dict[str, list[str]] = {}
 
+# npm versions that replace the ones React Bits' package-lock pins (the
+# "version" fields of components.json). React Bits is still locked to motion 12
+# and three r180; the wrappers install these newer releases instead, which the
+# React Bits sources at source.PINNED_REF bundle against unchanged.
+# @react-three/fiber and @react-three/drei move with three so their peer ranges
+# keep matching it.
+DEP_VERSIONS: dict[str, str] = {
+    "motion": "14.3.0",
+    "three": "0.186.1",
+    "@react-three/fiber": "9.8.2",
+    "@react-three/drei": "10.7.9",
+    "gsap": "3.15.0",
+}
+
 # Props that start with "on" but are plain values, not callbacks.
 NOT_EVENTS = {("BellToggle", "onLabel"), ("BellToggle", "onColor"), ("BellToggle", "onBackground"),
               ("CircularText", "onHover")}
@@ -348,8 +362,8 @@ def build_component(c: dict) -> tuple[str, list[dict]]:
             prop_docs.append({"name": py, "js": js, "type": typ, "default": default, "description": desc})
         if camel(py) != js:
             renames[camel(py)] = js
-    deps = [f"{d['name']}@{d['version']}" if d["version"] else d["name"]
-            for d in c["npm"] if d["name"] not in DROPPED_DEPS]
+    versions = {d["name"]: DEP_VERSIONS.get(d["name"], d["version"]) for d in c["npm"]}
+    deps = [f"{n}@{v}" if v else n for n, v in versions.items() if n not in DROPPED_DEPS]
     deps += [d for d in EXTRA_DEPS.get(name, []) if d not in deps]
     out = [f"class {name}(ReactBitsComponent):\n"]
     doc = docstring_text(c["description"])

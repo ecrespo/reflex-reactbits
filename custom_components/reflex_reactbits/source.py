@@ -46,8 +46,25 @@ _TEXT_SUFFIXES = {".js", ".jsx", ".css", ".ts", ".tsx", ".json"}
 
 # Small, surgical patches so the plain JS-CSS variant runs inside a Reflex app.
 # React Bits 2.0 no longer imports react-router, Chakra UI or Tailwind classes,
-# so the per-file patches the 1.x sources needed are gone.
-PATCHES: dict[tuple[str, str], list[tuple[str, str]]] = {}
+# so the per-file patches the 1.x sources needed are gone. The ones left move
+# off three.js APIs deprecated after r180 (React Bits is locked to r180, the
+# wrappers install r186), which otherwise log a console warning.
+PATCHES: dict[tuple[str, str], list[tuple[str, str]]] = {
+    # THREE.Clock is deprecated since r183 in favour of THREE.Timer, which only
+    # advances when update() is called.
+    ("Backgrounds", "ColorBends.jsx"): [
+        ("const clock = new THREE.Clock();", "const clock = new THREE.Timer();"),
+        (
+            "const dt = clock.getDelta();\n      const elapsed = clock.elapsedTime;",
+            "clock.update();\n      const dt = clock.getDelta();\n      const elapsed = clock.getElapsed();",
+        ),
+    ],
+    # WebGLRenderer dropped PCFSoftShadowMap in r182: three falls back to
+    # PCFShadowMap (now soft as well), so this only silences the warning.
+    ("Micro", "PaperCrumple.jsx"): [
+        ("renderer.shadowMap.type = THREE.PCFSoftShadowMap;", "renderer.shadowMap.type = THREE.PCFShadowMap;"),
+    ],
+}
 
 # Patches applied to every component file that renders its own ``<canvas>``.
 #
