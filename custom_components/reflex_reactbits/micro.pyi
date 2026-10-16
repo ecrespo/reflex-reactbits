@@ -10,8 +10,8 @@ from reflex_base.event import (
     EventType,
     PointerEventInfo,
 )
-from reflex_base.components.component import Component
 from reflex_base.vars.base import Var
+from reflex_base.components.component import Component
 from .base import ReactBitsComponent
 
 __all__ = [
@@ -21,18 +21,21 @@ __all__ = [
     "CodeSlots",
     "CometDial",
     "DodgeField",
+    "FlipCard",
     "FolderFloat",
     "FuseButton",
     "GlideSelect",
     "HoldButton",
     "JellyRadio",
     "LatticeLoader",
+    "PaperCrumple",
     "PeekRating",
     "PromptBar",
     "PulseHeart",
     "RefineFrame",
     "RubberSegment",
     "ScrubField",
+    "Shredder",
     "SlideCommit",
     "SlingButton",
     "SloshGauge",
@@ -41,6 +44,7 @@ __all__ = [
     "StatusMark",
     "SwipeRow",
     "SwipeToast",
+    "TearTicket",
     "ThoughtLine",
     "VoicePill",
     "WakeSlider",
@@ -52,18 +56,21 @@ __all__ = [
     "code_slots",
     "comet_dial",
     "dodge_field",
+    "flip_card",
     "folder_float",
     "fuse_button",
     "glide_select",
     "hold_button",
     "jelly_radio",
     "lattice_loader",
+    "paper_crumple",
     "peek_rating",
     "prompt_bar",
     "pulse_heart",
     "refine_frame",
     "rubber_segment",
     "scrub_field",
+    "shredder",
     "slide_commit",
     "sling_button",
     "slosh_gauge",
@@ -72,6 +79,7 @@ __all__ = [
     "status_mark",
     "swipe_row",
     "swipe_toast",
+    "tear_ticket",
     "thought_line",
     "voice_pill",
     "wake_slider",
@@ -426,6 +434,69 @@ class DodgeField(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class FlipCard(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        front: Component | Var[Component | str] | str | None = None,
+        back: Component | Var[Component | str] | str | None = None,
+        flipped: Var[bool] | bool | None = None,
+        default_flipped: Var[bool] | bool | None = None,
+        axis: Literal["x", "y"] | Var[Literal["x", "y"]] | None = None,
+        flip_on_click: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
+        drag_distance: Var[float | int] | float | int | None = None,
+        tilt: Var[bool] | bool | None = None,
+        tilt_max: Var[float | int] | float | int | None = None,
+        glare: Var[bool] | bool | None = None,
+        glare_opacity: Var[float | int] | float | int | None = None,
+        hover_scale: Var[float | int] | float | int | None = None,
+        perspective: Var[float | int] | float | int | None = None,
+        stiffness: Var[float | int] | float | int | None = None,
+        damping: Var[float | int] | float | int | None = None,
+        width: Var[float | int] | float | int | None = None,
+        height: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        background: Var[str] | str | None = None,
+        color: Var[str] | str | None = None,
+        shadow: Var[bool] | bool | None = None,
+        shadow_color: Var[str] | str | None = None,
+        shadow_opacity: Var[float | int] | float | int | None = None,
+        disabled: Var[bool] | bool | None = None,
+        aria_label: Var[str] | str | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_flip_change: Optional[EventType[Any]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "FlipCard":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class FolderFloat(ReactBitsComponent):
     @classmethod
     def create(
@@ -776,6 +847,77 @@ class LatticeLoader(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class PaperCrumple(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        src: Var[str] | str | None = None,
+        alt: Var[str] | str | None = None,
+        back_src: Var[str] | str | None = None,
+        width: Var[float | int] | float | int | None = None,
+        height: Var[float | int] | float | int | None = None,
+        scene_height: Var[float | int] | float | int | None = None,
+        image_fit: Literal["contain", "cover"] | Var[Literal["contain", "cover"]] | None = None,
+        release_behavior: Literal["creased", "restore", "stay"]
+        | Var[Literal["creased", "restore", "stay"]]
+        | None = None,
+        crumple_amount: Var[float | int] | float | int | None = None,
+        crumple_duration: Var[float | int] | float | int | None = None,
+        release_duration: Var[float | int] | float | int | None = None,
+        fold_count: Var[float | int] | float | int | None = None,
+        fold_sharpness: Var[float | int] | float | int | None = None,
+        wrinkle_depth: Var[float | int] | float | int | None = None,
+        crease_strength: Var[float | int] | float | int | None = None,
+        paper_color: Var[str] | str | None = None,
+        roughness: Var[float | int] | float | int | None = None,
+        paper_texture: Var[float | int] | float | int | None = None,
+        light_intensity: Var[float | int] | float | int | None = None,
+        light_angle: Var[float | int] | float | int | None = None,
+        shadow: Var[bool] | bool | None = None,
+        shadow_opacity: Var[float | int] | float | int | None = None,
+        draggable: Var[bool] | bool | None = None,
+        drag_rotation: Var[float | int] | float | int | None = None,
+        drag_radius: Var[float | int] | float | int | None = None,
+        return_to_origin: Var[bool] | bool | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        seed: Var[float | int] | float | int | None = None,
+        detail: Var[float | int] | float | int | None = None,
+        disabled: Var[bool] | bool | None = None,
+        reset_key: Var[float | int | str] | float | int | str | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_error: Optional[EventType[Any]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_state_change: Optional[EventType[Any]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "PaperCrumple":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class PeekRating(ReactBitsComponent):
     @classmethod
     def create(
@@ -853,6 +995,7 @@ class PromptBar(ReactBitsComponent):
         color: Var[str] | str | None = None,
         menu_background: Var[str] | str | None = None,
         spark_color: Var[str] | str | None = None,
+        spark_boost: Var[float | int] | float | int | None = None,
         width: Var[float | int] | float | int | None = None,
         radius: Var[float | int] | float | int | None = None,
         max_rows: Var[float | int] | float | int | None = None,
@@ -1114,6 +1257,65 @@ class ScrubField(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class Shredder(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        items: Var[list[Any]] | list[Any] | None = None,
+        render_item: Any | Var[Any] | None = None,
+        width: Var[float | int] | float | int | None = None,
+        height: Var[float | int] | float | int | None = None,
+        inset: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        slit_height: Var[float | int] | float | int | None = None,
+        fall_height: Var[float | int] | float | int | None = None,
+        feed_speed: Var[float | int] | float | int | None = None,
+        bite: Var[float | int] | float | int | None = None,
+        auto_feed: Var[bool] | bool | None = None,
+        strip_width: Var[float | int] | float | int | None = None,
+        curl: Var[float | int] | float | int | None = None,
+        auto_animate: Var[bool] | bool | None = None,
+        loop: Var[bool] | bool | None = None,
+        loop_after_delete: Var[bool] | bool | None = None,
+        drag_tilt: Var[float | int] | float | int | None = None,
+        lift: Var[float | int] | float | int | None = None,
+        slit_color: Var[str] | str | None = None,
+        color: Var[str] | str | None = None,
+        disabled: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_reorder: Optional[EventType[Any]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_shred: Optional[EventType[Any]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "Shredder":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class SlideCommit(ReactBitsComponent):
     @classmethod
     def create(
@@ -1186,6 +1388,8 @@ class SlingButton(ReactBitsComponent):
         launch_speed: Var[float | int] | float | int | None = None,
         recoil: Var[float | int] | float | int | None = None,
         flight: Var[float | int] | float | int | None = None,
+        particles: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
         axis: Literal["any", "horizontal", "vertical"]
         | Var[Literal["any", "horizontal", "vertical"]]
         | None = None,
@@ -1556,6 +1760,79 @@ class SwipeToast(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class TearTicket(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        stub: Component | Var[Component | str] | str | None = None,
+        image: Var[str] | str | None = None,
+        image_alt: Var[str] | str | None = None,
+        scrim: Var[bool] | bool | None = None,
+        image_radius: Var[float | int] | float | int | None = None,
+        orientation: Literal["horizontal", "vertical"]
+        | Var[Literal["horizontal", "vertical"]]
+        | None = None,
+        torn: Var[bool] | bool | None = None,
+        default_torn: Var[bool] | bool | None = None,
+        width: Var[float | int] | float | int | None = None,
+        height: Var[float | int] | float | int | None = None,
+        stub_size: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        holes: Var[float | int] | float | int | None = None,
+        hole_size: Var[float | int] | float | int | None = None,
+        notch: Var[float | int] | float | int | None = None,
+        roughness: Var[float | int] | float | int | None = None,
+        tear_angle: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        resistance: Var[float | int] | float | int | None = None,
+        rotate: Var[float | int] | float | int | None = None,
+        tilt: Var[bool] | bool | None = None,
+        tilt_max: Var[float | int] | float | int | None = None,
+        tilt_reach: Var[float | int] | float | int | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        perspective: Var[float | int] | float | int | None = None,
+        background: Var[str] | str | None = None,
+        color: Var[str] | str | None = None,
+        border: Var[bool] | bool | None = None,
+        border_color: Var[str] | str | None = None,
+        border_width: Var[float | int] | float | int | None = None,
+        stub_background: Var[str] | str | None = None,
+        recenter: Var[bool] | bool | None = None,
+        disabled: Var[bool] | bool | None = None,
+        aria_label: Var[str] | str | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_tear: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "TearTicket":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class ThoughtLine(ReactBitsComponent):
     @classmethod
     def create(
@@ -1831,18 +2108,21 @@ call_chip = CallChip.create
 code_slots = CodeSlots.create
 comet_dial = CometDial.create
 dodge_field = DodgeField.create
+flip_card = FlipCard.create
 folder_float = FolderFloat.create
 fuse_button = FuseButton.create
 glide_select = GlideSelect.create
 hold_button = HoldButton.create
 jelly_radio = JellyRadio.create
 lattice_loader = LatticeLoader.create
+paper_crumple = PaperCrumple.create
 peek_rating = PeekRating.create
 prompt_bar = PromptBar.create
 pulse_heart = PulseHeart.create
 refine_frame = RefineFrame.create
 rubber_segment = RubberSegment.create
 scrub_field = ScrubField.create
+shredder = Shredder.create
 slide_commit = SlideCommit.create
 sling_button = SlingButton.create
 slosh_gauge = SloshGauge.create
@@ -1851,6 +2131,7 @@ squish_switch = SquishSwitch.create
 status_mark = StatusMark.create
 swipe_row = SwipeRow.create
 swipe_toast = SwipeToast.create
+tear_ticket = TearTicket.create
 thought_line = ThoughtLine.create
 voice_pill = VoicePill.create
 wake_slider = WakeSlider.create

@@ -10,8 +10,8 @@ from reflex_base.event import (
     EventType,
     PointerEventInfo,
 )
-from reflex_base.components.component import Component
 from reflex_base.vars.base import Var
+from reflex_base.components.component import Component
 from .base import ReactBitsComponent
 
 __all__ = [
@@ -25,6 +25,7 @@ __all__ = [
     "CardSwapCard",
     "Carousel",
     "ChromaGrid",
+    "CircularCarousel",
     "CircularGallery",
     "Counter",
     "CurvedInput",
@@ -34,6 +35,7 @@ __all__ = [
     "DomeGallery",
     "DriftWall",
     "ElasticSlider",
+    "FlexCarousel",
     "FlowingMenu",
     "FluidGlass",
     "FlyingPosters",
@@ -41,6 +43,7 @@ __all__ = [
     "GlassIcons",
     "GlassSurface",
     "GooeyNav",
+    "HoloCard",
     "InfiniteMenu",
     "InfiniteSpiral",
     "Lanyard",
@@ -63,6 +66,7 @@ __all__ = [
     "Step",
     "Stepper",
     "TiltedCard",
+    "TiltedCardLayer",
     "accordion_gallery",
     "animated_list",
     "border_glow",
@@ -73,6 +77,7 @@ __all__ = [
     "card_swap_card",
     "carousel",
     "chroma_grid",
+    "circular_carousel",
     "circular_gallery",
     "counter",
     "curved_input",
@@ -82,6 +87,7 @@ __all__ = [
     "dome_gallery",
     "drift_wall",
     "elastic_slider",
+    "flex_carousel",
     "flowing_menu",
     "fluid_glass",
     "flying_posters",
@@ -89,6 +95,7 @@ __all__ = [
     "glass_icons",
     "glass_surface",
     "gooey_nav",
+    "holo_card",
     "infinite_menu",
     "infinite_spiral",
     "lanyard",
@@ -111,6 +118,7 @@ __all__ = [
     "step",
     "stepper",
     "tilted_card",
+    "tilted_card_layer",
 ]
 
 class AccordionGallery(ReactBitsComponent):
@@ -174,12 +182,28 @@ class AnimatedList(ReactBitsComponent):
     def create(
         cls,
         *children,
-        items: Var[list[str]] | list[str] | None = None,
-        show_gradients: Var[bool] | bool | None = None,
-        enable_arrow_navigation: Var[bool] | bool | None = None,
-        item_class_name: Var[str] | str | None = None,
-        display_scrollbar: Var[bool] | bool | None = None,
+        items: Var[list[Any]] | list[Any] | None = None,
+        render_item: Any | Var[Any] | None = None,
         initial_selected_index: Var[float | int] | float | int | None = None,
+        select_on_hover: Var[bool] | bool | None = None,
+        enable_arrow_navigation: Var[bool] | bool | None = None,
+        loop: Var[bool] | bool | None = None,
+        animation: Literal["fade", "none", "pop", "slide"]
+        | Var[Literal["fade", "none", "pop", "slide"]]
+        | None = None,
+        animate_once: Var[bool] | bool | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        show_gradients: Var[bool] | bool | None = None,
+        fade_size: Var[float | int] | float | int | None = None,
+        display_scrollbar: Var[bool] | bool | None = None,
+        frame: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        accent_color: Var[str] | str | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        width: Var[float | int | str] | float | int | str | None = None,
+        max_height: Var[float | int | str] | float | int | str | None = None,
+        item_class_name: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -263,14 +287,24 @@ class BounceCards(ReactBitsComponent):
     def create(
         cls,
         *children,
-        images: Var[list[str]] | list[str] | None = None,
+        images: Var[list[Any]] | list[Any] | None = None,
         container_width: Var[float | int] | float | int | None = None,
         container_height: Var[float | int] | float | int | None = None,
+        card_size: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        arc: Var[float | int] | float | int | None = None,
         animation_delay: Var[float | int] | float | int | None = None,
         animation_stagger: Var[float | int] | float | int | None = None,
-        ease_type: Var[str] | str | None = None,
-        transform_styles: Var[list[str]] | list[str] | None = None,
+        bounciness: Var[float | int] | float | int | None = None,
         enable_hover: Var[bool] | bool | None = None,
+        push_distance: Var[float | int] | float | int | None = None,
+        hover_scale: Var[float | int] | float | int | None = None,
+        border_width: Var[float | int] | float | int | None = None,
+        border_color: Var[str] | str | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        shadow: Var[bool] | bool | None = None,
+        transform_styles: Var[list[str]] | list[str] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -282,6 +316,7 @@ class BounceCards(ReactBitsComponent):
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
         on_blur: Optional[EventType[()]] = None,
+        on_card_click: Optional[EventType[Any]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -353,14 +388,29 @@ class CardNav(ReactBitsComponent):
     def create(
         cls,
         *children,
-        logo: Var[str] | str | None = None,
+        logo: Component | Var[Component | str] | str | None = None,
         logo_alt: Var[str] | str | None = None,
+        logo_href: Var[str] | str | None = None,
         items: Var[list[Any]] | list[Any] | None = None,
-        ease: Var[str] | str | None = None,
-        base_color: Var[str] | str | None = None,
-        menu_color: Var[str] | str | None = None,
-        button_bg_color: Var[str] | str | None = None,
-        button_text_color: Var[str] | str | None = None,
+        cta: Any | Var[Any] | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        surface: Literal["glass", "solid"] | Var[Literal["glass", "solid"]] | None = None,
+        open_on: Literal["click", "hover"] | Var[Literal["click", "hover"]] | None = None,
+        card_effect: Literal["fade", "rise", "unfold"]
+        | Var[Literal["fade", "rise", "unfold"]]
+        | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        card_height: Var[float | int] | float | int | None = None,
+        max_width: Var[float | int] | float | int | None = None,
+        accent_color: Var[str] | str | None = None,
+        menu_label: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        default_open: Var[bool] | bool | None = None,
+        open: Var[bool] | bool | None = None,
+        link_component: Component | Var[Component | str] | str | None = None,
+        aria_label: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -376,6 +426,7 @@ class CardNav(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_link_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -384,6 +435,7 @@ class CardNav(ReactBitsComponent):
         on_mouse_out: Optional[EventType[()]] = None,
         on_mouse_over: Optional[EventType[()]] = None,
         on_mouse_up: Optional[EventType[()]] = None,
+        on_open_change: Optional[EventType[Any]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
@@ -397,14 +449,26 @@ class CardSwap(ReactBitsComponent):
     def create(
         cls,
         *children,
-        width: Var[float | int | str] | float | int | str | None = None,
-        height: Var[float | int | str] | float | int | str | None = None,
+        items: Var[list[Any]] | list[Any] | None = None,
+        width: Var[float | int] | float | int | None = None,
+        height: Var[float | int] | float | int | None = None,
         card_distance: Var[float | int] | float | int | None = None,
         vertical_distance: Var[float | int] | float | int | None = None,
-        delay: Var[float | int] | float | int | None = None,
-        pause_on_hover: Var[bool] | bool | None = None,
+        depth: Var[float | int] | float | int | None = None,
         skew_amount: Var[float | int] | float | int | None = None,
-        easing: Literal["elastic", "linear"] | Var[Literal["elastic", "linear"]] | None = None,
+        visible_cards: Var[float | int] | float | int | None = None,
+        delay: Var[float | int] | float | int | None = None,
+        autoplay: Var[bool] | bool | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        hover_spread: Var[float | int] | float | int | None = None,
+        dim: Var[float | int] | float | int | None = None,
+        card_radius: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -417,6 +481,7 @@ class CardSwap(ReactBitsComponent):
         custom_attrs: dict[str, Any | Var] | None = None,
         on_blur: Optional[EventType[()]] = None,
         on_card_click: Optional[EventType[Any]] = None,
+        on_change: Optional[EventType[Any]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -479,13 +544,28 @@ class Carousel(ReactBitsComponent):
     def create(
         cls,
         *children,
-        items: Var[list[Any]] | list[Any] | None = None,
-        base_width: Var[float | int] | float | int | None = None,
+        items: Component | Var[Component | list[Any] | str] | list[Any] | str | None = None,
+        base_width: Var[float | int | str] | float | int | str | None = None,
+        aspect_ratio: Var[float | int] | float | int | None = None,
+        peek: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        frame: Var[bool] | bool | None = None,
+        effect: Literal["cube", "fade", "scale", "slide", "tilt"]
+        | Var[Literal["cube", "fade", "scale", "slide", "tilt"]]
+        | None = None,
+        indicator: Literal["bars", "counter", "dots", "none"]
+        | Var[Literal["bars", "counter", "dots", "none"]]
+        | None = None,
+        arrows: Var[bool] | bool | None = None,
         autoplay: Var[bool] | bool | None = None,
         autoplay_delay: Var[float | int] | float | int | None = None,
         pause_on_hover: Var[bool] | bool | None = None,
         loop: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
         round: Var[bool] | bool | None = None,
+        initial_index: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -497,6 +577,7 @@ class Carousel(ReactBitsComponent):
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
         on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -523,12 +604,23 @@ class ChromaGrid(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
-        radius: Var[float | int] | float | int | None = None,
         columns: Var[float | int] | float | int | None = None,
-        rows: Var[float | int] | float | int | None = None,
+        min_card_width: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
         damping: Var[float | int] | float | int | None = None,
         fade_out: Var[float | int] | float | int | None = None,
-        ease: Var[str] | str | None = None,
+        grayscale: Var[float | int] | float | int | None = None,
+        dim: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        border_glow: Var[float | int] | float | int | None = None,
+        reveal: Literal["card", "spotlight"] | Var[Literal["card", "spotlight"]] | None = None,
+        aspect_ratio: Var[str] | str | None = None,
+        card_radius: Var[float | int] | float | int | None = None,
+        show_info: Var[bool] | bool | None = None,
+        frame: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -560,6 +652,75 @@ class ChromaGrid(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class CircularCarousel(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        items: Var[list[Any]] | list[Any] | None = None,
+        preset: Literal["cylinder", "orbit", "panorama", "wheel"]
+        | Var[Literal["cylinder", "orbit", "panorama", "wheel"]]
+        | None = None,
+        intro: Literal["assemble", "none", "rise", "spin"]
+        | Var[Literal["assemble", "none", "rise", "spin"]]
+        | None = None,
+        card_width: Var[float | int] | float | int | None = None,
+        aspect_ratio: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        curve: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        perspective: Var[float | int] | float | int | None = None,
+        autoplay: Literal["drift", "off", "step"]
+        | Var[Literal["drift", "off", "step"]]
+        | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        interval: Var[float | int] | float | int | None = None,
+        direction: Literal["left", "right"] | Var[Literal["left", "right"]] | None = None,
+        draggable: Var[bool] | bool | None = None,
+        momentum: Var[float | int] | float | int | None = None,
+        snap: Var[bool] | bool | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
+        focus_on_click: Var[bool] | bool | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        depth_fade: Var[float | int] | float | int | None = None,
+        fade_color: Var[str] | str | None = None,
+        inner_shade: Var[float | int] | float | int | None = None,
+        corner_radius: Var[float | int] | float | int | None = None,
+        captions: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "CircularCarousel":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class CircularGallery(ReactBitsComponent):
     @classmethod
     def create(
@@ -573,6 +734,19 @@ class CircularGallery(ReactBitsComponent):
         font_url: Var[str] | str | None = None,
         scroll_speed: Var[float | int] | float | int | None = None,
         scroll_ease: Var[float | int] | float | int | None = None,
+        item_size: Var[float | int] | float | int | None = None,
+        item_aspect: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        wave: Var[float | int] | float | int | None = None,
+        fade_edges: Var[float | int] | float | int | None = None,
+        shadow: Var[float | int] | float | int | None = None,
+        grayscale: Var[bool] | bool | None = None,
+        show_titles: Var[bool] | bool | None = None,
+        snap: Var[bool] | bool | None = None,
+        auto_scroll: Var[float | int] | float | int | None = None,
+        open_on_click: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -583,11 +757,13 @@ class CircularGallery(ReactBitsComponent):
         ref: Var | None = None,
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
+        on_active_change: Optional[EventType[Any]] = None,
         on_blur: Optional[EventType[()]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -610,22 +786,28 @@ class Counter(ReactBitsComponent):
         cls,
         *children,
         value: Var[float | int] | float | int | None = None,
-        font_size: Var[float | int] | float | int | None = None,
-        padding: Var[float | int] | float | int | None = None,
-        places: Var[list[float | int]] | list[float | int] | None = None,
-        gap: Var[float | int] | float | int | None = None,
-        border_radius: Var[float | int] | float | int | None = None,
-        horizontal_padding: Var[float | int] | float | int | None = None,
-        text_color: Var[str] | str | None = None,
+        locale: Var[str] | str | None = None,
+        format: Any | Var[Any] | None = None,
+        decimals: Var[float | int] | float | int | None = None,
+        min_digits: Var[float | int] | float | int | None = None,
+        prefix: Component | Var[Component | str] | str | None = None,
+        suffix: Component | Var[Component | str] | str | None = None,
+        direction: Literal["auto", "down", "shortest", "up"]
+        | Var[Literal["auto", "down", "shortest", "up"]]
+        | None = None,
+        duration: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        motion_blur: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        fade: Var[float | int] | float | int | None = None,
+        font_size: Var[float | int | str] | float | int | str | None = None,
         font_weight: Var[float | int | str] | float | int | str | None = None,
-        container_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        counter_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        text_color: Var[str] | str | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        padding: Var[float | int] | float | int | None = None,
+        tabular: Var[bool] | bool | None = None,
         digit_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        gradient_height: Var[float | int] | float | int | None = None,
-        gradient_from: Var[str] | str | None = None,
-        gradient_to: Var[str] | str | None = None,
-        top_gradient_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        bottom_gradient_style: Var[dict[str, Any]] | dict[str, Any] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -728,14 +910,24 @@ class DecayCard(ReactBitsComponent):
     def create(
         cls,
         *children,
+        image: Var[str] | str | None = None,
         width: Var[float | int] | float | int | None = None,
         height: Var[float | int] | float | int | None = None,
-        image: Var[str] | str | None = None,
-        base_frequency: Var[float | int] | float | int | None = None,
-        num_octaves: Var[float | int] | float | int | None = None,
-        seed: Var[float | int] | float | int | None = None,
-        max_displacement: Var[float | int] | float | int | None = None,
-        movement_bound: Var[float | int] | float | int | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        sensitivity: Var[float | int] | float | int | None = None,
+        hover_decay: Var[float | int] | float | int | None = None,
+        recovery: Var[float | int] | float | int | None = None,
+        grain: Var[float | int] | float | int | None = None,
+        detail: Var[float | int] | float | int | None = None,
+        pattern: Var[float | int] | float | int | None = None,
+        idle: Var[float | int] | float | int | None = None,
+        flow: Var[float | int] | float | int | None = None,
+        chroma: Var[float | int] | float | int | None = None,
+        travel: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        scope: Literal["card", "window"] | Var[Literal["card", "window"]] | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        grayscale: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -830,12 +1022,25 @@ class Dock(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
-        spring: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        position: Literal["bottom", "left", "right", "top"]
+        | Var[Literal["bottom", "left", "right", "top"]]
+        | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        base_item_size: Var[float | int] | float | int | None = None,
         magnification: Var[float | int] | float | int | None = None,
         distance: Var[float | int] | float | int | None = None,
         panel_height: Var[float | int] | float | int | None = None,
-        dock_height: Var[float | int] | float | int | None = None,
-        base_item_size: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        roundness: Var[float | int] | float | int | None = None,
+        spring: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        bounce: Var[bool] | bool | None = None,
+        auto_hide: Var[bool] | bool | None = None,
+        tiles: Var[bool] | bool | None = None,
+        show_labels: Var[bool] | bool | None = None,
+        show_indicators: Var[bool] | bool | None = None,
+        show_badges: Var[bool] | bool | None = None,
+        badge_color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -984,13 +1189,44 @@ class ElasticSlider(ReactBitsComponent):
     def create(
         cls,
         *children,
+        value: Var[float | int] | float | int | None = None,
         default_value: Var[float | int] | float | int | None = None,
         starting_value: Var[float | int] | float | int | None = None,
         max_value: Var[float | int] | float | int | None = None,
         is_stepped: Var[bool] | bool | None = None,
         step_size: Var[float | int] | float | int | None = None,
+        orientation: Literal["horizontal", "vertical"]
+        | Var[Literal["horizontal", "vertical"]]
+        | None = None,
         left_icon: Component | Var[Component | str] | str | None = None,
         right_icon: Component | Var[Component | str] | str | None = None,
+        icon_placement: Literal["inside", "outside"]
+        | Var[Literal["inside", "outside"]]
+        | None = None,
+        value_position: Literal["bubble", "inside", "none", "top"]
+        | Var[Literal["bubble", "inside", "none", "top"]]
+        | None = None,
+        format_value: Any | Var[Any] | None = None,
+        ticks: Var[list[Any]] | list[Any] | None = None,
+        thumb: Var[bool] | bool | None = None,
+        fill_from: Var[float | int] | float | int | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        active_thickness: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        rest_opacity: Var[float | int] | float | int | None = None,
+        grow_on_hover: Var[bool] | bool | None = None,
+        max_stretch: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        jump_to_click: Var[bool] | bool | None = None,
+        wheel: Var[bool] | bool | None = None,
+        track_color: Var[str] | str | None = None,
+        range_color: Var[str] | str | None = None,
+        icon_color: Var[str] | str | None = None,
+        content_color: Var[str] | str | None = None,
+        fill_content_color: Var[str] | str | None = None,
+        thumb_color: Var[str] | str | None = None,
+        disabled: Var[bool] | bool | None = None,
+        aria_label: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1002,6 +1238,8 @@ class ElasticSlider(ReactBitsComponent):
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
         on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
+        on_change_end: Optional[EventType[Any]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -1022,6 +1260,75 @@ class ElasticSlider(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class FlexCarousel(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        items: Var[list[Any]] | list[Any] | None = None,
+        preset: Literal["arch", "liquid", "ribbon", "vortex"]
+        | Var[Literal["arch", "liquid", "ribbon", "vortex"]]
+        | None = None,
+        intro: Literal["bloom", "deal", "none", "rise", "spin"]
+        | Var[Literal["bloom", "deal", "none", "rise", "spin"]]
+        | None = None,
+        card_height: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        fit: Literal["landscape", "natural", "portrait", "square"]
+        | Var[Literal["landscape", "natural", "portrait", "square"]]
+        | None = None,
+        lens_width: Var[float | int] | float | int | None = None,
+        lens_height: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        roundness: Var[float | int] | float | int | None = None,
+        bend: Var[float | int] | float | int | None = None,
+        reach: Var[float | int] | float | int | None = None,
+        curl: Literal["fall", "rise", "twist"]
+        | Var[Literal["fall", "rise", "twist"]]
+        | None = None,
+        dispersion: Var[float | int] | float | int | None = None,
+        liquid: Var[float | int] | float | int | None = None,
+        follow_cursor: Var[bool] | bool | None = None,
+        squeeze: Var[float | int] | float | int | None = None,
+        focus_on_click: Var[bool] | bool | None = None,
+        autoplay: Var[bool] | bool | None = None,
+        interval: Var[float | int] | float | int | None = None,
+        captions: Var[bool] | bool | None = None,
+        capture_wheel: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_select: Optional[EventType[Any]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "FlexCarousel":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class FlowingMenu(ReactBitsComponent):
     @classmethod
     def create(
@@ -1029,11 +1336,32 @@ class FlowingMenu(ReactBitsComponent):
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
         speed: Var[float | int] | float | int | None = None,
+        direction: Literal["alternate", "left", "right"]
+        | Var[Literal["alternate", "left", "right"]]
+        | None = None,
+        follow_cursor: Var[float | int] | float | int | None = None,
+        duration: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        magnet: Var[float | int] | float | int | None = None,
+        band_inset: Var[float | int] | float | int | None = None,
+        band_radius: Var[float | int] | float | int | None = None,
+        carry_content: Var[bool] | bool | None = None,
         text_color: Var[str] | str | None = None,
         bg_color: Var[str] | str | None = None,
         marquee_bg_color: Var[str] | str | None = None,
         marquee_text_color: Var[str] | str | None = None,
         border_color: Var[str] | str | None = None,
+        dividers: Var[bool] | bool | None = None,
+        dim_inactive: Var[bool] | bool | None = None,
+        align: Literal["center", "left"] | Var[Literal["center", "left"]] | None = None,
+        show_index: Var[bool] | bool | None = None,
+        show_arrow: Var[bool] | bool | None = None,
+        image_shape: Literal["circle", "pill", "rounded"]
+        | Var[Literal["circle", "pill", "rounded"]]
+        | None = None,
+        intro: Var[bool] | bool | None = None,
+        active_index: Var[float | int] | float | int | None = None,
+        aria_label: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1049,6 +1377,7 @@ class FlowingMenu(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1070,12 +1399,38 @@ class FluidGlass(ReactBitsComponent):
     def create(
         cls,
         *children,
-        mode: Var[str] | str | None = None,
-        lens_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        bar_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        cube_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        background_color: Var[str] | str | None = None,
+        text: Var[str] | str | None = None,
         text_color: Var[str] | str | None = None,
+        font_family: Var[str] | str | None = None,
+        font_weight: Var[float | int | str] | float | int | str | None = None,
+        font_size: Var[float | int] | float | int | None = None,
+        src: Var[str] | str | None = None,
+        fit: Literal["contain", "cover"] | Var[Literal["contain", "cover"]] | None = None,
+        background: Var[str] | str | None = None,
+        shape: Literal["blob", "cube", "diamond", "lens", "pill", "prism", "torus"]
+        | Var[Literal["blob", "cube", "diamond", "lens", "pill", "prism", "torus"]]
+        | None = None,
+        shapes: Var[list[str]] | list[str] | None = None,
+        size: Var[float | int] | float | int | None = None,
+        refraction: Var[float | int] | float | int | None = None,
+        dispersion: Var[float | int] | float | int | None = None,
+        reflection: Var[float | int] | float | int | None = None,
+        frost: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        tint: Var[float | int] | float | int | None = None,
+        shadow: Var[float | int] | float | int | None = None,
+        elevation: Var[float | int] | float | int | None = None,
+        interaction: Literal["drag", "follow", "static"]
+        | Var[Literal["drag", "follow", "static"]]
+        | None = None,
+        smoothness: Var[float | int] | float | int | None = None,
+        wobble: Var[float | int] | float | int | None = None,
+        spin: Var[float | int] | float | int | None = None,
+        idle: Var[bool] | bool | None = None,
+        morph_on_click: Var[bool] | bool | None = None,
+        position: Var[list[float | int]] | list[float | int] | None = None,
+        intro: Var[bool] | bool | None = None,
+        max_device_pixel_ratio: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1101,6 +1456,7 @@ class FluidGlass(ReactBitsComponent):
         on_mouse_up: Optional[EventType[()]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
+        on_shape_change: Optional[EventType[Any]] = None,
         on_unmount: Optional[EventType[()]] = None,
         **props,
     ) -> "FluidGlass":
@@ -1112,13 +1468,29 @@ class FlyingPosters(ReactBitsComponent):
     def create(
         cls,
         *children,
-        items: Var[list[str]] | list[str] | None = None,
+        items: Var[list[Any]] | list[Any] | None = None,
         plane_width: Var[float | int] | float | int | None = None,
         plane_height: Var[float | int] | float | int | None = None,
         distortion: Var[float | int] | float | int | None = None,
         scroll_ease: Var[float | int] | float | int | None = None,
         camera_fov: Var[float | int] | float | int | None = None,
         camera_z: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        columns: Var[float | int] | float | int | None = None,
+        column_gap: Var[float | int] | float | int | None = None,
+        alternate: Var[bool] | bool | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        axis: Literal["diagonal", "horizontal", "vertical"]
+        | Var[Literal["diagonal", "horizontal", "vertical"]]
+        | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        lean: Var[float | int] | float | int | None = None,
+        fade: Var[float | int] | float | int | None = None,
+        shading: Var[float | int] | float | int | None = None,
+        wheel: Var[bool] | bool | None = None,
+        drag: Var[bool] | bool | None = None,
+        page_scroll: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1134,6 +1506,7 @@ class FlyingPosters(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1155,9 +1528,34 @@ class Folder(ReactBitsComponent):
     def create(
         cls,
         *children,
-        color: Var[str] | str | None = None,
-        size: Var[float | int] | float | int | None = None,
         items: Var[list[Any]] | list[Any] | None = None,
+        label: Var[str] | str | None = None,
+        mode: Literal["book", "flap"] | Var[Literal["book", "flap"]] | None = None,
+        variant: Literal["glass", "matte", "solid"]
+        | Var[Literal["glass", "matte", "solid"]]
+        | None = None,
+        color: Var[str] | str | None = None,
+        paper_color: Var[str] | str | None = None,
+        tab_position: Literal["center", "left", "right"]
+        | Var[Literal["center", "left", "right"]]
+        | None = None,
+        layout: Literal["row", "spread", "stack"]
+        | Var[Literal["row", "spread", "stack"]]
+        | None = None,
+        size: Var[float | int] | float | int | None = None,
+        open_on: Literal["click", "hover"] | Var[Literal["click", "hover"]] | None = None,
+        open: Var[bool] | bool | None = None,
+        default_open: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
+        zoom_on_click: Var[bool] | bool | None = None,
+        peek: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        frost: Var[float | int] | float | int | None = None,
+        close_on_outside_click: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1173,6 +1571,8 @@ class Folder(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
+        on_item_drop: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1181,6 +1581,7 @@ class Folder(ReactBitsComponent):
         on_mouse_out: Optional[EventType[()]] = None,
         on_mouse_over: Optional[EventType[()]] = None,
         on_mouse_up: Optional[EventType[()]] = None,
+        on_open_change: Optional[EventType[Any]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
@@ -1195,6 +1596,32 @@ class GlassIcons(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
+        size: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        columns: Var[float | int] | float | int | None = None,
+        roundness: Var[float | int] | float | int | None = None,
+        refraction: Var[float | int] | float | int | None = None,
+        bevel: Var[float | int] | float | int | None = None,
+        dispersion: Var[float | int] | float | int | None = None,
+        frost: Var[float | int] | float | int | None = None,
+        shine: Var[float | int] | float | int | None = None,
+        tint: Var[str] | str | None = None,
+        tint_opacity: Var[float | int] | float | int | None = None,
+        icon_color: Var[str] | str | None = None,
+        plate: Literal["circle", "none", "offset", "tilt"]
+        | Var[Literal["circle", "none", "offset", "tilt"]]
+        | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        hover: Literal["float", "lift", "none", "press"]
+        | Var[Literal["float", "lift", "none", "press"]]
+        | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        labels: Literal["always", "hover", "none"]
+        | Var[Literal["always", "hover", "none"]]
+        | None = None,
+        intro: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1248,6 +1675,12 @@ class GlassSurface(ReactBitsComponent):
         x_channel: Literal["B", "G", "R"] | Var[Literal["B", "G", "R"]] | None = None,
         y_channel: Literal["B", "G", "R"] | Var[Literal["B", "G", "R"]] | None = None,
         mix_blend_mode: Var[str] | str | None = None,
+        refraction: Var[bool] | bool | None = None,
+        renderer: Literal["auto", "svg", "webgl"]
+        | Var[Literal["auto", "svg", "webgl"]]
+        | None = None,
+        backdrop: Any | Var[Any] | None = None,
+        shape: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1285,13 +1718,78 @@ class GooeyNav(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
+        initial_active_index: Var[float | int] | float | int | None = None,
+        active_index: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        color: Var[str] | str | None = None,
+        active_text_color: Var[str] | str | None = None,
+        colors: Var[list[str]] | list[str] | None = None,
+        size: Literal["lg", "md", "sm"] | Var[Literal["lg", "md", "sm"]] | None = None,
+        frame: Var[bool] | bool | None = None,
         animation_time: Var[float | int] | float | int | None = None,
         particle_count: Var[float | int] | float | int | None = None,
-        particle_distances: Var[list[float | int]] | list[float | int] | None = None,
-        particle_r: Var[float | int] | float | int | None = None,
         time_variance: Var[float | int] | float | int | None = None,
-        colors: Var[list[float | int]] | list[float | int] | None = None,
-        initial_active_index: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        gooeyness: Var[float | int] | float | int | None = None,
+        wobble: Var[float | int] | float | int | None = None,
+        hover_effect: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "GooeyNav":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
+class HoloCard(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        image: Var[str] | str | None = None,
+        back_image: Var[str] | str | None = None,
+        alt: Var[str] | str | None = None,
+        preset: Literal[
+            "bursts", "cosmos", "glitter", "gold", "rainbow", "shards", "stars", "swirl"
+        ]
+        | Var[Literal["bursts", "cosmos", "glitter", "gold", "rainbow", "shards", "stars", "swirl"]]
+        | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        scale: Var[float | int] | float | int | None = None,
+        edge_sparkle: Var[float | int] | float | int | None = None,
+        frame: Var[float | int] | float | int | None = None,
+        glare: Var[float | int] | float | int | None = None,
+        foil_color: Var[str] | str | None = None,
+        width: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        tilt_max: Var[float | int] | float | int | None = None,
+        hover_scale: Var[float | int] | float | int | None = None,
+        idle: Var[bool] | bool | None = None,
+        shadow: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1319,7 +1817,7 @@ class GooeyNav(ReactBitsComponent):
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
         **props,
-    ) -> "GooeyNav":
+    ) -> "HoloCard":
         """Copy the component source into the app (once) and create the component."""
         ...
 
@@ -1329,7 +1827,21 @@ class InfiniteMenu(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
-        scale: Var[float | int] | float | int | None = None,
+        count: Var[float | int] | float | int | None = None,
+        tile_size: Var[float | int] | float | int | None = None,
+        roundness: Var[float | int] | float | int | None = None,
+        zoom: Var[float | int] | float | int | None = None,
+        pull_back: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        inertia: Var[float | int] | float | int | None = None,
+        autoplay: Var[float | int] | float | int | None = None,
+        grayscale: Var[bool] | bool | None = None,
+        dim: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        show_info: Var[bool] | bool | None = None,
+        render_info: Any | Var[Any] | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        accent_color: Var[str] | str | None = None,
         background_color: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
@@ -1341,11 +1853,13 @@ class InfiniteMenu(ReactBitsComponent):
         ref: Var | None = None,
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
+        on_active_change: Optional[EventType[Any]] = None,
         on_blur: Optional[EventType[()]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1424,15 +1938,34 @@ class Lanyard(ReactBitsComponent):
     def create(
         cls,
         *children,
-        position: Var[list[Any]] | list[Any] | None = None,
-        gravity: Var[list[Any]] | list[Any] | None = None,
-        fov: Var[float | int] | float | int | None = None,
-        transparent: Var[bool] | bool | None = None,
         front_image: Var[str] | str | None = None,
         back_image: Var[str] | str | None = None,
         image_fit: Literal["contain", "cover"] | Var[Literal["contain", "cover"]] | None = None,
-        lanyard_image: Var[str] | str | None = None,
-        lanyard_width: Var[float | int] | float | int | None = None,
+        card_color: Var[str] | str | None = None,
+        orientation: Literal["landscape", "portrait"]
+        | Var[Literal["landscape", "portrait"]]
+        | None = None,
+        finish: Literal["glossy", "holographic", "matte", "metallic"]
+        | Var[Literal["glossy", "holographic", "matte", "metallic"]]
+        | None = None,
+        corner_radius: Var[float | int] | float | int | None = None,
+        size: Var[float | int] | float | int | None = None,
+        anchor: Literal["center", "left", "right"]
+        | Var[Literal["center", "left", "right"]]
+        | None = None,
+        strap_length: Var[float | int] | float | int | None = None,
+        strap_image: Var[str] | str | None = None,
+        strap_color: Var[str] | str | None = None,
+        strap_width: Var[float | int] | float | int | None = None,
+        metal: Literal["gold", "graphite", "silver"]
+        | Var[Literal["gold", "graphite", "silver"]]
+        | None = None,
+        gravity: Var[float | int] | float | int | None = None,
+        damping: Var[float | int] | float | int | None = None,
+        elasticity: Var[float | int] | float | int | None = None,
+        breeze: Var[float | int] | float | int | None = None,
+        interactive: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1525,17 +2058,24 @@ class MagicBento(ReactBitsComponent):
     def create(
         cls,
         *children,
+        items: Var[list[Any]] | list[Any] | None = None,
+        columns: Var[float | int] | float | int | None = None,
+        row_height: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        glow_color: Var[str] | str | None = None,
         text_auto_hide: Var[bool] | bool | None = None,
-        enable_stars: Var[bool] | bool | None = None,
-        enable_spotlight: Var[bool] | bool | None = None,
         enable_border_glow: Var[bool] | bool | None = None,
-        disable_animations: Var[bool] | bool | None = None,
+        enable_spotlight: Var[bool] | bool | None = None,
         spotlight_radius: Var[float | int] | float | int | None = None,
+        enable_stars: Var[bool] | bool | None = None,
         particle_count: Var[float | int] | float | int | None = None,
         enable_tilt: Var[bool] | bool | None = None,
-        glow_color: Var[str] | str | None = None,
-        click_effect: Var[bool] | bool | None = None,
         enable_magnetism: Var[bool] | bool | None = None,
+        click_effect: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        disable_animations: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1551,6 +2091,7 @@ class MagicBento(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1573,14 +2114,28 @@ class Masonry(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[Any]] | list[Any] | None = None,
-        ease: Var[str] | str | None = None,
-        duration: Var[float | int] | float | int | None = None,
+        columns: Var[str] | str | None = None,
+        column_width: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        animate_from: Literal["bottom", "center", "left", "none", "random", "right", "top"]
+        | Var[Literal["bottom", "center", "left", "none", "random", "right", "top"]]
+        | None = None,
         stagger: Var[float | int] | float | int | None = None,
-        animate_from: Var[str] | str | None = None,
-        scale_on_hover: Var[bool] | bool | None = None,
-        hover_scale: Var[float | int] | float | int | None = None,
+        duration: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
         blur_to_focus: Var[bool] | bool | None = None,
-        color_shift_on_hover: Var[bool] | bool | None = None,
+        reveal_on_scroll: Var[bool] | bool | None = None,
+        hover_effect: Literal["lift", "none", "tilt", "zoom"]
+        | Var[Literal["lift", "none", "tilt", "zoom"]]
+        | None = None,
+        focus_on_hover: Var[bool] | bool | None = None,
+        captions: Literal["always", "hover", "none"]
+        | Var[Literal["always", "hover", "none"]]
+        | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        lightbox: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1596,6 +2151,7 @@ class Masonry(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1604,6 +2160,7 @@ class Masonry(ReactBitsComponent):
         on_mouse_out: Optional[EventType[()]] = None,
         on_mouse_over: Optional[EventType[()]] = None,
         on_mouse_up: Optional[EventType[()]] = None,
+        on_reorder: Optional[EventType[Any]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
@@ -1620,28 +2177,30 @@ class ModelViewer(ReactBitsComponent):
         url: Var[str] | str | None = None,
         width: Var[float | int | str] | float | int | str | None = None,
         height: Var[float | int | str] | float | int | str | None = None,
-        model_x_offset: Var[float | int] | float | int | None = None,
-        model_y_offset: Var[float | int] | float | int | None = None,
-        default_rotation_x: Var[float | int] | float | int | None = None,
-        default_rotation_y: Var[float | int] | float | int | None = None,
-        default_zoom: Var[float | int] | float | int | None = None,
-        min_zoom_distance: Var[float | int] | float | int | None = None,
-        max_zoom_distance: Var[float | int] | float | int | None = None,
-        enable_mouse_parallax: Var[bool] | bool | None = None,
-        enable_manual_rotation: Var[bool] | bool | None = None,
-        enable_hover_rotation: Var[bool] | bool | None = None,
-        enable_manual_zoom: Var[bool] | bool | None = None,
-        ambient_intensity: Var[float | int] | float | int | None = None,
-        key_light_intensity: Var[float | int] | float | int | None = None,
-        fill_light_intensity: Var[float | int] | float | int | None = None,
-        rim_light_intensity: Var[float | int] | float | int | None = None,
-        environment_preset: Var[str] | str | None = None,
-        auto_frame: Var[bool] | bool | None = None,
-        placeholder_src: Var[str] | str | None = None,
-        show_screenshot_button: Var[bool] | bool | None = None,
-        fade_in: Var[bool] | bool | None = None,
+        environment: Var[str] | str | None = None,
+        environment_intensity: Var[float | int] | float | int | None = None,
+        exposure: Var[float | int] | float | int | None = None,
         auto_rotate: Var[bool] | bool | None = None,
         auto_rotate_speed: Var[float | int] | float | int | None = None,
+        auto_rotate_delay: Var[float | int] | float | int | None = None,
+        drag_rotate: Var[bool] | bool | None = None,
+        turntable: Var[bool] | bool | None = None,
+        zoom: Var[bool] | bool | None = None,
+        min_zoom: Var[float | int] | float | int | None = None,
+        max_zoom: Var[float | int] | float | int | None = None,
+        hover_tilt: Var[float | int] | float | int | None = None,
+        float_: Var[float | int] | float | int | None = None,
+        shadow: Var[bool] | bool | None = None,
+        shadow_opacity: Var[float | int] | float | int | None = None,
+        intro: Literal["fade", "none", "rise", "spin"]
+        | Var[Literal["fade", "none", "rise", "spin"]]
+        | None = None,
+        start_angle: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        offset_x: Var[float | int] | float | int | None = None,
+        offset_y: Var[float | int] | float | int | None = None,
+        fit: Var[float | int] | float | int | None = None,
+        reset_on_double_click: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1789,16 +2348,37 @@ class PillNav(ReactBitsComponent):
     def create(
         cls,
         *children,
-        logo: Var[str] | str | None = None,
+        logo: Component | Var[Component | str] | str | None = None,
         logo_alt: Var[str] | str | None = None,
+        logo_href: Var[str] | str | None = None,
         items: Var[list[Any]] | list[Any] | None = None,
         active_href: Var[str] | str | None = None,
-        ease: Var[str] | str | None = None,
-        base_color: Var[str] | str | None = None,
-        pill_color: Var[str] | str | None = None,
-        hovered_pill_text_color: Var[str] | str | None = None,
-        pill_text_color: Var[str] | str | None = None,
-        initial_load_animation: Var[bool] | bool | None = None,
+        default_active_index: Var[float | int] | float | int | None = None,
+        link_component: Component | Var[Component | str] | str | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        layout: Literal["joined", "split"] | Var[Literal["joined", "split"]] | None = None,
+        size: Literal["lg", "md", "sm"] | Var[Literal["lg", "md", "sm"]] | None = None,
+        surface: Literal["glass", "none", "solid"]
+        | Var[Literal["glass", "none", "solid"]]
+        | None = None,
+        item_style: Literal["pill", "plain"] | Var[Literal["pill", "plain"]] | None = None,
+        hover_effect: Literal["fill", "glide", "none"]
+        | Var[Literal["fill", "glide", "none"]]
+        | None = None,
+        indicator: Literal["dot", "none", "pill"]
+        | Var[Literal["dot", "none", "pill"]]
+        | None = None,
+        highlight_color: Var[str] | str | None = None,
+        highlight_text_color: Var[str] | str | None = None,
+        bar_color: Var[str] | str | None = None,
+        text_color: Var[str] | str | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        collapse: Literal["always", "auto", "never"]
+        | Var[Literal["always", "auto", "never"]]
+        | None = None,
+        aria_label: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1814,7 +2394,8 @@ class PillNav(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
-        on_mobile_menu_click: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
+        on_menu_toggle: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1836,11 +2417,32 @@ class PixelCard(ReactBitsComponent):
     def create(
         cls,
         *children,
-        variant: Var[str] | str | None = None,
+        variant: Literal["blue", "default", "pink", "yellow"]
+        | Var[Literal["blue", "default", "pink", "yellow"]]
+        | None = None,
+        colors: Var[list[str] | str] | list[str] | str | None = None,
         gap: Var[float | int] | float | int | None = None,
         speed: Var[float | int] | float | int | None = None,
-        colors: Var[str] | str | None = None,
+        pixel_size: Var[float | int] | float | int | None = None,
+        shape: Literal["circle", "diamond", "square"]
+        | Var[Literal["circle", "diamond", "square"]]
+        | None = None,
+        origin: Literal["center", "pointer"] | Var[Literal["center", "pointer"]] | None = None,
+        reveal_duration: Var[float | int] | float | int | None = None,
+        spotlight: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        glow_color: Var[str] | str | None = None,
+        opacity: Var[float | int] | float | int | None = None,
+        fade: Var[float | int] | float | int | None = None,
+        trigger: Literal["always", "click", "hover"]
+        | Var[Literal["always", "click", "hover"]]
+        | None = None,
+        click_pulse: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        intro_delay: Var[float | int] | float | int | None = None,
         no_focus: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        radius: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1879,21 +2481,25 @@ class ProfileCard(ReactBitsComponent):
         *children,
         avatar_url: Var[str] | str | None = None,
         icon_url: Var[str] | str | None = None,
-        grain_url: Var[str] | str | None = None,
-        inner_gradient: Var[str] | str | None = None,
-        behind_glow_enabled: Var[bool] | bool | None = None,
-        behind_glow_color: Var[str] | str | None = None,
-        behind_glow_size: Var[str] | str | None = None,
-        enable_tilt: Var[bool] | bool | None = None,
-        enable_mobile_tilt: Var[bool] | bool | None = None,
-        mobile_tilt_sensitivity: Var[float | int] | float | int | None = None,
         mini_avatar_url: Var[str] | str | None = None,
         name: Var[str] | str | None = None,
         title: Var[str] | str | None = None,
         handle: Var[str] | str | None = None,
         status: Var[str] | str | None = None,
+        status_color: Var[str] | str | None = None,
         contact_text: Var[str] | str | None = None,
         show_user_info: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        backdrop_color: Var[str] | str | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        holo: Var[float | int] | float | int | None = None,
+        glare: Var[float | int] | float | int | None = None,
+        enable_tilt: Var[bool] | bool | None = None,
+        tilt_strength: Var[float | int] | float | int | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        enable_mobile_tilt: Var[bool] | bool | None = None,
+        mobile_tilt_sensitivity: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1931,16 +2537,32 @@ class ReflectiveCard(ReactBitsComponent):
     def create(
         cls,
         *children,
-        blur_strength: Var[float | int] | float | int | None = None,
-        color: Var[str] | str | None = None,
+        name: Var[str] | str | None = None,
+        role: Var[str] | str | None = None,
+        badge: Var[str] | str | None = None,
+        status: Var[str] | str | None = None,
+        status_color: Var[str] | str | None = None,
+        id_label: Var[str] | str | None = None,
+        id_value: Var[str] | str | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        video_src: Var[str] | str | None = None,
+        webcam: Var[bool] | bool | None = None,
+        tint: Var[str] | str | None = None,
         metalness: Var[float | int] | float | int | None = None,
         roughness: Var[float | int] | float | int | None = None,
-        overlay_color: Var[str] | str | None = None,
-        displacement_strength: Var[float | int] | float | int | None = None,
-        noise_scale: Var[float | int] | float | int | None = None,
-        specular_constant: Var[float | int] | float | int | None = None,
+        blur_strength: Var[float | int] | float | int | None = None,
         grayscale: Var[float | int] | float | int | None = None,
-        glass_distortion: Var[float | int] | float | int | None = None,
+        warp: Var[float | int] | float | int | None = None,
+        warp_scale: Var[float | int] | float | int | None = None,
+        shine: Var[float | int] | float | int | None = None,
+        bevel: Var[float | int] | float | int | None = None,
+        glare: Var[float | int] | float | int | None = None,
+        enable_tilt: Var[bool] | bool | None = None,
+        tilt_strength: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        width: Var[float | int | str] | float | int | str | None = None,
+        height: Var[float | int | str] | float | int | str | None = None,
+        radius: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1967,6 +2589,7 @@ class ReflectiveCard(ReactBitsComponent):
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
+        on_webcam_error: Optional[EventType[Any]] = None,
         **props,
     ) -> "ReflectiveCard":
         """Copy the component source into the app (once) and create the component."""
@@ -1978,15 +2601,19 @@ class ScrollStack(ReactBitsComponent):
         cls,
         *children,
         item_distance: Var[float | int] | float | int | None = None,
-        item_scale: Var[float | int] | float | int | None = None,
         item_stack_distance: Var[float | int] | float | int | None = None,
-        stack_position: Var[str] | str | None = None,
-        scale_end_position: Var[str] | str | None = None,
+        stack_position: Var[float | int | str] | float | int | str | None = None,
+        item_scale: Var[float | int] | float | int | None = None,
         base_scale: Var[float | int] | float | int | None = None,
-        scale_duration: Var[float | int] | float | int | None = None,
-        rotation_amount: Var[float | int] | float | int | None = None,
+        dim_amount: Var[float | int] | float | int | None = None,
         blur_amount: Var[float | int] | float | int | None = None,
+        tilt_amount: Var[float | int] | float | int | None = None,
+        rotation_amount: Var[float | int] | float | int | None = None,
+        hold_distance: Var[float | int] | float | int | None = None,
+        smooth_scroll: Var[bool] | bool | None = None,
+        snap: Var[bool] | bool | None = None,
         use_window_scroll: Var[bool] | bool | None = None,
+        item_class_name: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2070,9 +2697,11 @@ class SpecularButton(ReactBitsComponent):
         line_color: Var[str] | str | None = None,
         base_color: Var[str] | str | None = None,
         intensity: Var[float | int] | float | int | None = None,
+        idle_intensity: Var[float | int] | float | int | None = None,
         shine_size: Var[float | int] | float | int | None = None,
         shine_fade: Var[float | int] | float | int | None = None,
         thickness: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
         speed: Var[float | int] | float | int | None = None,
         follow_mouse: Var[bool] | bool | None = None,
         proximity: Var[float | int] | float | int | None = None,
@@ -2118,6 +2747,17 @@ class SpotlightCard(ReactBitsComponent):
         cls,
         *children,
         spotlight_color: Var[str] | str | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        spotlight_size: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        shape: Literal["beam", "circle"] | Var[Literal["beam", "circle"]] | None = None,
+        border_glow: Var[float | int] | float | int | None = None,
+        proximity: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        ambient: Var[bool] | bool | None = None,
+        flare: Var[bool] | bool | None = None,
+        grain: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2154,16 +2794,24 @@ class Stack(ReactBitsComponent):
     def create(
         cls,
         *children,
-        random_rotation: Var[bool] | bool | None = None,
-        sensitivity: Var[float | int] | float | int | None = None,
         cards: Var[list[Any]] | list[Any] | None = None,
-        animation_config: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        layout: Literal["cascade", "deck", "fan", "pile"]
+        | Var[Literal["cascade", "deck", "fan", "pile"]]
+        | None = None,
+        visible: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        frame: Var[float | int] | float | int | None = None,
+        frame_color: Var[str] | str | None = None,
+        shadow: Var[bool] | bool | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        threshold: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
         send_to_back_on_click: Var[bool] | bool | None = None,
         autoplay: Var[bool] | bool | None = None,
         autoplay_delay: Var[float | int] | float | int | None = None,
         pause_on_hover: Var[bool] | bool | None = None,
-        mobile_click_only: Var[bool] | bool | None = None,
-        mobile_breakpoint: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2175,6 +2823,7 @@ class Stack(ReactBitsComponent):
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
         on_blur: Optional[EventType[()]] = None,
+        on_change: Optional[EventType[Any]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -2251,17 +2900,36 @@ class Stepper(ReactBitsComponent):
     def create(
         cls,
         *children,
+        step: Var[float | int] | float | int | None = None,
         initial_step: Var[float | int] | float | int | None = None,
+        indicator: Literal["bars", "dots", "numbers"]
+        | Var[Literal["bars", "dots", "numbers"]]
+        | None = None,
+        orientation: Literal["horizontal", "vertical"]
+        | Var[Literal["horizontal", "vertical"]]
+        | None = None,
+        transition: Literal["fade", "none", "slide"]
+        | Var[Literal["fade", "none", "slide"]]
+        | None = None,
+        linear: Var[bool] | bool | None = None,
+        disable_step_indicators: Var[bool] | bool | None = None,
+        render_step_indicator: Any | Var[Any] | None = None,
+        show_footer: Var[bool] | bool | None = None,
+        back_button_text: Var[str] | str | None = None,
+        next_button_text: Var[str] | str | None = None,
+        complete_button_text: Var[str] | str | None = None,
+        back_button_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        next_button_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
+        completed_content: Component | Var[Component | str] | str | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        accent_color: Var[str] | str | None = None,
+        frame: Var[bool] | bool | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        width: Var[float | int | str] | float | int | str | None = None,
         step_circle_container_class_name: Var[str] | str | None = None,
         step_container_class_name: Var[str] | str | None = None,
         content_class_name: Var[str] | str | None = None,
         footer_class_name: Var[str] | str | None = None,
-        back_button_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        next_button_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        back_button_text: Var[str] | str | None = None,
-        next_button_text: Var[str] | str | None = None,
-        disable_step_indicators: Var[bool] | bool | None = None,
-        render_step_indicator: Var[dict[str, Any]] | dict[str, Any] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2300,6 +2968,9 @@ class Step(ReactBitsComponent):
     def create(
         cls,
         *children,
+        title: Component | Var[Component | str] | str | None = None,
+        description: Component | Var[Component | str] | str | None = None,
+        icon: Component | Var[Component | str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2339,16 +3010,73 @@ class TiltedCard(ReactBitsComponent):
         image_src: Var[str] | str | None = None,
         alt_text: Var[str] | str | None = None,
         caption_text: Var[str] | str | None = None,
-        container_height: Var[str] | str | None = None,
-        container_width: Var[str] | str | None = None,
-        image_height: Var[str] | str | None = None,
-        image_width: Var[str] | str | None = None,
+        container_height: Var[float | int | str] | float | int | str | None = None,
+        container_width: Var[float | int | str] | float | int | str | None = None,
+        image_height: Var[float | int | str] | float | int | str | None = None,
+        image_width: Var[float | int | str] | float | int | str | None = None,
         scale_on_hover: Var[float | int] | float | int | None = None,
         rotate_amplitude: Var[float | int] | float | int | None = None,
-        show_mobile_warning: Var[bool] | bool | None = None,
         show_tooltip: Var[bool] | bool | None = None,
         overlay_content: Component | Var[Component | str] | str | None = None,
         display_overlay_content: Var[bool] | bool | None = None,
+        overlay_depth: Var[float | int] | float | int | None = None,
+        back_content: Component | Var[Component | str] | str | None = None,
+        flip_on_click: Var[bool] | bool | None = None,
+        flipped: Var[bool] | bool | None = None,
+        radius: Var[float | int | str] | float | int | str | None = None,
+        perspective: Var[float | int | str] | float | int | str | None = None,
+        smoothness: Var[float | int] | float | int | None = None,
+        glare: Var[float | int] | float | int | None = None,
+        glare_color: Var[str] | str | None = None,
+        shadow: Var[float | int] | float | int | None = None,
+        parallax: Var[float | int] | float | int | None = None,
+        axis: Literal["both", "horizontal", "vertical"]
+        | Var[Literal["both", "horizontal", "vertical"]]
+        | None = None,
+        reverse: Var[bool] | bool | None = None,
+        track_window: Var[bool] | bool | None = None,
+        floating: Var[bool] | bool | None = None,
+        gyroscope: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        intro_delay: Var[float | int] | float | int | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_flip: Optional[EventType[Any]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "TiltedCard":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
+class TiltedCardLayer(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        depth: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2376,7 +3104,7 @@ class TiltedCard(ReactBitsComponent):
         on_scroll_end: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
         **props,
-    ) -> "TiltedCard":
+    ) -> "TiltedCardLayer":
         """Copy the component source into the app (once) and create the component."""
         ...
 
@@ -2390,6 +3118,7 @@ card_swap = CardSwap.create
 card_swap_card = CardSwapCard.create
 carousel = Carousel.create
 chroma_grid = ChromaGrid.create
+circular_carousel = CircularCarousel.create
 circular_gallery = CircularGallery.create
 counter = Counter.create
 curved_input = CurvedInput.create
@@ -2399,6 +3128,7 @@ dock = Dock.create
 dome_gallery = DomeGallery.create
 drift_wall = DriftWall.create
 elastic_slider = ElasticSlider.create
+flex_carousel = FlexCarousel.create
 flowing_menu = FlowingMenu.create
 fluid_glass = FluidGlass.create
 flying_posters = FlyingPosters.create
@@ -2406,6 +3136,7 @@ folder = Folder.create
 glass_icons = GlassIcons.create
 glass_surface = GlassSurface.create
 gooey_nav = GooeyNav.create
+holo_card = HoloCard.create
 infinite_menu = InfiniteMenu.create
 infinite_spiral = InfiniteSpiral.create
 lanyard = Lanyard.create
@@ -2428,3 +3159,4 @@ staggered_menu = StaggeredMenu.create
 stepper = Stepper.create
 step = Step.create
 tilted_card = TiltedCard.create
+tilted_card_layer = TiltedCardLayer.create

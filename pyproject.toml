@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reflex-reactbits"
-version = "0.1.1"
+version = "0.2.0"
 description = "Reflex wrappers for React Bits: 200+ animated text effects, backgrounds, UI components and micro interactions."
 readme = "README.md"
 license = { text = "MIT" }

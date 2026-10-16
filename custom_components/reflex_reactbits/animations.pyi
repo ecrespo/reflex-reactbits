@@ -10,20 +10,22 @@ from reflex_base.event import (
     EventType,
     PointerEventInfo,
 )
-from reflex_base.components.component import Component
 from reflex_base.vars.base import Var
+from reflex_base.components.component import Component
 from .base import ReactBitsComponent
 
 __all__ = [
     "AnimatedContent",
-    "Antigravity",
     "BlobCursor",
     "ClickSpark",
     "Crosshair",
+    "CrystalizedBall",
     "Cubes",
     "CursorGrid",
+    "DitherVeil",
     "ElasticMesh",
     "ElectricBorder",
+    "ElectricLogo",
     "FadeContent",
     "GhostCursor",
     "GlareHover",
@@ -33,9 +35,7 @@ __all__ = [
     "ImageTrail",
     "LaserFlow",
     "LogoLoop",
-    "MagicRings",
     "Magnet",
-    "MagnetLines",
     "MetaBalls",
     "MetallicPaint",
     "Noise",
@@ -54,14 +54,16 @@ __all__ = [
     "SwarmCursor",
     "TargetCursor",
     "animated_content",
-    "antigravity",
     "blob_cursor",
     "click_spark",
     "crosshair",
+    "crystalized_ball",
     "cubes",
     "cursor_grid",
+    "dither_veil",
     "elastic_mesh",
     "electric_border",
+    "electric_logo",
     "fade_content",
     "ghost_cursor",
     "glare_hover",
@@ -71,9 +73,7 @@ __all__ = [
     "image_trail",
     "laser_flow",
     "logo_loop",
-    "magic_rings",
     "magnet",
-    "magnet_lines",
     "meta_balls",
     "metallic_paint",
     "noise",
@@ -100,15 +100,30 @@ class AnimatedContent(ReactBitsComponent):
         *children,
         container: Any | Var[Any] | None = None,
         distance: Var[float | int] | float | int | None = None,
-        direction: Var[str] | str | None = None,
+        direction: Literal["horizontal", "vertical"]
+        | Var[Literal["horizontal", "vertical"]]
+        | None = None,
         reverse: Var[bool] | bool | None = None,
         duration: Var[float | int] | float | int | None = None,
         ease: Var[str] | str | None = None,
         initial_opacity: Var[float | int] | float | int | None = None,
         animate_opacity: Var[bool] | bool | None = None,
         scale: Var[float | int] | float | int | None = None,
+        blur: Var[float | int] | float | int | None = None,
+        rotate: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        wipe: Literal["center", "down", "left", "none", "right", "up"]
+        | Var[Literal["center", "down", "left", "none", "right", "up"]]
+        | None = None,
         threshold: Var[float | int] | float | int | None = None,
         delay: Var[float | int] | float | int | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        stagger_from: Literal["center", "edges", "end", "random", "start"]
+        | Var[Literal["center", "edges", "end", "random", "start"]]
+        | None = None,
+        trigger: Literal["mount", "scroll"] | Var[Literal["mount", "scroll"]] | None = None,
+        once: Var[bool] | bool | None = None,
+        scrub: Var[bool] | bool | None = None,
         disappear_after: Var[float | int] | float | int | None = None,
         disappear_duration: Var[float | int] | float | int | None = None,
         disappear_ease: Var[str] | str | None = None,
@@ -139,60 +154,10 @@ class AnimatedContent(ReactBitsComponent):
         on_mouse_up: Optional[EventType[()]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
+        on_start: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
         **props,
     ) -> "AnimatedContent":
-        """Copy the component source into the app (once) and create the component."""
-        ...
-
-class Antigravity(ReactBitsComponent):
-    @classmethod
-    def create(
-        cls,
-        *children,
-        count: Var[float | int] | float | int | None = None,
-        magnet_radius: Var[float | int] | float | int | None = None,
-        ring_radius: Var[float | int] | float | int | None = None,
-        wave_speed: Var[float | int] | float | int | None = None,
-        wave_amplitude: Var[float | int] | float | int | None = None,
-        particle_size: Var[float | int] | float | int | None = None,
-        lerp_speed: Var[float | int] | float | int | None = None,
-        color: Var[str] | str | None = None,
-        auto_animate: Var[bool] | bool | None = None,
-        particle_variance: Var[float | int] | float | int | None = None,
-        rotation_speed: Var[float | int] | float | int | None = None,
-        depth_factor: Var[float | int] | float | int | None = None,
-        pulse_speed: Var[float | int] | float | int | None = None,
-        particle_shape: Var[str] | str | None = None,
-        field_strength: Var[float | int] | float | int | None = None,
-        style: Sequence[Mapping[str, Any]]
-        | Mapping[str, Any]
-        | Var[Mapping[str, Any]]
-        | Breakpoints
-        | None = None,
-        key: Any | None = None,
-        id: Any | None = None,
-        ref: Var | None = None,
-        class_name: Any | None = None,
-        custom_attrs: dict[str, Any | Var] | None = None,
-        on_blur: Optional[EventType[()]] = None,
-        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_focus: Optional[EventType[()]] = None,
-        on_mount: Optional[EventType[()]] = None,
-        on_mouse_down: Optional[EventType[()]] = None,
-        on_mouse_enter: Optional[EventType[()]] = None,
-        on_mouse_leave: Optional[EventType[()]] = None,
-        on_mouse_move: Optional[EventType[()]] = None,
-        on_mouse_out: Optional[EventType[()]] = None,
-        on_mouse_over: Optional[EventType[()]] = None,
-        on_mouse_up: Optional[EventType[()]] = None,
-        on_scroll: Optional[EventType[()]] = None,
-        on_scroll_end: Optional[EventType[()]] = None,
-        on_unmount: Optional[EventType[()]] = None,
-        **props,
-    ) -> "Antigravity":
         """Copy the component source into the app (once) and create the component."""
         ...
 
@@ -201,26 +166,32 @@ class BlobCursor(ReactBitsComponent):
     def create(
         cls,
         *children,
-        blob_type: Literal["circle", "square"] | Var[Literal["circle", "square"]] | None = None,
-        fill_color: Var[str] | str | None = None,
-        trail_count: Var[float | int] | float | int | None = None,
-        sizes: Var[list[float | int]] | list[float | int] | None = None,
-        inner_sizes: Var[list[float | int]] | list[float | int] | None = None,
-        inner_color: Var[str] | str | None = None,
-        opacities: Var[list[float | int]] | list[float | int] | None = None,
-        shadow_color: Var[str] | str | None = None,
-        shadow_blur: Var[float | int] | float | int | None = None,
-        shadow_offset_x: Var[float | int] | float | int | None = None,
-        shadow_offset_y: Var[float | int] | float | int | None = None,
-        filter_id: Var[str] | str | None = None,
-        filter_std_deviation: Var[float | int] | float | int | None = None,
-        filter_color_matrix_values: Var[str] | str | None = None,
-        use_filter: Var[bool] | bool | None = None,
-        fast_duration: Var[float | int] | float | int | None = None,
-        slow_duration: Var[float | int] | float | int | None = None,
-        fast_ease: Var[str] | str | None = None,
-        slow_ease: Var[str] | str | None = None,
-        z_index: Var[float | int] | float | int | None = None,
+        material: Literal["chrome", "ink", "jelly", "pearl"]
+        | Var[Literal["chrome", "ink", "jelly", "pearl"]]
+        | None = None,
+        color: Var[str] | str | None = None,
+        size: Var[float | int] | float | int | None = None,
+        morph: Var[float | int] | float | int | None = None,
+        morph_speed: Var[float | int] | float | int | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        trail: Var[float | int] | float | int | None = None,
+        lag: Var[float | int] | float | int | None = None,
+        goo: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        wobble: Var[float | int] | float | int | None = None,
+        drip: Var[float | int] | float | int | None = None,
+        splash: Var[bool] | bool | None = None,
+        splash_count: Var[float | int] | float | int | None = None,
+        splash_speed: Var[float | int] | float | int | None = None,
+        splash_size: Var[float | int] | float | int | None = None,
+        splash_gravity: Var[float | int] | float | int | None = None,
+        regrow: Var[float | int] | float | int | None = None,
+        shine: Var[float | int] | float | int | None = None,
+        shadow: Var[bool] | bool | None = None,
+        blend: Literal["difference", "exclusion", "multiply", "normal", "overlay", "screen"]
+        | Var[Literal["difference", "exclusion", "multiply", "normal", "overlay", "screen"]]
+        | None = None,
+        hide_cursor: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -257,13 +228,27 @@ class ClickSpark(ReactBitsComponent):
     def create(
         cls,
         *children,
-        spark_color: Var[str] | str | None = None,
+        spark_color: Var[list[str] | str] | list[str] | str | None = None,
         spark_size: Var[float | int] | float | int | None = None,
         spark_radius: Var[float | int] | float | int | None = None,
         spark_count: Var[float | int] | float | int | None = None,
+        spark_width: Var[float | int] | float | int | None = None,
         duration: Var[float | int] | float | int | None = None,
-        easing: Var[str] | str | None = None,
+        easing: Literal["ease-in", "ease-in-out", "ease-out", "linear", "spring"]
+        | Var[Literal["ease-in", "ease-in-out", "ease-out", "linear", "spring"]]
+        | None = None,
         extra_scale: Var[float | int] | float | int | None = None,
+        shape: Literal["dot", "line", "star", "streak"]
+        | Var[Literal["dot", "line", "star", "streak"]]
+        | None = None,
+        randomness: Var[float | int] | float | int | None = None,
+        gravity: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        direction: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        ring: Var[bool] | bool | None = None,
+        layer: Literal["back", "front"] | Var[Literal["back", "front"]] | None = None,
+        disabled: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -302,6 +287,24 @@ class Crosshair(ReactBitsComponent):
         *children,
         color: Var[str] | str | None = None,
         container_ref: Any | Var[Any] | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        opacity: Var[float | int] | float | int | None = None,
+        line_style: Literal["dashed", "dotted", "solid"]
+        | Var[Literal["dashed", "dotted", "solid"]]
+        | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        fade: Var[float | int] | float | int | None = None,
+        smoothing: Var[float | int] | float | int | None = None,
+        show_coordinates: Var[bool] | bool | None = None,
+        target_effect: Literal["glitch", "lock", "none"]
+        | Var[Literal["glitch", "lock", "none"]]
+        | None = None,
+        target_selector: Var[str] | str | None = None,
+        click_pulse: Var[bool] | bool | None = None,
+        hide_cursor: Var[bool] | bool | None = None,
+        blend_mode: Literal["difference", "normal"]
+        | Var[Literal["difference", "normal"]]
+        | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -333,25 +336,97 @@ class Crosshair(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class CrystalizedBall(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        preset: Literal["abyss", "aurora", "eclipse", "ember", "frost", "nebula", "plasma", "solar"]
+        | Var[Literal["abyss", "aurora", "eclipse", "ember", "frost", "nebula", "plasma", "solar"]]
+        | None = None,
+        color: Var[str] | str | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        size: Var[float | int] | float | int | None = None,
+        strands: Var[float | int] | float | int | None = None,
+        crackle: Var[float | int] | float | int | None = None,
+        flares: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        sparks: Var[float | int] | float | int | None = None,
+        particle_count: Var[float | int] | float | int | None = None,
+        fill: Var[float | int] | float | int | None = None,
+        motion: Literal["drift", "fall", "orbit", "rise"]
+        | Var[Literal["drift", "fall", "orbit", "rise"]]
+        | None = None,
+        particle_shape: Literal["round", "square"] | Var[Literal["round", "square"]] | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        sway: Var[float | int] | float | int | None = None,
+        twinkle: Var[float | int] | float | int | None = None,
+        haze: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        dust_speed: Var[float | int] | float | int | None = None,
+        interactive: Var[bool] | bool | None = None,
+        hover_strength: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        paused: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "CrystalizedBall":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class Cubes(ReactBitsComponent):
     @classmethod
     def create(
         cls,
         *children,
         grid_size: Var[float | int] | float | int | None = None,
-        cube_size: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        face_color: Var[str] | str | None = None,
+        edge_color: Var[str] | str | None = None,
+        edge_width: Var[float | int] | float | int | None = None,
+        edge_style: Literal["dashed", "dotted", "none", "solid"]
+        | Var[Literal["dashed", "dotted", "none", "solid"]]
+        | None = None,
+        face_opacity: Var[float | int] | float | int | None = None,
+        shading: Var[float | int] | float | int | None = None,
         max_angle: Var[float | int] | float | int | None = None,
         radius: Var[float | int] | float | int | None = None,
-        easing: Var[str] | str | None = None,
-        duration: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        cell_gap: Var[dict[str, Any] | float | int] | dict[str, Any] | float | int | None = None,
-        border_style: Var[str] | str | None = None,
-        face_color: Var[str] | str | None = None,
-        shadow: Var[bool | str] | bool | str | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        brush: Var[float | int] | float | int | None = None,
+        perspective: Var[float | int] | float | int | None = None,
         auto_animate: Var[bool] | bool | None = None,
         ripple_on_click: Var[bool] | bool | None = None,
         ripple_color: Var[str] | str | None = None,
         ripple_speed: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        paused: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -390,19 +465,31 @@ class CursorGrid(ReactBitsComponent):
         *children,
         cell_size: Var[float | int] | float | int | None = None,
         color: Var[str] | str | None = None,
+        grid_color: Var[str] | str | None = None,
         radius: Var[float | int] | float | int | None = None,
         falloff: Literal["linear", "sharp", "smooth"]
         | Var[Literal["linear", "sharp", "smooth"]]
         | None = None,
+        highlight: Literal["area", "cell"] | Var[Literal["area", "cell"]] | None = None,
         hold_time: Var[float | int] | float | int | None = None,
         fade_duration: Var[float | int] | float | int | None = None,
         line_width: Var[float | int] | float | int | None = None,
         max_opacity: Var[float | int] | float | int | None = None,
         fill_opacity: Var[float | int] | float | int | None = None,
         grid_opacity: Var[float | int] | float | int | None = None,
+        grid_style: Literal["crosses", "dashed", "dots", "lines"]
+        | Var[Literal["crosses", "dashed", "dots", "lines"]]
+        | None = None,
         cell_radius: Var[float | int] | float | int | None = None,
+        cell_gap: Var[float | int] | float | int | None = None,
+        spotlight: Var[float | int] | float | int | None = None,
         click_pulse: Var[bool] | bool | None = None,
         pulse_speed: Var[float | int] | float | int | None = None,
+        ambient: Var[float | int] | float | int | None = None,
+        edge_fade: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        light_mode: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -434,30 +521,86 @@ class CursorGrid(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class DitherVeil(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        src: Var[str] | str | None = None,
+        fit: Literal["contain", "cover"] | Var[Literal["contain", "cover"]] | None = None,
+        pattern: Literal["atkinson", "bayer", "floyd", "lines", "noise"]
+        | Var[Literal["atkinson", "bayer", "floyd", "lines", "noise"]]
+        | None = None,
+        pixel_size: Var[float | int] | float | int | None = None,
+        levels: Var[float | int] | float | int | None = None,
+        palette: Literal["duotone", "rgb"] | Var[Literal["duotone", "rgb"]] | None = None,
+        ink_color: Var[str] | str | None = None,
+        paper_color: Var[str] | str | None = None,
+        contrast: Var[float | int] | float | int | None = None,
+        brightness: Var[float | int] | float | int | None = None,
+        reveal_radius: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        linger: Var[float | int] | float | int | None = None,
+        rim_color: Var[str] | str | None = None,
+        rim: Var[float | int] | float | int | None = None,
+        reverse: Var[bool] | bool | None = None,
+        wander: Var[bool] | bool | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "DitherVeil":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class ElasticMesh(ReactBitsComponent):
     @classmethod
     def create(
         cls,
         *children,
-        image: Var[str] | str | None = None,
-        color1: Var[str] | str | None = None,
-        color2: Var[str] | str | None = None,
-        highlight: Var[str] | str | None = None,
-        show_grid: Var[bool] | bool | None = None,
-        grid_density: Var[float | int] | float | int | None = None,
-        grid_opacity: Var[float | int] | float | int | None = None,
-        grid_color: Var[str] | str | None = None,
-        border_radius: Var[float | int] | float | int | None = None,
+        text: Var[str] | str | None = None,
+        src: Var[str] | str | None = None,
+        font_family: Var[str] | str | None = None,
+        font_weight: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        image_colors: Var[bool] | bool | None = None,
+        material: Literal["balloon", "chrome", "clay", "jelly"]
+        | Var[Literal["balloon", "chrome", "clay", "jelly"]]
+        | None = None,
+        inflate: Var[float | int] | float | int | None = None,
         stiffness: Var[float | int] | float | int | None = None,
-        damping: Var[float | int] | float | int | None = None,
-        grab_radius: Var[float | int] | float | int | None = None,
-        pull: Var[float | int] | float | int | None = None,
         wobble: Var[float | int] | float | int | None = None,
-        tilt: Var[float | int] | float | int | None = None,
-        shading: Var[float | int] | float | int | None = None,
-        resolution: Var[float | int] | float | int | None = None,
-        interaction: Literal["drag", "hover"] | Var[Literal["drag", "hover"]] | None = None,
-        enabled: Var[bool] | bool | None = None,
+        grab_radius: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        press: Var[float | int] | float | int | None = None,
+        shadow: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -495,9 +638,23 @@ class ElectricBorder(ReactBitsComponent):
         cls,
         *children,
         color: Var[str] | str | None = None,
+        glow_color: Var[str] | str | None = None,
         speed: Var[float | int] | float | int | None = None,
         chaos: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        strands: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        arcs: Var[float | int] | float | int | None = None,
+        flicker: Var[float | int] | float | int | None = None,
         border_radius: Var[float | int] | float | int | None = None,
+        offset: Var[float | int] | float | int | None = None,
+        active: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        interactive: Var[bool] | bool | None = None,
+        cursor_radius: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -529,18 +686,84 @@ class ElectricBorder(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
+class ElectricLogo(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        src: Var[str] | str | None = None,
+        color: Var[str] | str | None = None,
+        glow_color: Var[str] | str | None = None,
+        scale: Var[float | int] | float | int | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        strands: Var[float | int] | float | int | None = None,
+        bend: Var[float | int] | float | int | None = None,
+        crackle: Var[float | int] | float | int | None = None,
+        arcs: Var[float | int] | float | int | None = None,
+        flicker: Var[float | int] | float | int | None = None,
+        fill: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        interactive: Var[bool] | bool | None = None,
+        cursor_intensity: Var[float | int] | float | int | None = None,
+        cursor_radius: Var[float | int] | float | int | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_render: Optional[EventType[Any]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "ElectricLogo":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
 class FadeContent(ReactBitsComponent):
     @classmethod
     def create(
         cls,
         *children,
         container: Any | Var[Any] | None = None,
+        effect: Literal["develop", "dissolve", "fade", "focus", "mist", "pixel"]
+        | Var[Literal["develop", "dissolve", "fade", "focus", "mist", "pixel"]]
+        | None = None,
         blur: Var[bool] | bool | None = None,
         duration: Var[float | int] | float | int | None = None,
         ease: Var[str] | str | None = None,
         delay: Var[float | int] | float | int | None = None,
         threshold: Var[float | int] | float | int | None = None,
         initial_opacity: Var[float | int] | float | int | None = None,
+        stagger: Var[float | int] | float | int | None = None,
+        stagger_from: Literal["center", "edges", "end", "random", "start"]
+        | Var[Literal["center", "edges", "end", "random", "start"]]
+        | None = None,
+        trigger: Literal["mount", "scroll"] | Var[Literal["mount", "scroll"]] | None = None,
+        once: Var[bool] | bool | None = None,
+        exit: Var[bool] | bool | None = None,
+        scrub: Var[bool] | bool | None = None,
         disappear_after: Var[float | int] | float | int | None = None,
         disappear_duration: Var[float | int] | float | int | None = None,
         disappear_ease: Var[str] | str | None = None,
@@ -571,6 +794,7 @@ class FadeContent(ReactBitsComponent):
         on_mouse_up: Optional[EventType[()]] = None,
         on_scroll: Optional[EventType[()]] = None,
         on_scroll_end: Optional[EventType[()]] = None,
+        on_start: Optional[EventType[()]] = None,
         on_unmount: Optional[EventType[()]] = None,
         **props,
     ) -> "FadeContent":
@@ -582,20 +806,27 @@ class GhostCursor(ReactBitsComponent):
     def create(
         cls,
         *children,
+        color: Var[str] | str | None = None,
+        brightness: Var[float | int] | float | int | None = None,
+        size: Var[float | int] | float | int | None = None,
         trail_length: Var[float | int] | float | int | None = None,
         inertia: Var[float | int] | float | int | None = None,
+        turbulence: Var[float | int] | float | int | None = None,
+        drift: Var[float | int] | float | int | None = None,
+        detail: Var[float | int] | float | int | None = None,
         grain_intensity: Var[float | int] | float | int | None = None,
         bloom_strength: Var[float | int] | float | int | None = None,
         bloom_radius: Var[float | int] | float | int | None = None,
         bloom_threshold: Var[float | int] | float | int | None = None,
-        brightness: Var[float | int] | float | int | None = None,
-        color: Var[str] | str | None = None,
-        mix_blend_mode: Var[str] | str | None = None,
         edge_intensity: Var[float | int] | float | int | None = None,
-        max_device_pixel_ratio: Var[float | int] | float | int | None = None,
-        target_pixels: Var[float | int] | float | int | None = None,
+        click_puff: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        mix_blend_mode: Var[str] | str | None = None,
         fade_delay_ms: Var[float | int] | float | int | None = None,
         fade_duration_ms: Var[float | int] | float | int | None = None,
+        max_device_pixel_ratio: Var[float | int] | float | int | None = None,
+        target_pixels: Var[float | int] | float | int | None = None,
         z_index: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
@@ -642,8 +873,19 @@ class GlareHover(ReactBitsComponent):
         glare_opacity: Var[float | int] | float | int | None = None,
         glare_angle: Var[float | int] | float | int | None = None,
         glare_size: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        variant: Literal["sheen", "streak", "twin"]
+        | Var[Literal["sheen", "streak", "twin"]]
+        | None = None,
+        blend_mode: Var[str] | str | None = None,
+        rim_glint: Var[bool] | bool | None = None,
+        mode: Literal["click", "follow", "hover", "loop"]
+        | Var[Literal["click", "follow", "hover", "loop"]]
+        | None = None,
         transition_duration: Var[float | int] | float | int | None = None,
+        interval: Var[float | int] | float | int | None = None,
         play_once: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -682,23 +924,19 @@ class GlowCursor(ReactBitsComponent):
         *children,
         color: Var[str] | str | None = None,
         secondary_color: Var[str] | str | None = None,
-        trail_length: Var[float | int] | float | int | None = None,
+        intensity: Var[float | int] | float | int | None = None,
         trail_width: Var[float | int] | float | int | None = None,
-        trail_taper: Var[float | int] | float | int | None = None,
-        follow_speed: Var[float | int] | float | int | None = None,
-        glow_intensity: Var[float | int] | float | int | None = None,
-        glow_spread: Var[float | int] | float | int | None = None,
+        linger: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
         hotspot: Var[float | int] | float | int | None = None,
-        brightness: Var[float | int] | float | int | None = None,
-        opacity: Var[float | int] | float | int | None = None,
-        pulse_speed: Var[float | int] | float | int | None = None,
-        noise_strength: Var[float | int] | float | int | None = None,
-        idle_fade: Var[bool] | bool | None = None,
-        idle_timeout: Var[float | int] | float | int | None = None,
-        fade_duration: Var[float | int] | float | int | None = None,
-        blend_mode: Literal["normal", "plus-lighter", "screen"]
-        | Var[Literal["normal", "plus-lighter", "screen"]]
+        follow_speed: Var[float | int] | float | int | None = None,
+        grain: Var[float | int] | float | int | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        quality: Literal["high", "low", "medium"]
+        | Var[Literal["high", "low", "medium"]]
         | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        blend_mode: Var[str] | str | None = None,
         max_device_pixel_ratio: Var[float | int] | float | int | None = None,
         enabled: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
@@ -740,25 +978,24 @@ class GradualBlur(ReactBitsComponent):
         position: Literal["bottom", "left", "right", "top"]
         | Var[Literal["bottom", "left", "right", "top"]]
         | None = None,
-        strength: Var[float | int] | float | int | None = None,
-        height: Var[str] | str | None = None,
-        div_count: Var[float | int] | float | int | None = None,
-        exponential: Var[bool] | bool | None = None,
-        z_index: Var[float | int] | float | int | None = None,
-        animated: Literal["boolean", "scroll"] | Var[Literal["boolean", "scroll"]] | None = None,
-        duration: Var[str] | str | None = None,
-        easing: Var[str] | str | None = None,
-        opacity: Var[float | int] | float | int | None = None,
-        curve: Literal["bezier", "ease-in", "linear"]
-        | Var[Literal["bezier", "ease-in", "linear"]]
-        | None = None,
-        responsive: Var[bool] | bool | None = None,
         target: Literal["page", "parent"] | Var[Literal["page", "parent"]] | None = None,
-        width: Var[str] | str | None = None,
-        hover_intensity: Var[float | int] | float | int | None = None,
-        preset: Literal["bottom", "left", "right", "top"]
-        | Var[Literal["bottom", "left", "right", "top"]]
+        height: Var[float | int | str] | float | int | str | None = None,
+        width: Var[float | int | str] | float | int | str | None = None,
+        strength: Var[float | int] | float | int | None = None,
+        layers: Var[float | int] | float | int | None = None,
+        curve: Literal["bezier", "ease-in", "ease-in-out", "ease-out", "linear"]
+        | Var[Literal["bezier", "ease-in", "ease-in-out", "ease-out", "linear"]]
         | None = None,
+        exponential: Var[bool] | bool | None = None,
+        opacity: Var[float | int] | float | int | None = None,
+        saturation: Var[float | int] | float | int | None = None,
+        tint: Var[str] | str | None = None,
+        auto_hide: Var[bool] | bool | None = None,
+        container: Any | Var[Any] | None = None,
+        hover_intensity: Var[float | int] | float | int | None = None,
+        duration: Var[float | int | str] | float | int | str | None = None,
+        easing: Var[str] | str | None = None,
+        z_index: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -769,7 +1006,6 @@ class GradualBlur(ReactBitsComponent):
         ref: Var | None = None,
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
-        on_animation_complete: Optional[EventType[()]] = None,
         on_blur: Optional[EventType[()]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -797,27 +1033,31 @@ class HalftoneReveal(ReactBitsComponent):
         cls,
         *children,
         src: Var[str] | str | None = None,
-        ink_color: Var[str] | str | None = None,
-        paper_color: Var[str] | str | None = None,
+        fit: Literal["contain", "cover"] | Var[Literal["contain", "cover"]] | None = None,
         mode: Literal["color", "duotone", "mono"]
         | Var[Literal["color", "duotone", "mono"]]
         | None = None,
-        dot_size: Var[float | int] | float | int | None = None,
-        dot_density: Var[float | int] | float | int | None = None,
+        shape: Literal["cross", "diamond", "dot", "ellipse", "line", "square"]
+        | Var[Literal["cross", "diamond", "dot", "ellipse", "line", "square"]]
+        | None = None,
+        cell_size: Var[float | int] | float | int | None = None,
         angle: Var[float | int] | float | int | None = None,
-        shape: Literal["circle", "diamond", "line", "square"]
-        | Var[Literal["circle", "diamond", "line", "square"]]
-        | None = None,
+        dot_scale: Var[float | int] | float | int | None = None,
+        ink_color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
+        paper_color: Var[str] | str | None = None,
         contrast: Var[float | int] | float | int | None = None,
+        brightness: Var[float | int] | float | int | None = None,
         invert: Var[bool] | bool | None = None,
+        roughness: Var[float | int] | float | int | None = None,
+        misregistration: Var[float | int] | float | int | None = None,
         reveal_radius: Var[float | int] | float | int | None = None,
-        edge: Var[float | int] | float | int | None = None,
-        follow: Var[float | int] | float | int | None = None,
-        idle_reveal: Var[float | int] | float | int | None = None,
-        trigger: Literal["always", "hover", "off"]
-        | Var[Literal["always", "hover", "off"]]
-        | None = None,
-        border_radius: Var[str] | str | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        linger: Var[float | int] | float | int | None = None,
+        reverse: Var[bool] | bool | None = None,
+        wander: Var[bool] | bool | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -855,7 +1095,21 @@ class ImageTrail(ReactBitsComponent):
         cls,
         *children,
         items: Var[list[str]] | list[str] | None = None,
-        variant: Var[float | int] | float | int | None = None,
+        size: Var[float | int | str] | float | int | str | None = None,
+        aspect_ratio: Var[float | int] | float | int | None = None,
+        radius: Var[float | int | str] | float | int | str | None = None,
+        threshold: Var[float | int] | float | int | None = None,
+        lifetime: Var[float | int] | float | int | None = None,
+        appear_scale: Var[float | int] | float | int | None = None,
+        zoom: Var[float | int] | float | int | None = None,
+        flash: Var[float | int] | float | int | None = None,
+        exit_scale: Var[float | int] | float | int | None = None,
+        drift: Var[float | int] | float | int | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        size_variance: Var[float | int] | float | int | None = None,
+        align_to_motion: Var[bool] | bool | None = None,
+        stack: Var[float | int] | float | int | None = None,
+        tilt: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -892,25 +1146,30 @@ class LaserFlow(ReactBitsComponent):
     def create(
         cls,
         *children,
-        wisp_density: Var[float | int] | float | int | None = None,
-        dpr: Var[float | int] | float | int | None = None,
-        mouse_smooth_time: Var[float | int] | float | int | None = None,
-        mouse_tilt_strength: Var[float | int] | float | int | None = None,
-        horizontal_beam_offset: Var[float | int] | float | int | None = None,
-        vertical_beam_offset: Var[float | int] | float | int | None = None,
-        flow_speed: Var[float | int] | float | int | None = None,
-        vertical_sizing: Var[float | int] | float | int | None = None,
-        horizontal_sizing: Var[float | int] | float | int | None = None,
-        fog_intensity: Var[float | int] | float | int | None = None,
-        fog_scale: Var[float | int] | float | int | None = None,
-        wisp_speed: Var[float | int] | float | int | None = None,
-        wisp_intensity: Var[float | int] | float | int | None = None,
-        flow_strength: Var[float | int] | float | int | None = None,
-        decay: Var[float | int] | float | int | None = None,
-        falloff_start: Var[float | int] | float | int | None = None,
-        fog_fall_speed: Var[float | int] | float | int | None = None,
+        surface_ref: Any | Var[Any] | None = None,
+        beam_position: Var[float | int] | float | int | None = None,
+        surface_level: Var[float | int] | float | int | None = None,
         color: Var[str] | str | None = None,
-        background_color: Var[str] | str | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        beam_width: Var[float | int] | float | int | None = None,
+        flare: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        spill: Var[float | int] | float | int | None = None,
+        fog: Var[float | int] | float | int | None = None,
+        dust: Var[float | int] | float | int | None = None,
+        streaks: Var[float | int] | float | int | None = None,
+        dots: Var[float | int] | float | int | None = None,
+        pulse: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        seed: Var[float | int] | float | int | None = None,
+        mouse_interaction: Var[bool] | bool | None = None,
+        reveal_image: Var[str] | str | None = None,
+        reveal_radius: Var[float | int] | float | int | None = None,
+        reveal_opacity: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        paused: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -955,11 +1214,27 @@ class LogoLoop(ReactBitsComponent):
         width: Var[float | int | str] | float | int | str | None = None,
         logo_height: Var[float | int] | float | int | None = None,
         gap: Var[float | int] | float | int | None = None,
-        pause_on_hover: Any | Var[Any] | None = None,
+        pause_on_hover: Var[bool] | bool | None = None,
         hover_speed: Var[float | int] | float | int | None = None,
         fade_out: Var[bool] | bool | None = None,
-        fade_out_color: Var[str] | str | None = None,
+        fade_out_width: Var[float | int] | float | int | None = None,
         scale_on_hover: Var[bool] | bool | None = None,
+        layout: Literal["arc", "line", "orbit", "wave"]
+        | Var[Literal["arc", "line", "orbit", "wave"]]
+        | None = None,
+        bend: Var[float | int] | float | int | None = None,
+        focus: Var[float | int] | float | int | None = None,
+        magnify: Var[float | int] | float | int | None = None,
+        tilt_x: Var[float | int] | float | int | None = None,
+        tilt_y: Var[float | int] | float | int | None = None,
+        step: Var[bool] | bool | None = None,
+        muted: Var[float | int] | float | int | None = None,
+        labels: Literal["below", "hover", "inline", "none"]
+        | Var[Literal["below", "hover", "inline", "none"]]
+        | None = None,
+        draggable: Var[bool] | bool | None = None,
+        scroll_boost: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
         render_item: Any | Var[Any] | None = None,
         aria_label: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
@@ -993,66 +1268,6 @@ class LogoLoop(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
-class MagicRings(ReactBitsComponent):
-    @classmethod
-    def create(
-        cls,
-        *children,
-        color: Var[str] | str | None = None,
-        color_two: Var[str] | str | None = None,
-        speed: Var[float | int] | float | int | None = None,
-        ring_count: Var[float | int] | float | int | None = None,
-        attenuation: Var[float | int] | float | int | None = None,
-        line_thickness: Var[float | int] | float | int | None = None,
-        base_radius: Var[float | int] | float | int | None = None,
-        radius_step: Var[float | int] | float | int | None = None,
-        scale_rate: Var[float | int] | float | int | None = None,
-        opacity: Var[float | int] | float | int | None = None,
-        blur: Var[float | int] | float | int | None = None,
-        noise_amount: Var[float | int] | float | int | None = None,
-        rotation: Var[float | int] | float | int | None = None,
-        ring_gap: Var[float | int] | float | int | None = None,
-        fade_in: Var[float | int] | float | int | None = None,
-        fade_out: Var[float | int] | float | int | None = None,
-        follow_mouse: Var[bool] | bool | None = None,
-        mouse_influence: Var[float | int] | float | int | None = None,
-        hover_scale: Var[float | int] | float | int | None = None,
-        parallax: Var[float | int] | float | int | None = None,
-        click_burst: Var[bool] | bool | None = None,
-        alpha_mode: Literal["coverage", "luminance"]
-        | Var[Literal["coverage", "luminance"]]
-        | None = None,
-        style: Sequence[Mapping[str, Any]]
-        | Mapping[str, Any]
-        | Var[Mapping[str, Any]]
-        | Breakpoints
-        | None = None,
-        key: Any | None = None,
-        id: Any | None = None,
-        ref: Var | None = None,
-        class_name: Any | None = None,
-        custom_attrs: dict[str, Any | Var] | None = None,
-        on_blur: Optional[EventType[()]] = None,
-        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_focus: Optional[EventType[()]] = None,
-        on_mount: Optional[EventType[()]] = None,
-        on_mouse_down: Optional[EventType[()]] = None,
-        on_mouse_enter: Optional[EventType[()]] = None,
-        on_mouse_leave: Optional[EventType[()]] = None,
-        on_mouse_move: Optional[EventType[()]] = None,
-        on_mouse_out: Optional[EventType[()]] = None,
-        on_mouse_over: Optional[EventType[()]] = None,
-        on_mouse_up: Optional[EventType[()]] = None,
-        on_scroll: Optional[EventType[()]] = None,
-        on_scroll_end: Optional[EventType[()]] = None,
-        on_unmount: Optional[EventType[()]] = None,
-        **props,
-    ) -> "MagicRings":
-        """Copy the component source into the app (once) and create the component."""
-        ...
-
 class Magnet(ReactBitsComponent):
     @classmethod
     def create(
@@ -1061,8 +1276,12 @@ class Magnet(ReactBitsComponent):
         padding: Var[float | int] | float | int | None = None,
         disabled: Var[bool] | bool | None = None,
         magnet_strength: Var[float | int] | float | int | None = None,
-        active_transition: Var[str] | str | None = None,
-        inactive_transition: Var[str] | str | None = None,
+        max_offset: Var[float | int] | float | int | None = None,
+        exclusive: Var[bool] | bool | None = None,
+        axis: Literal["both", "x", "y"] | Var[Literal["both", "x", "y"]] | None = None,
+        tilt: Var[float | int] | float | int | None = None,
+        scale: Var[float | int] | float | int | None = None,
+        spring: Var[dict[str, Any]] | dict[str, Any] | None = None,
         wrapper_class_name: Var[str] | str | None = None,
         inner_class_name: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
@@ -1075,6 +1294,7 @@ class Magnet(ReactBitsComponent):
         ref: Var | None = None,
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
+        on_active_change: Optional[EventType[Any]] = None,
         on_blur: Optional[EventType[()]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -1096,55 +1316,13 @@ class Magnet(ReactBitsComponent):
         """Copy the component source into the app (once) and create the component."""
         ...
 
-class MagnetLines(ReactBitsComponent):
-    @classmethod
-    def create(
-        cls,
-        *children,
-        rows: Var[float | int] | float | int | None = None,
-        columns: Var[float | int] | float | int | None = None,
-        container_size: Var[str] | str | None = None,
-        line_color: Var[str] | str | None = None,
-        line_width: Var[str] | str | None = None,
-        line_height: Var[str] | str | None = None,
-        base_angle: Var[float | int] | float | int | None = None,
-        style: Sequence[Mapping[str, Any]]
-        | Mapping[str, Any]
-        | Var[Mapping[str, Any]]
-        | Breakpoints
-        | None = None,
-        key: Any | None = None,
-        id: Any | None = None,
-        ref: Var | None = None,
-        class_name: Any | None = None,
-        custom_attrs: dict[str, Any | Var] | None = None,
-        on_blur: Optional[EventType[()]] = None,
-        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
-        on_focus: Optional[EventType[()]] = None,
-        on_mount: Optional[EventType[()]] = None,
-        on_mouse_down: Optional[EventType[()]] = None,
-        on_mouse_enter: Optional[EventType[()]] = None,
-        on_mouse_leave: Optional[EventType[()]] = None,
-        on_mouse_move: Optional[EventType[()]] = None,
-        on_mouse_out: Optional[EventType[()]] = None,
-        on_mouse_over: Optional[EventType[()]] = None,
-        on_mouse_up: Optional[EventType[()]] = None,
-        on_scroll: Optional[EventType[()]] = None,
-        on_scroll_end: Optional[EventType[()]] = None,
-        on_unmount: Optional[EventType[()]] = None,
-        **props,
-    ) -> "MagnetLines":
-        """Copy the component source into the app (once) and create the component."""
-        ...
-
 class MetaBalls(ReactBitsComponent):
     @classmethod
     def create(
         cls,
         *children,
         color: Var[str] | str | None = None,
+        cursor_ball_color: Var[str] | str | None = None,
         speed: Var[float | int] | float | int | None = None,
         enable_mouse_interaction: Var[bool] | bool | None = None,
         hover_smoothness: Var[float | int] | float | int | None = None,
@@ -1152,8 +1330,23 @@ class MetaBalls(ReactBitsComponent):
         ball_count: Var[float | int] | float | int | None = None,
         clump_factor: Var[float | int] | float | int | None = None,
         cursor_ball_size: Var[float | int] | float | int | None = None,
-        cursor_ball_color: Var[str] | str | None = None,
         enable_transparency: Var[bool] | bool | None = None,
+        variant: Literal["contour", "outline", "solid"]
+        | Var[Literal["contour", "outline", "solid"]]
+        | None = None,
+        motion: Literal["drift", "lava", "orbit"]
+        | Var[Literal["drift", "lava", "orbit"]]
+        | None = None,
+        gooeyness: Var[float | int] | float | int | None = None,
+        stickiness: Var[float | int] | float | int | None = None,
+        stretch: Var[float | int] | float | int | None = None,
+        wobble: Var[float | int] | float | int | None = None,
+        line_width: Var[float | int] | float | int | None = None,
+        rings: Var[float | int] | float | int | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        paused: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1191,26 +1384,25 @@ class MetallicPaint(ReactBitsComponent):
         cls,
         *children,
         image_src: Var[str] | str | None = None,
-        seed: Var[float | int] | float | int | None = None,
-        scale: Var[float | int] | float | int | None = None,
-        refraction: Var[float | int] | float | int | None = None,
-        blur: Var[float | int] | float | int | None = None,
-        liquid: Var[float | int] | float | int | None = None,
-        speed: Var[float | int] | float | int | None = None,
-        brightness: Var[float | int] | float | int | None = None,
-        contrast: Var[float | int] | float | int | None = None,
-        angle: Var[float | int] | float | int | None = None,
-        fresnel: Var[float | int] | float | int | None = None,
-        light_color: Var[str] | str | None = None,
-        dark_color: Var[str] | str | None = None,
-        pattern_sharpness: Var[float | int] | float | int | None = None,
-        wave_amplitude: Var[float | int] | float | int | None = None,
-        noise_scale: Var[float | int] | float | int | None = None,
-        chromatic_spread: Var[float | int] | float | int | None = None,
-        mouse_animation: Var[bool] | bool | None = None,
+        text: Var[str] | str | None = None,
+        font_family: Var[str] | str | None = None,
+        font_weight: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        background_color: Var[str] | str | None = None,
+        density: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        dispersion: Var[float | int] | float | int | None = None,
         distortion: Var[float | int] | float | int | None = None,
-        contour: Var[float | int] | float | int | None = None,
-        tint_color: Var[str] | str | None = None,
+        edge_bend: Var[float | int] | float | int | None = None,
+        angle: Var[float | int] | float | int | None = None,
+        speed: Var[float | int] | float | int | None = None,
+        scale: Var[float | int] | float | int | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        mouse_tilt: Var[float | int] | float | int | None = None,
+        light_mode: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        paused: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1247,11 +1439,20 @@ class Noise(ReactBitsComponent):
     def create(
         cls,
         *children,
-        pattern_size: Var[float | int] | float | int | None = None,
-        pattern_scale_x: Var[float | int] | float | int | None = None,
-        pattern_scale_y: Var[float | int] | float | int | None = None,
-        pattern_refresh_interval: Var[float | int] | float | int | None = None,
-        pattern_alpha: Var[float | int] | float | int | None = None,
+        opacity: Var[float | int] | float | int | None = None,
+        size: Var[float | int] | float | int | None = None,
+        fps: Var[float | int] | float | int | None = None,
+        blend_mode: Literal["difference", "multiply", "normal", "overlay", "screen", "soft-light"]
+        | Var[Literal["difference", "multiply", "normal", "overlay", "screen", "soft-light"]]
+        | None = None,
+        contrast: Var[float | int] | float | int | None = None,
+        colored: Var[bool] | bool | None = None,
+        dust: Var[float | int] | float | int | None = None,
+        scratches: Var[float | int] | float | int | None = None,
+        scanlines: Var[float | int] | float | int | None = None,
+        flicker: Var[float | int] | float | int | None = None,
+        fixed: Var[bool] | bool | None = None,
+        z_index: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1288,9 +1489,35 @@ class OrbitImages(ReactBitsComponent):
     def create(
         cls,
         *children,
-        images: Var[list[str]] | list[str] | None = None,
+        images: Var[list[Any]] | list[Any] | None = None,
         alt_prefix: Var[str] | str | None = None,
-        shape: Var[str] | str | None = None,
+        shape: Literal[
+            "circle",
+            "custom",
+            "ellipse",
+            "heart",
+            "infinity",
+            "rectangle",
+            "square",
+            "star",
+            "triangle",
+            "wave",
+        ]
+        | Var[
+            Literal[
+                "circle",
+                "custom",
+                "ellipse",
+                "heart",
+                "infinity",
+                "rectangle",
+                "square",
+                "star",
+                "triangle",
+                "wave",
+            ]
+        ]
+        | None = None,
         custom_path: Var[str] | str | None = None,
         base_width: Var[float | int] | float | int | None = None,
         radius_x: Var[float | int] | float | int | None = None,
@@ -1301,17 +1528,28 @@ class OrbitImages(ReactBitsComponent):
         rotation: Var[float | int] | float | int | None = None,
         duration: Var[float | int] | float | int | None = None,
         item_size: Var[float | int] | float | int | None = None,
-        direction: Var[str] | str | None = None,
+        direction: Literal["normal", "reverse"] | Var[Literal["normal", "reverse"]] | None = None,
         fill: Var[bool] | bool | None = None,
         width: Var[float | int | str] | float | int | str | None = None,
         height: Var[float | int | str] | float | int | str | None = None,
         show_path: Var[bool] | bool | None = None,
         path_color: Var[str] | str | None = None,
         path_width: Var[float | int] | float | int | None = None,
-        easing: Var[str] | str | None = None,
+        path_dash: Var[float | int] | float | int | None = None,
+        easing: Literal["easeIn", "easeInOut", "easeOut", "linear"]
+        | Var[Literal["easeIn", "easeInOut", "easeOut", "linear"]]
+        | None = None,
         paused: Var[bool] | bool | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        item_radius: Var[float | int | str] | float | int | str | None = None,
+        shadow: Var[float | int] | float | int | None = None,
+        hover_scale: Var[float | int] | float | int | None = None,
+        hover_speed: Var[float | int] | float | int | None = None,
+        draggable: Var[bool] | bool | None = None,
+        click_to_front: Var[bool] | bool | None = None,
+        align_to_path: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         center_content: Component | Var[Component | str] | str | None = None,
-        responsive: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1327,6 +1565,7 @@ class OrbitImages(ReactBitsComponent):
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_focus: Optional[EventType[()]] = None,
+        on_item_click: Optional[EventType[Any]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
         on_mouse_enter: Optional[EventType[()]] = None,
@@ -1350,20 +1589,13 @@ class PixelSwap(ReactBitsComponent):
         *children,
         first_content: Component | Var[Component | str] | str | None = None,
         second_content: Component | Var[Component | str] | str | None = None,
-        pixel_size: Var[float | int] | float | int | None = None,
-        gap: Var[float | int] | float | int | None = None,
-        pixel_radius: Var[float | int] | float | int | None = None,
-        pixel_spin: Var[float | int] | float | int | None = None,
-        pixel_scale: Var[float | int] | float | int | None = None,
-        fade: Var[bool] | bool | None = None,
-        duration: Var[float | int] | float | int | None = None,
-        pixel_duration: Var[float | int] | float | int | None = None,
         pattern: Literal[
             "bottom-to-top",
             "center",
             "diagonal",
             "edges",
             "left-to-right",
+            "pointer",
             "random",
             "right-to-left",
             "spiral",
@@ -1376,6 +1608,7 @@ class PixelSwap(ReactBitsComponent):
                 "diagonal",
                 "edges",
                 "left-to-right",
+                "pointer",
                 "random",
                 "right-to-left",
                 "spiral",
@@ -1383,11 +1616,19 @@ class PixelSwap(ReactBitsComponent):
             ]
         ]
         | None = None,
+        pixel_size: Var[float | int] | float | int | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        pixel_radius: Var[float | int] | float | int | None = None,
+        pixel_scale: Var[float | int] | float | int | None = None,
+        pixel_spin: Var[float | int] | float | int | None = None,
+        duration: Var[float | int] | float | int | None = None,
+        pixel_duration: Var[float | int] | float | int | None = None,
         randomness: Var[float | int] | float | int | None = None,
-        easing: Var[str] | str | None = None,
-        trigger: Literal["click", "hover", "manual"]
-        | Var[Literal["click", "hover", "manual"]]
+        bounce: Var[float | int] | float | int | None = None,
+        trigger: Literal["click", "hover", "none"]
+        | Var[Literal["click", "hover", "none"]]
         | None = None,
+        intro: Var[bool] | bool | None = None,
         initial_active: Var[bool] | bool | None = None,
         active: Var[bool] | bool | None = None,
         aspect_ratio: Var[str] | str | None = None,
@@ -1434,10 +1675,24 @@ class PixelTrail(ReactBitsComponent):
         max_age: Var[float | int] | float | int | None = None,
         interpolate: Var[float | int] | float | int | None = None,
         easing_function: Any | Var[Any] | None = None,
-        canvas_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        gl_props: Var[dict[str, Any]] | dict[str, Any] | None = None,
         gooey_filter: Var[dict[str, Any]] | dict[str, Any] | None = None,
         color: Var[str] | str | None = None,
+        trail_color: Var[str] | str | None = None,
+        shape: Literal["circle", "diamond", "square"]
+        | Var[Literal["circle", "diamond", "square"]]
+        | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        decay: Literal["dither", "fade", "shrink"]
+        | Var[Literal["dither", "fade", "shrink"]]
+        | None = None,
+        flow: Var[float | int] | float | int | None = None,
+        gravity: Var[float | int] | float | int | None = None,
+        sparkle: Var[float | int] | float | int | None = None,
+        click_burst: Var[bool] | bool | None = None,
+        shine: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        image_src: Var[str] | str | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1478,7 +1733,22 @@ class PixelTransition(ReactBitsComponent):
         second_content: Component | Var[Component | str] | str | None = None,
         grid_size: Var[float | int] | float | int | None = None,
         pixel_color: Var[str] | str | None = None,
+        mosaic: Var[float | int] | float | int | None = None,
         animation_step_duration: Var[float | int] | float | int | None = None,
+        pattern: Literal["dither", "random", "ripple", "wipe"]
+        | Var[Literal["dither", "random", "ripple", "wipe"]]
+        | None = None,
+        randomness: Var[float | int] | float | int | None = None,
+        pixel_animation: Literal["fade", "grow", "pop"]
+        | Var[Literal["fade", "grow", "pop"]]
+        | None = None,
+        pixel_shape: Literal["circle", "rounded", "square"]
+        | Var[Literal["circle", "rounded", "square"]]
+        | None = None,
+        gap: Var[float | int] | float | int | None = None,
+        fps: Var[float | int] | float | int | None = None,
+        trigger: Literal["click", "hover"] | Var[Literal["click", "hover"]] | None = None,
+        active: Var[bool] | bool | None = None,
         once: Var[bool] | bool | None = None,
         aspect_ratio: Var[str] | str | None = None,
         style: Sequence[Mapping[str, Any]]
@@ -1491,6 +1761,7 @@ class PixelTransition(ReactBitsComponent):
         ref: Var | None = None,
         class_name: Any | None = None,
         custom_attrs: dict[str, Any | Var] | None = None,
+        on_active_change: Optional[EventType[Any]] = None,
         on_blur: Optional[EventType[()]] = None,
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
@@ -1518,17 +1789,20 @@ class Ribbons(ReactBitsComponent):
         cls,
         *children,
         colors: Var[list[str]] | list[str] | None = None,
-        base_spring: Var[float | int] | float | int | None = None,
-        base_friction: Var[float | int] | float | int | None = None,
-        base_thickness: Var[float | int] | float | int | None = None,
-        offset_factor: Var[float | int] | float | int | None = None,
-        max_age: Var[float | int] | float | int | None = None,
-        point_count: Var[float | int] | float | int | None = None,
-        speed_multiplier: Var[float | int] | float | int | None = None,
-        enable_fade: Var[bool] | bool | None = None,
-        enable_shader_effect: Var[bool] | bool | None = None,
-        effect_amplitude: Var[float | int] | float | int | None = None,
-        background_color: Var[list[float | int]] | list[float | int] | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        length: Var[float | int] | float | int | None = None,
+        spread: Var[float | int] | float | int | None = None,
+        stiffness: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        shape: Literal["comet", "even", "lens"]
+        | Var[Literal["comet", "even", "lens"]]
+        | None = None,
+        wave: Var[float | int] | float | int | None = None,
+        softness: Var[float | int] | float | int | None = None,
+        fade: Var[bool] | bool | None = None,
+        opacity: Var[float | int] | float | int | None = None,
+        background_color: Var[str] | str | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1676,13 +1950,26 @@ class ShapeBlur(ReactBitsComponent):
     def create(
         cls,
         *children,
-        variation: Var[float | int] | float | int | None = None,
-        pixel_ratio_prop: Var[float | int] | float | int | None = None,
-        shape_size: Var[float | int] | float | int | None = None,
+        shape: Literal["circle", "polygon", "rect", "star"]
+        | Var[Literal["circle", "polygon", "rect", "star"]]
+        | None = None,
+        src: Var[str] | str | None = None,
+        sides: Var[float | int] | float | int | None = None,
+        size: Var[float | int] | float | int | None = None,
         roundness: Var[float | int] | float | int | None = None,
-        border_size: Var[float | int] | float | int | None = None,
-        circle_size: Var[float | int] | float | int | None = None,
-        circle_edge: Var[float | int] | float | int | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        fill: Var[bool] | bool | None = None,
+        echoes: Var[float | int] | float | int | None = None,
+        spacing: Var[float | int] | float | int | None = None,
+        color: Var[str] | str | None = None,
+        blur: Var[float | int] | float | int | None = None,
+        lens_size: Var[float | int] | float | int | None = None,
+        lens_softness: Var[float | int] | float | int | None = None,
+        focus: Var[bool] | bool | None = None,
+        chroma: Var[float | int] | float | int | None = None,
+        rotation: Var[float | int] | float | int | None = None,
+        spin: Var[float | int] | float | int | None = None,
+        idle: Var[bool] | bool | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1719,22 +2006,25 @@ class SplashCursor(ReactBitsComponent):
     def create(
         cls,
         *children,
-        sim_resolution: Var[float | int] | float | int | None = None,
-        dye_resolution: Var[float | int] | float | int | None = None,
-        capture_resolution: Var[float | int] | float | int | None = None,
-        density_dissipation: Var[float | int] | float | int | None = None,
-        velocity_dissipation: Var[float | int] | float | int | None = None,
-        pressure: Var[float | int] | float | int | None = None,
-        pressure_iterations: Var[float | int] | float | int | None = None,
-        curl: Var[float | int] | float | int | None = None,
-        splat_radius: Var[float | int] | float | int | None = None,
-        splat_force: Var[float | int] | float | int | None = None,
-        shading: Var[bool] | bool | None = None,
-        color_update_speed: Var[float | int] | float | int | None = None,
-        back_color: Var[dict[str, Any]] | dict[str, Any] | None = None,
-        transparent: Var[bool] | bool | None = None,
-        rainbow_mode: Var[bool] | bool | None = None,
-        color: Var[str] | str | None = None,
+        colors: Var[list[str]] | list[str] | None = None,
+        rainbow: Var[bool] | bool | None = None,
+        color_speed: Var[float | int] | float | int | None = None,
+        intensity: Var[float | int] | float | int | None = None,
+        size: Var[float | int] | float | int | None = None,
+        force: Var[float | int] | float | int | None = None,
+        swirl: Var[float | int] | float | int | None = None,
+        trail: Var[float | int] | float | int | None = None,
+        momentum: Var[float | int] | float | int | None = None,
+        shading: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        quality: Literal["high", "low", "medium"]
+        | Var[Literal["high", "low", "medium"]]
+        | None = None,
+        click_splash: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        contained: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        z_index: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1771,10 +2061,24 @@ class StarBorder(ReactBitsComponent):
     def create(
         cls,
         *children,
-        as_: Var[str] | str | None = None,
+        as_: Component | Var[Component | str] | str | None = None,
         color: Var[str] | str | None = None,
-        speed: Var[str] | str | None = None,
+        trail_color: Var[str] | str | None = None,
+        duration: Var[float | int] | float | int | None = None,
         thickness: Var[float | int] | float | int | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        trail_length: Var[float | int] | float | int | None = None,
+        stars: Var[float | int] | float | int | None = None,
+        glow: Var[float | int] | float | int | None = None,
+        sparkle: Var[bool] | bool | None = None,
+        direction: Literal["clockwise", "counterclockwise"]
+        | Var[Literal["clockwise", "counterclockwise"]]
+        | None = None,
+        hover: Literal["brighten", "lap", "none", "reveal"]
+        | Var[Literal["brighten", "lap", "none", "reveal"]]
+        | None = None,
+        click_pulse: Var[bool] | bool | None = None,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
         background_color: Var[str] | str | None = None,
         text_color: Var[str] | str | None = None,
         border_color: Var[str] | str | None = None,
@@ -1815,16 +2119,26 @@ class StickerPeel(ReactBitsComponent):
         cls,
         *children,
         image_src: Var[str] | str | None = None,
+        width: Var[float | int] | float | int | None = None,
         rotate: Var[float | int] | float | int | None = None,
+        peel_direction: Var[float | int] | float | int | None = None,
         peel_back_hover_pct: Var[float | int] | float | int | None = None,
         peel_back_active_pct: Var[float | int] | float | int | None = None,
-        peel_easing: Var[str] | str | None = None,
-        peel_hover_easing: Var[str] | str | None = None,
-        width: Var[float | int] | float | int | None = None,
-        shadow_intensity: Var[float | int] | float | int | None = None,
+        curl_radius: Var[float | int] | float | int | None = None,
+        finish: Literal["gloss", "holo", "matte"]
+        | Var[Literal["gloss", "holo", "matte"]]
+        | None = None,
+        back_color: Var[str] | str | None = None,
         lighting_intensity: Var[float | int] | float | int | None = None,
-        initial_position: Var[dict[str, Any] | str] | dict[str, Any] | str | None = None,
-        peel_direction: Var[float | int] | float | int | None = None,
+        shadow_intensity: Var[float | int] | float | int | None = None,
+        follow_pointer: Var[bool] | bool | None = None,
+        draggable: Var[bool] | bool | None = None,
+        swing: Var[float | int] | float | int | None = None,
+        friction: Var[float | int] | float | int | None = None,
+        bounce: Var[float | int] | float | int | None = None,
+        intro: Var[bool] | bool | None = None,
+        initial_position: Var[str] | str | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1839,6 +2153,8 @@ class StickerPeel(ReactBitsComponent):
         on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
         on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_drag_end: Optional[EventType[()]] = None,
+        on_drag_start: Optional[EventType[()]] = None,
         on_focus: Optional[EventType[()]] = None,
         on_mount: Optional[EventType[()]] = None,
         on_mouse_down: Optional[EventType[()]] = None,
@@ -1879,6 +2195,15 @@ class Strands(ReactBitsComponent):
         refraction: Var[float | int] | float | int | None = None,
         dispersion: Var[float | int] | float | int | None = None,
         glass_size: Var[float | int] | float | int | None = None,
+        rim: Var[float | int] | float | int | None = None,
+        energy: Var[float | int] | float | int | None = None,
+        listening: Var[bool] | bool | None = None,
+        level: Var[float | int] | float | int | None = None,
+        interactive: Var[bool] | bool | None = None,
+        click_pulse: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
+        light_mode: Var[bool] | bool | None = None,
+        max_device_pixel_ratio: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1915,20 +2240,32 @@ class SwarmCursor(ReactBitsComponent):
     def create(
         cls,
         *children,
-        color: Var[str] | str | None = None,
-        accent_color: Var[str] | str | None = None,
         count: Var[float | int] | float | int | None = None,
         size: Var[float | int] | float | int | None = None,
-        merge: Var[float | int] | float | int | None = None,
-        glow: Var[float | int] | float | int | None = None,
-        opacity: Var[float | int] | float | int | None = None,
+        shape: Literal["dot", "square", "streak"]
+        | Var[Literal["dot", "square", "streak"]]
+        | None = None,
+        color: Var[str] | str | None = None,
+        accent_color: Var[str] | str | None = None,
         spread: Var[float | int] | float | int | None = None,
-        separation: Var[float | int] | float | int | None = None,
         speed: Var[float | int] | float | int | None = None,
-        wander: Var[float | int] | float | int | None = None,
+        swirl: Var[float | int] | float | int | None = None,
+        tail: Var[float | int] | float | int | None = None,
         trail: Var[float | int] | float | int | None = None,
-        scatter_on_click: Var[bool] | bool | None = None,
+        wander: Var[float | int] | float | int | None = None,
+        depth: Var[float | int] | float | int | None = None,
+        targets: Var[str] | str | None = None,
+        idle: Literal["gather", "hide", "roam"]
+        | Var[Literal["gather", "hide", "roam"]]
+        | None = None,
+        click_effect: Literal["burst", "none", "pulse"]
+        | Var[Literal["burst", "none", "pulse"]]
+        | None = None,
+        hide_cursor: Var[bool] | bool | None = None,
+        intro: Var[bool] | bool | None = None,
         enabled: Var[bool] | bool | None = None,
+        light_mode: Var[bool] | bool | None = None,
+        dpr: Var[float | int] | float | int | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -1966,12 +2303,22 @@ class TargetCursor(ReactBitsComponent):
         cls,
         *children,
         target_selector: Var[str] | str | None = None,
-        spin_duration: Var[float | int] | float | int | None = None,
-        hide_default_cursor: Var[bool] | bool | None = None,
-        hover_duration: Var[float | int] | float | int | None = None,
-        parallax_on: Var[bool] | bool | None = None,
         cursor_color: Var[str] | str | None = None,
         cursor_color_on_target: Var[str] | str | None = None,
+        spin_duration: Var[float | int] | float | int | None = None,
+        hover_duration: Var[float | int] | float | int | None = None,
+        parallax_on: Var[bool] | bool | None = None,
+        hide_default_cursor: Var[bool] | bool | None = None,
+        size: Var[float | int] | float | int | None = None,
+        corner_size: Var[float | int] | float | int | None = None,
+        thickness: Var[float | int] | float | int | None = None,
+        padding: Var[float | int] | float | int | None = None,
+        match_radius: Var[bool] | bool | None = None,
+        dot_size: Var[float | int] | float | int | None = None,
+        blend_mode: Var[str] | str | None = None,
+        show_label: Var[bool] | bool | None = None,
+        click_effect: Var[bool] | bool | None = None,
+        container: Any | Var[Any] | None = None,
         style: Sequence[Mapping[str, Any]]
         | Mapping[str, Any]
         | Var[Mapping[str, Any]]
@@ -2004,14 +2351,16 @@ class TargetCursor(ReactBitsComponent):
         ...
 
 animated_content = AnimatedContent.create
-antigravity = Antigravity.create
 blob_cursor = BlobCursor.create
 click_spark = ClickSpark.create
 crosshair = Crosshair.create
+crystalized_ball = CrystalizedBall.create
 cubes = Cubes.create
 cursor_grid = CursorGrid.create
+dither_veil = DitherVeil.create
 elastic_mesh = ElasticMesh.create
 electric_border = ElectricBorder.create
+electric_logo = ElectricLogo.create
 fade_content = FadeContent.create
 ghost_cursor = GhostCursor.create
 glare_hover = GlareHover.create
@@ -2021,9 +2370,7 @@ halftone_reveal = HalftoneReveal.create
 image_trail = ImageTrail.create
 laser_flow = LaserFlow.create
 logo_loop = LogoLoop.create
-magic_rings = MagicRings.create
 magnet = Magnet.create
-magnet_lines = MagnetLines.create
 meta_balls = MetaBalls.create
 metallic_paint = MetallicPaint.create
 noise = Noise.create

@@ -2,6 +2,7 @@
 
 * ``/``              landing page built only with React Bits components
 * ``/playground``    React Bits props and events bound to Reflex state
+* ``/whats-new``     the components React Bits 2.0 added, and what changed
 * ``/category/<x>``  every component of a category
 * ``/c/<name>``      live preview, event log, Python usage and props of one component
 """
@@ -12,7 +13,7 @@ import reflex as rx
 import reflex_reactbits as rb
 
 from .examples import build_preview, preview_height, python_source
-from .state import EventLog, Nav, Playground
+from .state import EventLog, Nav, Playground, ShredderDemo
 
 CATEGORY_INFO = {
     "TextAnimations": ("text-animations", "Text Animations", "type"),
@@ -22,6 +23,14 @@ CATEGORY_INFO = {
     "Micro": ("micro", "Micro Interactions", "mouse-pointer-click"),
 }
 ENTRIES = [e for e in rb.CATALOG if not e.get("sub")]
+SUBS = [e for e in rb.CATALOG if e.get("sub")]
+
+# What React Bits 2.0 (pinned in reflex_reactbits.source.PINNED_REF) changed.
+NEW_IN_2 = ["CircularCarousel", "CrystalizedBall", "DitherVeil", "ElectricLogo", "FlexCarousel", "FlipCard",
+            "FluxLines", "GradientASCII", "HoloCard", "MicroSlats", "PaperCrumple", "PatternWaves", "Shredder",
+            "TearTicket", "TechText"]
+MOVED_IN_2 = ["Antigravity", "MagicRings", "MagnetLines"]
+BY_NAME = {e["name"]: e for e in ENTRIES}
 
 
 def slug(entry: dict) -> str:
@@ -29,7 +38,8 @@ def slug(entry: dict) -> str:
 
 
 NAV_ITEMS = [
-    {"label": e["name"], "href": f"/c/{slug(e)}", "category": CATEGORY_INFO[e["category"]][1]}
+    {"label": e["name"], "href": f"/c/{slug(e)}", "category": CATEGORY_INFO[e["category"]][1],
+     "new": "new" if e["name"] in NEW_IN_2 else ""}
     for e in sorted(ENTRIES, key=lambda e: (list(CATEGORY_INFO).index(e["category"]), e["name"]))
 ]
 
@@ -70,6 +80,7 @@ def sidebar() -> rx.Component:
         ),
         nav_link("Home", "/", "house"),
         nav_link("Playground", "/playground", "sliders-horizontal"),
+        nav_link("What's new in 2.0", "/whats-new", "sparkle"),
         *[nav_link(title, f"/category/{s}", icon) for s, title, icon in CATEGORY_INFO.values()],
         rx.divider(),
         rx.input(
@@ -87,6 +98,7 @@ def sidebar() -> rx.Component:
                     lambda item: rx.link(
                         rx.hstack(
                             rx.text(item["label"], size="2"),
+                            rx.cond(item["new"] != "", rx.badge("2.0", size="1", color_scheme="grass", variant="soft")),
                             rx.spacer(),
                             rx.text(item["category"], size="1", color=rx.color("gray", 9), white_space="nowrap"),
                             width="100%",
@@ -162,7 +174,11 @@ def index() -> rx.Component:
                 position="absolute", inset="0",
             ),
             rx.vstack(
-                rx.badge(f"reflex-reactbits · {len(ENTRIES)} components + 4 sub-components", color_scheme="violet", size="2", variant="surface"),
+                rx.link(
+                    rx.badge(f"React Bits 2.0 · {len(ENTRIES)} components + {len(SUBS)} sub-components · see what's new",
+                             color_scheme="violet", size="2", variant="surface"),
+                    href="/whats-new", underline="none",
+                ),
                 rb.blur_text(text="React Bits, now in pure Python", delay=120, animate_by="words", direction="top",
                              class_name="hero-title"),
                 rb.shiny_text(text="Text animations, backgrounds, UI components and micro interactions for Reflex.",
@@ -194,7 +210,7 @@ def index() -> rx.Component:
                     align="center",
                     flex="1",
                 )
-                for n, suffix, label in ((len(ENTRIES), "", "React Bits components"), (4, "", "sub-components"),
+                for n, suffix, label in ((len(ENTRIES), "", "React Bits components"), (len(SUBS), "", "sub-components"),
                                          (5, "", "categories"), (0, "", "lines of JavaScript you write"))
             ],
             width="100%",
@@ -265,17 +281,22 @@ def playground() -> rx.Component:
                        height="220px", width="100%", position="relative", border_radius="12px", overflow="hidden", background="#060010"),
             ),
             panel(
-                "Hyperspeed presets",
-                rx.select(["one", "two", "three", "four", "five", "six"], value=Playground.preset, on_change=Playground.set_preset),
+                "Hyperspeed ← state",
+                rx.hstack(
+                    rx.select(["straight", "gentle", "winding", "hills", "racing", "deep"],
+                              value=Playground.curve, on_change=Playground.set_curve),
+                    rx.hstack(rx.switch(checked=Playground.boosting, on_change=Playground.set_boosting),
+                              rx.text("boost", size="2"), align="center", spacing="2"),
+                    rx.text("boosts: ", rx.code(Playground.boosts), size="2"),
+                    align="center", spacing="4",
+                ),
                 rx.box(
-                    rx.match(
-                        Playground.preset,
-                        *[(p, rb.hyperspeed(preset=p, key=p)) for p in ("one", "two", "three", "four", "five", "six")],
-                        rb.hyperspeed(preset="one"),
-                    ),
+                    rb.hyperspeed(curve=Playground.curve, boosting=Playground.boosting,
+                                  on_boost_start=Playground.on_boost_start),
                     height="220px", width="100%", position="relative", border_radius="12px", overflow="hidden",
                 ),
-                description="Click and hold inside to speed up.",
+                description="React Bits 2.0 morphs the road between curves and boosting is a prop driven by state. "
+                            "Click and hold inside to boost by hand: that fires on_boost_start on the backend.",
             ),
             panel(
                 "Micro interactions → state",
@@ -313,6 +334,75 @@ def playground() -> rx.Component:
             columns=rx.breakpoints(initial="1", lg="2"),
             spacing="4",
             width="100%",
+        ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# What's new in React Bits 2.0
+
+def new_component_card(entry: dict) -> rx.Component:
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.link(rx.heading(entry["name"], size="4"), href=f"/c/{slug(entry)}", underline="none", color=rx.color("gray", 12)),
+                rx.spacer(),
+                rx.badge(CATEGORY_INFO[entry["category"]][1], color_scheme="gray", variant="soft"),
+                width="100%", align="center",
+            ),
+            rx.text(entry["description"], size="2", color=rx.color("gray", 11)),
+            rx.box(
+                build_preview(entry),
+                class_name="preview-box preview-" + entry["category"].lower(),
+                height=preview_height(entry),
+                width="100%",
+            ),
+            rx.code(f"rb.{entry['factory']}()", size="1"),
+            spacing="2",
+            width="100%",
+        ),
+        width="100%",
+    )
+
+
+def whats_new() -> rx.Component:
+    return layout(
+        rx.hstack(rx.heading("What's new in React Bits 2.0", size="8"), rx.badge("reflex-reactbits 0.2.0", color_scheme="grass"),
+                  align="center", spacing="3", wrap="wrap"),
+        rx.text(
+            "React Bits 2.0 reworked most components, added new ones and dropped a lot of npm dependencies. "
+            "The wrappers are regenerated from it, so every prop below is the 2.0 one.",
+            color=rx.color("gray", 10), margin_bottom="1em",
+        ),
+        rx.grid(
+            panel("Reworked APIs", rx.text(
+                "Most components gained intro animations, themes and presets, and many props were renamed. "
+                "Unknown props are ignored by React, so check each component's Props tab when upgrading.", size="2")),
+            panel("Lighter installs", rx.text(
+                "lucide-react, react-icons, Chakra UI, react-router, postprocessing, lenis, maath, meshline, "
+                "face-api.js and @react-three/rapier are no longer needed; icons come from Hugeicons.", size="2")),
+            panel("Moved to Backgrounds", rx.hstack(
+                *[rx.link(rx.code(f"rb.{BY_NAME[n]['factory']}()"), href=f"/c/{slug(BY_NAME[n])}") for n in MOVED_IN_2],
+                wrap="wrap", spacing="2"),
+                rx.text("Same factory names, new source folder.", size="2")),
+            panel("New sub-components", rx.text(
+                "rb.tilted_card_layer() floats content above a TiltedCard; rb.step() takes title, description "
+                "and icon.", size="2")),
+            columns=rx.breakpoints(initial="1", md="2"),
+            spacing="4",
+            width="100%",
+            margin_bottom="1.5em",
+        ),
+        rx.heading(f"{len(NEW_IN_2)} new components", size="6", margin_bottom="0.5em"),
+        rx.grid(
+            *[new_component_card(BY_NAME[n]) for n in NEW_IN_2],
+            columns=rx.breakpoints(initial="1", lg="2"),
+            spacing="4",
+            width="100%",
+        ),
+        rx.cond(
+            ShredderDemo.shredded.length() > 0,
+            rx.text("Shredded on the backend: ", rx.code(ShredderDemo.shredded.join(", ")), size="2", margin_top="1em"),
         ),
     )
 
@@ -449,6 +539,8 @@ def component_page(entry: dict):
 app = rx.App(stylesheets=["/demo.css"])
 app.add_page(index, title="React Bits for Reflex")
 app.add_page(playground, route="/playground", title="Playground · React Bits for Reflex")
+app.add_page(whats_new, route="/whats-new", title="What's new in React Bits 2.0 · React Bits for Reflex",
+             on_load=EventLog.reset_page)
 for _cat, (_slug, _title, _icon) in CATEGORY_INFO.items():
     app.add_page(category_page(_cat), route=f"/category/{_slug}", title=f"{_title} · React Bits for Reflex")
 for _entry in ENTRIES:

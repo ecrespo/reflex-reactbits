@@ -30,7 +30,7 @@ def test_every_component_renders(entry):
 
 def test_catalog_counts():
     main = [e for e in rb.CATALOG if not e.get("sub")]
-    assert len(main) == 202
+    assert len(main) == 217
     assert {e["category"] for e in main} == {"TextAnimations", "Animations", "Components", "Backgrounds", "Micro"}
 
 
@@ -39,9 +39,12 @@ def test_props_are_camel_cased():
     assert "animateBy" in out and "stepDuration" in out
 
 
-def test_screaming_case_props_are_renamed():
-    out = str(rb.splash_cursor(sim_resolution=64, rainbow_mode=False))
-    assert "SIM_RESOLUTION:64" in out and "RAINBOW_MODE:false" in out
+def test_sub_components():
+    out = str(rb.stepper(rb.step(rx.text("A"), title="First", description="Intro")))
+    assert "ReactBitsStep" in out and 'title:"First"' in out
+    out = str(rb.tilted_card(rb.tilted_card_layer(rx.text("Up"), depth=28), image_src="/a.png"))
+    assert "ReactBitsTiltedCardLayer" in out and "depth:28" in out
+    assert "tiltedCardLayer" not in out and "TiltedCardLayer:" not in out
 
 
 def test_keyword_props():
@@ -69,9 +72,17 @@ def test_events_are_sanitized():
     assert "reactbitsSafe" in out
 
 
-def test_hyperspeed_preset():
-    out = str(rb.hyperspeed(preset="two"))
-    assert 'hyperspeedPresets["two"]' in out
+def test_components_moved_between_categories_keep_their_factory():
+    """React Bits 2.0 moved Antigravity, MagicRings and MagnetLines to Backgrounds."""
+    for name in ("Antigravity", "MagicRings", "MagnetLines"):
+        entry = rb.find_component(name)
+        assert entry["category"] == "Backgrounds"
+        assert getattr(rb, entry["class"]).library.startswith(f"$/public/reactbits/Backgrounds/{name}/")
+
+
+def test_new_2_0_components_are_exposed():
+    for factory in ("tech_text", "flip_card", "holo_card", "flux_lines", "shredder"):
+        assert callable(getattr(rb, factory))
 
 
 def test_find_component():
@@ -81,13 +92,11 @@ def test_find_component():
         rb.find_component("nope")
 
 
-def test_source_copy_and_patches(tmp_path, monkeypatch):
+def test_source_copy_never_overwrites(tmp_path, monkeypatch):
     monkeypatch.delenv("REFLEX_BACKEND_ONLY")
     repo = tmp_path / "react-bits" / "src" / "content" / "Components" / "PillNav"
     repo.mkdir(parents=True)
-    (repo / "PillNav.jsx").write_text(
-        "import { Link } from 'react-router-dom';\n<Link to={x}>a</Link>\n"
-    )
+    (repo / "PillNav.jsx").write_text("export default () => null;\n")
     (repo / "PillNav.css").write_text(".a{}")
     monkeypatch.setenv("REACTBITS_SOURCE_DIR", str(tmp_path / "react-bits"))
     assets = tmp_path / "app" / "assets"
@@ -95,8 +104,6 @@ def test_source_copy_and_patches(tmp_path, monkeypatch):
         "Components", "PillNav", ("PillNav.css", "PillNav.jsx"), assets_dir=assets
     )
     assert len(written) == 2
-    jsx = (assets / "reactbits" / "Components" / "PillNav" / "PillNav.jsx").read_text()
-    assert "react-router-dom" not in jsx and "<a href={x}>a</a>" in jsx
     # Existing (possibly user-edited) files are never overwritten.
     (assets / "reactbits" / "Components" / "PillNav" / "PillNav.css").write_text("/* mine */")
     assert source.ensure_component_source(
@@ -105,60 +112,48 @@ def test_source_copy_and_patches(tmp_path, monkeypatch):
     assert "mine" in (assets / "reactbits" / "Components" / "PillNav" / "PillNav.css").read_text()
 
 
-def test_hyperspeed_init_guarded_against_disposed_app(tmp_path, monkeypatch):
-    """Hyperspeed must not initialise an App whose WebGL context was released.
+@pytest.mark.parametrize(
+    "cleanup",
+    [
+        "gl.getExtension('WEBGL_lose_context')?.loseContext();",
+        "if (!gl.isContextLost()) gl.getExtension('WEBGL_lose_context')?.loseContext();",
+    ],
+)
+def test_canvas_components_keep_context_usable_across_remounts(tmp_path, monkeypatch, cleanup):
+    """A component must not force-lose the context of a <canvas> React owns.
 
-    ``loadAssets()`` is async and ``init`` runs in its ``.then``. If the
-    component unmounts meanwhile (React StrictMode remounts every effect in
-    dev), the cleanup already ran ``dispose()`` -> ``forceContextLoss()``, so
-    ``renderer.getContext().getContextAttributes()`` is null and postprocessing
-    throws "can't access property 'alpha'" when ``initPasses`` adds a pass.
+    StrictMode re-runs the effect on the same DOM node, and a canvas only ever
+    has one context: once lost, the next getContext() returns that lost context
+    and every shader fails to compile, so the component renders blank.
     """
     monkeypatch.delenv("REFLEX_BACKEND_ONLY")
-    repo = tmp_path / "react-bits" / "src" / "content" / "Backgrounds" / "Hyperspeed"
+    repo = tmp_path / "react-bits" / "src" / "content" / "Backgrounds" / "Aurora"
     repo.mkdir(parents=True)
-    # Verbatim shape of the upstream method the patch anchors on.
-    (repo / "Hyperspeed.jsx").write_text(
-        "      init() {\n        this.initPasses();\n        const options = this.options;\n      }\n"
-    )
-    (repo / "Hyperspeed.css").write_text(".a{}")
-    monkeypatch.setenv("REACTBITS_SOURCE_DIR", str(tmp_path / "react-bits"))
-    assets = tmp_path / "app" / "assets"
-    source.ensure_component_source(
-        "Backgrounds", "Hyperspeed", ("Hyperspeed.css", "Hyperspeed.jsx"), assets_dir=assets
-    )
-    jsx = (assets / "reactbits" / "Backgrounds" / "Hyperspeed" / "Hyperspeed.jsx").read_text()
-    assert "      init() {\n        if (this.disposed) return;\n        this.initPasses();" in jsx
-
-
-def test_ballpit_keeps_context_usable_across_remounts(tmp_path, monkeypatch):
-    """Ballpit must not force-lose the context of a canvas React owns.
-
-    Its <canvas> comes from a React ref, so React reuses that DOM node when the
-    component remounts. forceContextLoss() loses that canvas' context for good:
-    the next getContext() hands back the same lost context, and three.js throws
-    "Cannot read properties of null (reading 'precision')" in WebGLCapabilities.
-    """
-    monkeypatch.delenv("REFLEX_BACKEND_ONLY")
-    repo = tmp_path / "react-bits" / "src" / "content" / "Backgrounds" / "Ballpit"
-    repo.mkdir(parents=True)
-    (repo / "Ballpit.jsx").write_text(
-        "  dispose() {\n    this.renderer.dispose();\n    this.renderer.forceContextLoss();\n    this.isDisposed = true;\n  }\n"
+    # Verbatim shape of the upstream 2.0 effect cleanup.
+    (repo / "Aurora.jsx").write_text(
+        "    return () => {\n      gl.deleteProgram(program);\n"
+        f"      {cleanup}\n    }};\n"
+        "  return <canvas ref={canvasRef} />;\n"
     )
     monkeypatch.setenv("REACTBITS_SOURCE_DIR", str(tmp_path / "react-bits"))
     assets = tmp_path / "app" / "assets"
-    source.ensure_component_source("Backgrounds", "Ballpit", ("Ballpit.jsx",), assets_dir=assets)
-    jsx = (assets / "reactbits" / "Backgrounds" / "Ballpit" / "Ballpit.jsx").read_text()
-    assert "forceContextLoss" not in jsx
-    assert "this.renderer.dispose();" in jsx
+    source.ensure_component_source("Backgrounds", "Aurora", ("Aurora.jsx",), assets_dir=assets)
+    jsx = (assets / "reactbits" / "Backgrounds" / "Aurora" / "Aurora.jsx").read_text()
+    assert "loseContext" not in jsx
+    assert "gl.deleteProgram(program);" in jsx
 
 
-def test_reflective_card_declares_lucide_react():
-    """Its JSX imports lucide-react, which Reflex only installs for rx.icon."""
-    jsx_import_is_undeclared = "lucide-react" not in rb.ReflectiveCard.lib_dependencies
-    assert not jsx_import_is_undeclared
-    imports = rb.reflective_card()._get_all_imports()
-    assert any("lucide-react" in str(k) for k in imports)
+def test_offscreen_canvas_cleanup_is_left_alone(tmp_path, monkeypatch):
+    """Components that create their canvas in JS own it, so their cleanup stays."""
+    monkeypatch.delenv("REFLEX_BACKEND_ONLY")
+    repo = tmp_path / "react-bits" / "src" / "content" / "Backgrounds" / "MicroSlats"
+    repo.mkdir(parents=True)
+    code = "const c = document.createElement('canvas');\ngl.getExtension('WEBGL_lose_context')?.loseContext();\n"
+    (repo / "MicroSlats.jsx").write_text(code)
+    monkeypatch.setenv("REACTBITS_SOURCE_DIR", str(tmp_path / "react-bits"))
+    assets = tmp_path / "app" / "assets"
+    source.ensure_component_source("Backgrounds", "MicroSlats", ("MicroSlats.jsx",), assets_dir=assets)
+    assert (assets / "reactbits" / "Backgrounds" / "MicroSlats" / "MicroSlats.jsx").read_text() == code
 
 
 def test_cli_add_still_vendors_when_backend_only(tmp_path, monkeypatch):
@@ -212,3 +207,80 @@ console.log(JSON.stringify({
     assert result["repeatedInArray"] == [{"value": "day"}, {"value": "day"}]
     assert result["sharedAcrossKeys"] == {"a": {"theme": "dark"}, "b": {"theme": "dark"}}
     assert result["realCycle"] == {"name": "x"}
+
+
+def _fake_repo(tmp_path, monkeypatch, text="export default () => null;\n"):
+    repo = tmp_path / "react-bits" / "src" / "content" / "Backgrounds" / "Silk"
+    repo.mkdir(parents=True)
+    (repo / "Silk.jsx").write_text(text)
+    (repo / "Silk.css").write_text(".silk{}")
+    monkeypatch.setenv("REACTBITS_SOURCE_DIR", str(tmp_path / "react-bits"))
+    monkeypatch.delenv("REFLEX_BACKEND_ONLY")
+    monkeypatch.setattr(source, "_warned_stale", set())
+    return tmp_path / "app" / "assets"
+
+
+def test_copied_source_records_its_ref(tmp_path, monkeypatch):
+    assets = _fake_repo(tmp_path, monkeypatch)
+    source.ensure_component_source("Backgrounds", "Silk", ("Silk.css", "Silk.jsx"), assets_dir=assets)
+    assert source.vendored_ref("Backgrounds", "Silk", assets) == source.PINNED_REF
+
+
+def test_source_from_an_older_release_is_kept_but_reported(tmp_path, monkeypatch, caplog):
+    """Upgrading must not overwrite user files, nor hide that they are 1.x sources.
+
+    A 1.x copy of Silk had only Silk.jsx; 2.0 adds Silk.css. Writing the new file
+    must not stamp the directory as current while the old JSX is still there.
+    """
+    assets = _fake_repo(tmp_path, monkeypatch)
+    old = assets / "reactbits" / "Backgrounds" / "Silk"
+    old.mkdir(parents=True)
+    (old / "Silk.jsx").write_text("// 1.x\n")
+    with caplog.at_level("WARNING", logger="reflex_reactbits"):
+        written = source.ensure_component_source(
+            "Backgrounds", "Silk", ("Silk.css", "Silk.jsx"), assets_dir=assets
+        )
+    assert [p.name for p in written] == ["Silk.css"]
+    assert (old / "Silk.jsx").read_text() == "// 1.x\n"
+    assert source.vendored_ref("Backgrounds", "Silk", assets) is None
+    assert "reactbits add Silk --force" in caplog.text
+
+    source.ensure_component_source(
+        "Backgrounds", "Silk", ("Silk.css", "Silk.jsx"), assets_dir=assets, force=True
+    )
+    assert (old / "Silk.jsx").read_text() == "export default () => null;\n"
+    assert source.vendored_ref("Backgrounds", "Silk", assets) == source.PINNED_REF
+
+
+def test_cli_add_reports_stale_copies(tmp_path, monkeypatch, capsys):
+    from reflex_reactbits import cli
+
+    assets = _fake_repo(tmp_path, monkeypatch)
+    (assets / "reactbits" / "Backgrounds" / "Silk").mkdir(parents=True)
+    (assets / "reactbits" / "Backgrounds" / "Silk" / "Silk.jsx").write_text("// 1.x\n")
+    assert cli.main(["add", "Silk", "--assets-dir", str(assets)]) == 0
+    assert "stale" in capsys.readouterr().out
+    assert cli.main(["add", "Silk", "--force", "--assets-dir", str(assets)]) == 0
+    assert "added" in capsys.readouterr().out
+
+
+def _plain(value):
+    """Docs examples mark JSX values as {"$jsx": ...}; a string is a valid ReactNode."""
+    if isinstance(value, dict) and value.get("$jsx"):
+        return value.get("text") or "x"
+    if isinstance(value, dict):
+        return {k: _plain(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_plain(v) for v in value]
+    return value
+
+
+@pytest.mark.parametrize("entry", [e for e in rb.CATALOG if e.get("example")], ids=lambda e: e["class"])
+def test_official_usage_example_is_accepted(entry):
+    """The wrapper types must accept every value the React Bits docs pass."""
+    props = _plain(entry["example"]["props"])
+    getattr(rb, entry["factory"])(**props)
+
+
+def test_literal_members_named_like_types_are_kept():
+    rb.scroll_float("Hi", effect="float")

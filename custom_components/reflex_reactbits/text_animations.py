@@ -10,15 +10,15 @@ from typing import Any, Literal
 
 import reflex as rx
 from reflex.event import no_args_event_spec
-from reflex_base.components.component import field
+from reflex_base.components.component import Component, field
 
 from .base import ReactBitsComponent, safe
 
-__all__ = ['ASCIIText', 'BlurText', 'CircularText', 'CountUp', 'CurvedLoop', 'DecryptedText', 'DepthText', 'EchoText', 'FallingText', 'FoldText', 'FuzzyText', 'GlitchText', 'GradientText', 'MaskedHeading', 'ParticleText', 'RotatingText', 'ScrambledText', 'ScrollFloat', 'ScrollReveal', 'ScrollVelocity', 'ShinyText', 'Shuffle', 'SplitFlapText', 'SplitText', 'StrokeText', 'TextCursor', 'TextLoop', 'TextPressure', 'TextType', 'TrueFocus', 'VariableProximity', 'WarpText', 'ascii_text', 'blur_text', 'circular_text', 'count_up', 'curved_loop', 'decrypted_text', 'depth_text', 'echo_text', 'falling_text', 'fold_text', 'fuzzy_text', 'glitch_text', 'gradient_text', 'masked_heading', 'particle_text', 'rotating_text', 'scrambled_text', 'scroll_float', 'scroll_reveal', 'scroll_velocity', 'shiny_text', 'shuffle', 'split_flap_text', 'split_text', 'stroke_text', 'text_cursor', 'text_loop', 'text_pressure', 'text_type', 'true_focus', 'variable_proximity', 'warp_text']
+__all__ = ['ASCIIText', 'BlurText', 'CircularText', 'CountUp', 'CurvedLoop', 'DecryptedText', 'DepthText', 'EchoText', 'FallingText', 'FoldText', 'FuzzyText', 'GlitchText', 'GradientText', 'MaskedHeading', 'ParticleText', 'RotatingText', 'ScrambledText', 'ScrollFloat', 'ScrollReveal', 'ScrollVelocity', 'ShinyText', 'Shuffle', 'SplitFlapText', 'SplitText', 'StrokeText', 'TechText', 'TextCursor', 'TextLoop', 'TextPressure', 'TextType', 'TrueFocus', 'VariableProximity', 'WarpText', 'ascii_text', 'blur_text', 'circular_text', 'count_up', 'curved_loop', 'decrypted_text', 'depth_text', 'echo_text', 'falling_text', 'fold_text', 'fuzzy_text', 'glitch_text', 'gradient_text', 'masked_heading', 'particle_text', 'rotating_text', 'scrambled_text', 'scroll_float', 'scroll_reveal', 'scroll_velocity', 'shiny_text', 'shuffle', 'split_flap_text', 'split_text', 'stroke_text', 'tech_text', 'text_cursor', 'text_loop', 'text_pressure', 'text_type', 'true_focus', 'variable_proximity', 'warp_text']
 
 
 class ASCIIText(ReactBitsComponent):
-    """Renders text with an animated ASCII background for a retro feel.
+    """Waving ASCII text that tilts toward the pointer, scrambles on hover and ripples on click.
 
     Docs: https://reactbits.dev/text-animations/ascii-text
     """
@@ -29,25 +29,66 @@ class ASCIIText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ASCIIText"
     _rb_files = ('ASCIIText.jsx',)
-    lib_dependencies: list[str] = ['three@0.180.0']
 
     text: rx.Var[str] = field(
-        doc="The text displayed on the plane in the ASCII scene. Default: 'David!'."
+        doc="Text rendered in ASCII. Default: 'Hey!'."
     )
     ascii_font_size: rx.Var[int | float] = field(
-        doc="Size of the ASCII glyphs in the overlay. Default: 8."
+        doc="Height of each character cell in pixels. Smaller cells give finer detail. Default: 8."
     )
-    text_font_size: rx.Var[int | float] = field(
-        doc="Pixel size for the text that's drawn onto the plane texture. Default: 200."
+    charset: rx.Var[str] = field(
+        doc="Characters from darkest to brightest. Any string works, including Unicode blocks. Default: CHARSET."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Font for the text and the characters. Default: FONT."
+    )
+    font_weight: rx.Var[int | float] = field(
+        doc="Weight of the rendered text. Default: 600."
     )
     text_color: rx.Var[str] = field(
-        doc="The color of the text drawn onto the plane texture. Default: '#fdf9f3'."
+        doc="Color of the text behind the characters. Default: '#fdf9f3'."
     )
-    plane_base_height: rx.Var[int | float] = field(
-        doc="How tall the plane is in 3D. The plane width is auto-based on text aspect. Default: 8."
+    colors: rx.Var[list[str]] = field(
+        doc="Gradient for the characters, from the center outward. Up to three colors. Default: ['#ff6188', '#fc9867', '#ffd866']."
     )
-    enable_waves: rx.Var[bool] = field(
-        doc="If false, disables the wavy text animation. Default: true."
+    text_scale: rx.Var[int | float] = field(
+        doc="Size of the text relative to the container. Default: 1."
+    )
+    blocks: rx.Var[int | float] = field(
+        doc="Opacity of the colored pixel blocks under the characters, from 0 to 1. Default: 0.9."
+    )
+    waves: rx.Var[int | float] = field(
+        doc="Strength of the wavy motion. 0 keeps the text flat. Default: 1."
+    )
+    wave_speed: rx.Var[int | float] = field(
+        doc="Speed of the wavy motion. Default: 1."
+    )
+    chroma: rx.Var[int | float] = field(
+        doc="Amount of color fringing around the letters. Default: 1."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="How far the text turns toward the pointer. Default: 1."
+    )
+    hue_shift: rx.Var[int | float] = field(
+        doc="Rotates the hue as the pointer circles the text. 0 keeps the colors fixed. Default: 1."
+    )
+    scramble: rx.Var[int | float] = field(
+        doc="Size and strength of the glitchy scramble under the pointer, from 0 to 1. Default: 0.6."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Sends a ring of characters across the canvas from where you click. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Decodes the text out of random characters on load. Default: true."
+    )
+    idle: rx.Var[bool] = field(
+        doc="Sways the text gently when nobody interacts. Default: true."
+    )
+    interactive: rx.Var[bool] = field(
+        doc="Reacts to the pointer with tilt, hue, scramble and ripples. Default: true."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Light inverts the colors so the effect works on white pages. Default: 'dark'."
     )
 
 
@@ -71,11 +112,11 @@ class BlurText(ReactBitsComponent):
     delay: rx.Var[int | float] = field(
         doc="Delay between animations for each word/letter (in ms). Default: 200."
     )
-    animate_by: rx.Var[str] = field(
-        doc="Determines whether to animate by 'words' or 'letters'. Default: 'words'."
+    animate_by: rx.Var[Literal["words", "letters"]] = field(
+        doc="Whether each word or each letter comes into focus on its own. Default: 'words'."
     )
-    direction: rx.Var[str] = field(
-        doc="Direction from which the words/letters appear ('top' or 'bottom'). Default: 'top'."
+    direction: rx.Var[Literal["top", "bottom", "left", "right"]] = field(
+        doc="Side the words or letters move in from. Drift always glides sideways, from the right only when set to right. Default: 'top'."
     )
     threshold: rx.Var[int | float] = field(
         doc="Intersection threshold for triggering the animation. Default: 0.1."
@@ -83,20 +124,50 @@ class BlurText(ReactBitsComponent):
     root_margin: rx.Var[str] = field(
         doc="Root margin for the intersection observer. Default: '0px'."
     )
-    animation_from: rx.Var[Any] = field(
-        doc="The `animationFrom` prop."
+    animation_from: rx.Var[dict[str, Any]] = field(
+        doc="Custom starting keyframe. Replaces the effect, blur, distance and direction settings."
     )
-    animation_to: rx.Var[Any] = field(
-        doc="The `animationTo` prop."
+    animation_to: rx.Var[list[Any]] = field(
+        doc="Custom keyframes to animate through after animationFrom."
     )
-    easing: rx.Var[Any] = field(
-        doc="The `easing` prop. Default: t => t. Pass a JS function with rx.Var('(...) => ...')."
+    easing: rx.Var[list[Any]] = field(
+        doc="Motion easing applied to every step. Each effect uses its own tuned curves when this is left out. Default: -."
     )
     step_duration: rx.Var[int | float] = field(
-        doc="The time taken for each letter/word to animate (in seconds). Default: 0.35."
+        doc="The time taken for each step of the animation (in seconds). Default: 0.35."
+    )
+    blur: rx.Var[int | float] = field(
+        doc="How blurred each word or letter starts, in px. Default: 10."
+    )
+    distance: rx.Var[int | float] = field(
+        doc="How far each word or letter travels into place, in px. 0 keeps them still so they only come into focus. Default: 50."
+    )
+    effect: rx.Var[Literal["blur", "zoom", "tilt", "focus", "drift"]] = field(
+        doc="How each piece comes in. Blur slides in from a side, zoom shrinks down from large, tilt swings in on a slight 3D angle, focus sharpens in place like a camera focus pull and drift glides in sideways with a lean that relaxes. Default: 'blur'."
+    )
+    stagger_from: rx.Var[Literal["start", "center", "end", "random"]] = field(
+        doc="Where the stagger starts: the first piece, the middle, the last piece or a shuffled order. Default: 'start'."
+    )
+    trigger: rx.Var[Literal["view", "load", "hover", "click"]] = field(
+        doc="When the text comes in. View waits until it scrolls into view and load starts right away. Hover and click show the text and replay it each time it is hovered or clicked. Default: 'view'."
+    )
+    loop: rx.Var[bool] = field(
+        doc="Keeps replaying: the text holds, blurs back out and comes in again. Default: false."
+    )
+    loop_delay: rx.Var[int | float] = field(
+        doc="How long the text stays sharp before it blurs out again when looping, in seconds. Default: 2."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the text. Follows the surrounding text color by default. Default: \"currentColor\"."
+    )
+    from_color: rx.Var[str] = field(
+        doc="Color each word or letter starts in before it settles on the text color. Leave it out to keep one color. Default: -."
+    )
+    focus_on_hover: rx.Var[bool] = field(
+        doc="Hovering a word keeps it sharp while the other words soften and dim. Default: false."
     )
     on_animation_complete: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback function triggered when all animations complete."
+        doc="Called each time the text finishes coming in."
     )
 
 
@@ -115,13 +186,55 @@ class CircularText(ReactBitsComponent):
     lib_dependencies: list[str] = ['motion@12.23.21']
 
     text: rx.Var[str] = field(
-        doc="The text to display in a circular layout."
+        doc="The text laid out around the ring. End it with a separator for a seamless loop."
     )
     spin_duration: rx.Var[int | float] = field(
-        doc="The duration (in seconds) for one full rotation. Default: 20."
+        doc="Seconds for one full turn. 0 keeps the ring still until it is dragged. Default: 20."
     )
     on_hover: rx.Var[Literal["slowDown", "speedUp", "pause", "goBonkers"]] = field(
-        doc="Specifies the hover behavior variant. Options include 'slowDown', 'speedUp', 'pause', and 'goBonkers'. Default: 'speedUp'."
+        doc="What happens while the pointer is over the ring. It eases into the new speed and back out, and goBonkers also shrinks it a little. Default: 'speedUp'."
+    )
+    direction: rx.Var[Literal["clockwise", "counterclockwise"]] = field(
+        doc="Which way the ring turns. Default: 'clockwise'."
+    )
+    size: rx.Var[int | float] = field(
+        doc="Diameter of the ring, in px. Default: 200."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Size of the letters, in px. Default: 24."
+    )
+    font_weight: rx.Var[int | float] = field(
+        doc="Weight of the letters. Default: 900."
+    )
+    letter_spacing: rx.Var[int | float] = field(
+        doc="Extra space between letters, in em. Applies when fill is off. Default: 0."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the letters and center content. Leave empty to follow the surrounding text color."
+    )
+    start_angle: rx.Var[int | float] = field(
+        doc="Where the first letter sits, in degrees clockwise from the top. Default: 0."
+    )
+    fill: rx.Var[bool] = field(
+        doc="Spreads the letters evenly around the whole ring. Turn it off to keep natural letter spacing and leave a gap. Default: true."
+    )
+    repeat: rx.Var[int | float] = field(
+        doc="How many times the text repeats around the ring. With fill off, each copy gets its own gap. Default: 1."
+    )
+    ring: rx.Var[bool] = field(
+        doc="Draws a thin circle just inside the letters. Default: false."
+    )
+    ring_color: rx.Var[str] = field(
+        doc="Color of the inner circle. Leave empty to match the letters."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Leans the ring back in perspective, in degrees, so it orbits around the center content like a planet ring. Default: 0."
+    )
+    hover_tilt: rx.Var[int | float] = field(
+        doc="How far the ring tilts in 3D toward the pointer, in degrees. 0 turns the tilt off. Default: 0."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets people grab the ring and fling it. It coasts with inertia, then eases back to its cruise speed. Default: false."
     )
 
 
@@ -152,13 +265,37 @@ class CountUp(ReactBitsComponent):
         doc="Delay in seconds before the counting starts. Default: 0."
     )
     duration: rx.Var[int | float] = field(
-        doc="Duration of the count animation - based on the damping and stiffness configured inside the component. Default: 2."
+        doc="How long the count takes, in seconds. It lands on the final number right on time. Default: 2."
     )
     start_when: rx.Var[bool] = field(
         doc="A boolean to control whether the animation should start when the component is in view. It basically works like an if statement, if this is true, the count will start. Default: true."
     )
     separator: rx.Var[str] = field(
         doc="Character to use as a thousands separator in the displayed number."
+    )
+    prefix: rx.Var[str] = field(
+        doc="Text shown before the number, like a currency sign."
+    )
+    suffix: rx.Var[str] = field(
+        doc="Text shown after the number, like a percent sign or a unit."
+    )
+    mode: rx.Var[Literal["count", "roll"]] = field(
+        doc="Count swaps the digits as the value climbs. Roll turns every digit into a column that spins to its place like an odometer, staggered per column with a soft motion blur while it moves. Default: 'count'."
+    )
+    easing: rx.Var[Literal["easeOut", "linear", "expo", "spring"]] = field(
+        doc="Pace of the count. Spring overshoots slightly and settles on the final number. Default: 'easeOut'."
+    )
+    decimals: rx.Var[int | float] = field(
+        doc="Fixed number of decimals. When not set, it follows the decimals in from and to."
+    )
+    format: rx.Var[Literal["standard", "compact"]] = field(
+        doc="Compact shortens large numbers to 1.2K, 3.4M or 5.6B. Default: 'standard'."
+    )
+    trigger: rx.Var[Literal["view", "load"]] = field(
+        doc="View starts the count when the number scrolls into view, load starts it right away. Default: 'view'."
+    )
+    replay_on_hover: rx.Var[bool] = field(
+        doc="Replays the count on hover. In roll mode every column spins once more and lands on the same number. Default: false."
     )
     on_start: rx.EventHandler[no_args_event_spec] = field(
         doc="Callback function that is called when the count animation starts."
@@ -182,19 +319,52 @@ class CurvedLoop(ReactBitsComponent):
     _rb_files = ('CurvedLoop.css', 'CurvedLoop.jsx')
 
     marquee_text: rx.Var[str] = field(
-        doc="The text to display in the curved marquee."
+        doc="The text that loops along the path. Repeats are joined with a space."
     )
     speed: rx.Var[int | float] = field(
-        doc="Animation speed of the marquee text. Default: 2."
+        doc="How fast the text travels along the path. 0 keeps it still until dragged or scrolled. Default: 2."
     )
     curve_amount: rx.Var[int | float] = field(
-        doc="Amount of curve in the text path. Default: 400."
+        doc="How far the path bends. On the arc it is the dip at the middle (negative arches up), on the wave it sets the wave height. Default: 400."
     )
     direction: rx.Var[Literal["left", "right"]] = field(
-        doc="Initial direction of the marquee animation. Default: 'left'."
+        doc="Which way the text travels. On a circle, right turns clockwise. A drag flips it to the way it was thrown. Default: 'left'."
     )
     interactive: rx.Var[bool] = field(
-        doc="Whether the marquee can be dragged by the user. Default: true."
+        doc="Lets people drag the text and fling it. Rings follow the pointer around. It glides back to its normal speed afterwards. Default: true."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Eases the text to a stop while the pointer is over it. Default: false."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the text, or of its outline when outline is on. Follows the surrounding text color by default. Default: 'currentColor'."
+    )
+    edge_fade: rx.Var[int | float] = field(
+        doc="How much of each side fades out, from 0 to 1. At 1 only the middle stays fully visible. Default: 0."
+    )
+    shape: rx.Var[Literal["arc", "wave", "circle", "line"]] = field(
+        doc="The path the text travels on. Circle closes the loop into a ring that always fits a whole number of repeats. Default: 'arc'."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Letter size in px for a 1440px wide loop. The whole loop scales with its container. Default: 96."
+    )
+    font_weight: rx.Var[int | float | str] = field(
+        doc="Weight of the letters. Default: 700."
+    )
+    letter_spacing: rx.Var[int | float] = field(
+        doc="Extra space between letters in px, measured like fontSize. Default: 0."
+    )
+    outline: rx.Var[bool] = field(
+        doc="Draws the letters as outlines instead of solid text. Default: false."
+    )
+    separator: rx.Var[str] = field(
+        doc="A mark placed between repeats, such as \u2726 or /. Leave empty to join repeats with a space."
+    )
+    separator_color: rx.Var[str] = field(
+        doc="Paints the separator in its own solid color. Matches the text when left unset. Default: -."
+    )
+    scroll_boost: rx.Var[int | float] = field(
+        doc="How much page scrolling speeds the loop up for a moment before it eases back. 0 turns it off. Default: 0."
     )
 
 
@@ -213,37 +383,52 @@ class DecryptedText(ReactBitsComponent):
     lib_dependencies: list[str] = ['motion@12.23.21']
 
     text: rx.Var[str] = field(
-        doc="The text content to decrypt."
+        doc="The text to decrypt. Default: -."
     )
     speed: rx.Var[int | float] = field(
-        doc="Time in ms between each iteration. Default: 50."
+        doc="Time between steps, in ms. Default: 50."
     )
     max_iterations: rx.Var[int | float] = field(
-        doc="Max # of random iterations (non-sequential mode). Default: 10."
+        doc="How many steps the letters scramble before settling when not sequential. Also sets how long letters keep scrambling after the cursor passes with hoverRadius. Default: 10."
     )
     sequential: rx.Var[bool] = field(
-        doc="Whether to reveal one character at a time in sequence. Default: false."
+        doc="Reveals one letter per step instead of all at once. Default: false."
     )
-    reveal_direction: rx.Var[Literal["start", "end", "center"]] = field(
-        doc="From which position characters begin to reveal in sequential mode. Default: 'start'."
+    reveal_direction: rx.Var[Literal["start", "end", "center", "random"]] = field(
+        doc="Where the sequential reveal starts. Random uncovers the letters in a shuffled order. Default: 'start'."
     )
     use_original_chars_only: rx.Var[bool] = field(
-        doc="Restrict scrambling to only the characters already in the text. Default: false."
+        doc="Scrambles using only the letters already in the text. Default: false."
     )
     characters: rx.Var[str] = field(
-        doc="The `characters` prop. Default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$...."
+        doc="The pool of characters used while scrambling. Default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$...."
     )
     parent_class_name: rx.Var[str] = field(
-        doc="CSS class for the main characters container."
+        doc="Class names for the wrapper around all letters."
     )
     encrypted_class_name: rx.Var[str] = field(
-        doc="CSS class for encrypted characters."
+        doc="Class names for letters that are still scrambled."
     )
     animate_on: rx.Var[Literal["view", "hover", "inViewHover", "click"]] = field(
-        doc="Trigger scrambling on hover or scroll-into-view. Default: 'hover'."
+        doc="What starts the decryption. View and click start scrambled, so the real text never flashes first. Default: 'hover'."
     )
     click_mode: rx.Var[Literal["once", "toggle"]] = field(
-        doc="Controls click behavior; only applies when animateOn is \"click\". Default: 'once'."
+        doc="With click, decrypt once or toggle back and forth. Only applies when animateOn is 'click'. Default: 'once'."
+    )
+    effect: rx.Var[Literal["scramble", "flip", "fade"]] = field(
+        doc="How letters decode. Scramble swaps glyphs in place, flip rolls each glyph in vertically and lands the real letter with a soft bounce, fade keeps scrambled glyphs faint and brightens them as they resolve. Default: 'scramble'."
+    )
+    scramble_color: rx.Var[str] = field(
+        doc="Color of letters while they are scrambled. Each letter eases back to the text color as it decodes. Leave empty to keep the text color."
+    )
+    loop: rx.Var[bool] = field(
+        doc="After decrypting, holds, scrambles the text again and repeats. Pauses while off screen. Default: false."
+    )
+    loop_delay: rx.Var[int | float] = field(
+        doc="How long the decrypted text holds before scrambling again when looping, in ms. Default: 2000."
+    )
+    hover_radius: rx.Var[int | float] = field(
+        doc="With hover, only letters within this many px of the cursor scramble, fading out toward the edge, and they settle once it passes. 0 decrypts the whole text on hover. Default: 0."
     )
 
 
@@ -270,13 +455,16 @@ class DepthText(ReactBitsComponent):
         doc="Spacing in pixels between each layer of the extrusion. Default: 2.4."
     )
     face_color: rx.Var[str] = field(
-        doc="Color of the crisp front face of the text. Default: '#f8fafc'."
+        doc="Color of the crisp front face. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     depth_color: rx.Var[str] = field(
-        doc="Tint used for the back of the extrusion and its shadow. Default: '#7c3aed'."
+        doc="Tint the extrusion fades into toward the back. Default: '#7c3aed'."
+    )
+    gradient_depth: rx.Var[bool] = field(
+        doc="Paints the extrusion in the depth color right behind the face and fades it out to the background toward the back. Default: false."
     )
     tilt: rx.Var[int | float] = field(
-        doc="Maximum pointer-driven rotation in degrees. Default: 7.5."
+        doc="Resting angle and maximum pointer-driven rotation, in degrees. Default: 7.5."
     )
     pointer_tracking: rx.Var[bool] = field(
         doc="Enables smoothed pointer parallax on fine pointer devices. Default: true."
@@ -293,6 +481,12 @@ class DepthText(ReactBitsComponent):
     orbit_speed: rx.Var[int | float] = field(
         doc="Speed of the fallback orbit in cycles per second. Default: 0.35."
     )
+    hover_push: rx.Var[int | float] = field(
+        doc="How far hovering presses the text into the page, from 0 to 1. The extrusion compresses on a spring, pressing pushes a little deeper and releasing bounces back. 0 turns it off. Default: 0."
+    )
+    float_: rx.Var[bool] = field(
+        doc="Lets the text bob and sway gently while it is not hovered. Default: false."
+    )
     font_size: rx.Var[str] = field(
         doc="CSS font-size value for the display word. Default: 'clamp(3rem, 12vw, 7rem)'."
     )
@@ -300,7 +494,13 @@ class DepthText(ReactBitsComponent):
         doc="Font weight used for every layer. Default: 900."
     )
     shadow: rx.Var[bool] = field(
-        doc="Adds a soft colored drop shadow to the front face. Default: true."
+        doc="Casts a soft drop shadow behind the extrusion. Default: true."
+    )
+    outline: rx.Var[bool] = field(
+        doc="Draws the extrusion as stacked outlines instead of solid layers. Default: false."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Grows the extrusion out from the flat face on mount. Default: true."
     )
 
 
@@ -318,54 +518,69 @@ class EchoText(ReactBitsComponent):
     _rb_files = ('EchoText.css', 'EchoText.jsx')
 
     text: rx.Var[str] = field(
-        doc="Text rendered by the crisp front copy and every echo layer. Default: 'Motion Echo'."
+        doc="Text rendered by the crisp front copy and every echo. Default: 'Motion Echo'."
     )
     echoes: rx.Var[int | float] = field(
-        doc="Number of ghost copies behind the front text. Default: 12."
+        doc="Number of ghost copies behind the front text, up to 24. Default: 12."
     )
     lag: rx.Var[int | float] = field(
-        doc="How slowly deeper echoes chase the current target. Default: 0.24."
+        doc="How slowly deeper echoes catch up with the text, and how far apart they spread along the auto trail. Default: 0.24."
     )
     offset: rx.Var[int | float] = field(
-        doc="Pixel travel used by the entrance spread and pointer response. Default: 36."
+        doc="How far the echoes spread on entrance, how far the text leans toward the cursor and how wide the drift and click burst reach, in px. Default: 36."
     )
     direction: rx.Var[Literal["right", "left", "up", "down", "diagonal"]] = field(
-        doc="Direction the entrance trail collapses from. Default: 'right'."
+        doc="Direction the entrance trail settles in from. Default: 'right'."
     )
     fade: rx.Var[int | float] = field(
-        doc="Opacity falloff applied from one echo to the next. Default: 0.72."
+        doc="How much of its opacity each echo keeps from the one in front of it. Default: 0.72."
     )
     blur: rx.Var[int | float] = field(
-        doc="Maximum blur in pixels on the deepest echo. Default: 3."
+        doc="Blur on the deepest echo, in px. Echoes in between blur less. Default: 3."
     )
     tint: rx.Var[bool | str] = field(
-        doc="Optional chromatic tint blended into the echo layers. Default: '#7dd3fc'."
+        doc="Color blended into the echoes, stronger toward the back. Pass false for plain echoes. Default: '#7dd3fc'."
+    )
+    echo_colors: rx.Var[list[str]] = field(
+        doc="Two colors the echoes fade between, from the echo nearest the text to the deepest one. Replaces the tint when set."
+    )
+    echo_style: rx.Var[Literal["solid", "outline"]] = field(
+        doc="Draws the echoes as filled text or as thin outlines. Default: 'solid'."
+    )
+    echo_scale: rx.Var[int | float] = field(
+        doc="Size of the deepest echo relative to the text. Below 1 the trail recedes, above 1 it looms. Default: 1."
     )
     mode: rx.Var[Literal["entrance", "pointer", "both"]] = field(
-        doc="Whether to run the entrance, pointer smear, or both. Default: 'both'."
+        doc="Whether the echoes play on entrance, run the live trail, or both. \"pointer\" means trail only, whatever drives it. Default: 'both'."
+    )
+    trail: rx.Var[Literal["pointer", "auto", "scroll"]] = field(
+        doc="What drives the live trail. Pointer follows the cursor, auto drifts the echoes on a slow figure-eight whenever the cursor is away, scroll stretches them behind the text as the page scrolls. Default: 'pointer'."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking the text releases a burst of echoes that expand from the click point and fade. Default: true."
     )
     cursor_radius: rx.Var[int | float] = field(
-        doc="Distance in pixels over which the cursor pulls the text to full offset. Larger values react from further away and arrive later. Default: 320."
+        doc="Distance in px over which the cursor pulls the text to full offset. With the auto trail, the drift resumes once the cursor leaves this radius. Default: 320."
     )
     duration: rx.Var[int | float] = field(
-        doc="Entrance convergence duration in milliseconds. Default: 900."
+        doc="How long the entrance takes to settle, in ms. Default: 900."
     )
     ease: rx.Var[Literal["linear", "ease-out", "ease-in-out", "snappy"]] = field(
-        doc="Timing curve used for the entrance convergence. Default: 'ease-out'."
+        doc="Timing curve of the entrance. Default: 'ease-out'."
     )
     font_size: rx.Var[int | float | str] = field(
-        doc="Font size applied to the text stack. Default: 'clamp(3rem, 9vw, 7rem)'."
+        doc="Font size of the text. Default: 'clamp(3rem, 9vw, 7rem)'."
     )
     font_weight: rx.Var[int | float | str] = field(
-        doc="Font weight applied to all copies. Default: 800."
+        doc="Font weight of the text. Default: 800."
     )
     color: rx.Var[str] = field(
-        doc="Color of the crisp front copy. Default: '#f8fafc'."
+        doc="Color of the front copy. Follows the surrounding text color by default. Default: 'currentColor'."
     )
 
 
 class FallingText(ReactBitsComponent):
-    """Characters fall with gravity + bounce creating a playful entrance.
+    """Text that breaks apart and tumbles into a pile you can drag, throw and swipe, then flies back into place.
 
     Docs: https://reactbits.dev/text-animations/falling-text
     """
@@ -379,31 +594,64 @@ class FallingText(ReactBitsComponent):
     lib_dependencies: list[str] = ['matter-js@0.20.0']
 
     text: rx.Var[str] = field(
-        doc="The text content to display and eventually animate."
+        doc="The text that falls apart."
     )
     highlight_words: rx.Var[list[str]] = field(
-        doc="List of words or substrings to apply a highlight style. Default: []."
+        doc="Words that start with any of these strings get the accent color, or the accent tile in the tiles variant. Default: []."
     )
     highlight_class: rx.Var[str] = field(
-        doc="CSS class name for highlighted words. Default: 'highlighted'."
+        doc="Extra class added to highlighted words. Default: 'highlighted'."
     )
-    trigger: rx.Var[Literal["click", "hover", "auto", "scroll"]] = field(
-        doc="Defines how the falling effect is activated. Default: 'auto'."
+    trigger: rx.Var[Literal["auto", "hover", "click", "scroll"]] = field(
+        doc="What starts the fall. Scroll starts it when the text scrolls into view. Default: 'auto'."
     )
-    background_color: rx.Var[str] = field(
-        doc="Canvas background color for the physics world. Default: 'transparent'."
+    variant: rx.Var[Literal["text", "tiles"]] = field(
+        doc="Plain falling text, or words on tiles that stack like blocks. Default: 'text'."
     )
-    wireframes: rx.Var[bool] = field(
-        doc="Whether to render the physics bodies in wireframe mode. Default: false."
+    split: rx.Var[Literal["words", "letters"]] = field(
+        doc="Whether whole words or single letters fall. Default: 'words'."
     )
     gravity: rx.Var[int | float] = field(
-        doc="Vertical gravity factor for the physics engine. Default: 1."
+        doc="Strength of gravity. Negative values fall upward. Default: 1."
+    )
+    bounciness: rx.Var[int | float] = field(
+        doc="How much pieces bounce when they land, from 0 to 1. Default: 0.2."
+    )
+    scatter: rx.Var[int | float] = field(
+        doc="How much spin and sideways push each piece gets as it drops, from 0 to 1. Default: 0.5."
+    )
+    stagger: rx.Var[int | float] = field(
+        doc="Delay between pieces dropping, in seconds. Default: 0.03."
+    )
+    order: rx.Var[Literal["random", "sequence", "center", "together"]] = field(
+        doc="Which pieces drop first. Falling pieces knock loose the ones they land on. Default: 'random'."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets people pick up, drag and throw pieces. Default: true."
     )
     mouse_constraint_stiffness: rx.Var[int | float] = field(
-        doc="Stiffness for the mouse drag constraint. Default: 0.2."
+        doc="How tightly a dragged piece follows the pointer, from 0 to 1. Default: 0.2."
+    )
+    cursor_push: rx.Var[int | float] = field(
+        doc="How hard a quick swipe knocks the fallen pieces around. 0 turns it off. Default: 0.5."
+    )
+    restore_delay: rx.Var[int | float] = field(
+        doc="Seconds after the pile settles, with the pointer away, before the text flies back into place and can fall again. 0 keeps it fallen. Default: 0."
     )
     font_size: rx.Var[str] = field(
-        doc="Font size applied to the text before it falls. Default: '1rem'."
+        doc="Font size of the text. Default: '1rem'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of highlighted words, or of their tiles in the tiles variant. Default: '#5b8cff'."
+    )
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Color theme of the tiles. Default: 'dark'."
+    )
+    background_color: rx.Var[str] = field(
+        doc="Background of the area the text falls into. Default: 'transparent'."
+    )
+    wireframes: rx.Var[bool] = field(
+        doc="Outlines each piece to show its physics shape. Default: false."
     )
 
 
@@ -422,40 +670,61 @@ class FoldText(ReactBitsComponent):
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
     text: rx.Var[str] = field(
-        doc="The text content to split and fold into place. Default: 'Design unfolds'."
+        doc="The text to split and fold into place. Line breaks are kept. Default: 'Design unfolds'."
     )
     split_by: rx.Var[Literal["char", "word", "line"]] = field(
-        doc="Controls whether each character, word, or explicit line folds as a panel. Default: 'char'."
+        doc="Whether each character, word or line folds as its own panel. Default: 'char'."
     )
     hinge: rx.Var[Literal["top", "bottom", "left", "right"]] = field(
-        doc="The edge that acts as the 3D fold hinge. Default: 'top'."
+        doc="The edge each panel folds around. For blinds and flip it picks the axis and the turning direction. Default: 'top'."
+    )
+    fold_style: rx.Var[Literal["paper", "blinds", "flip"]] = field(
+        doc="How each piece folds. Paper swings open from its hinge edge, blinds splits it into two slats that turn open one after the other, and flip turns it over like a card, lifting toward you mid-turn. Default: 'paper'."
     )
     duration: rx.Var[int | float] = field(
-        doc="Duration in seconds for each panel to unfold. Default: 0.65."
+        doc="How long each panel takes to unfold, in seconds. Default: 0.65."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Delay in seconds between panels; 0.03\u20130.08 keeps the cascade crisp. Default: 0.045."
+        doc="Delay between panels, in seconds. Default: 0.045."
+    )
+    stagger_from: rx.Var[Literal["start", "center", "end", "edges", "random"]] = field(
+        doc="Where the cascade starts. Default: 'start'."
+    )
+    fold_angle: rx.Var[int | float] = field(
+        doc="How far the panels start folded away, in degrees. Past 90 they flip over from behind. Flip always turns a full half turn. Default: 92."
     )
     ease: rx.Var[str] = field(
-        doc="GSAP easing curve used by the unfold timeline. Default: 'power3.out'."
+        doc="GSAP ease used for the unfold. Default: 'power3.out'."
     )
     perspective: rx.Var[int | float] = field(
-        doc="Perspective distance applied to each panel parent. Default: 700."
+        doc="Camera distance for the fold, in px. Lower values look deeper. Default: 700."
     )
     crease_shading: rx.Var[int | float] = field(
-        doc="Strength of the gradient shade while panels are folded. Default: 0.55."
+        doc="How dark the crease shading gets while a panel is folded, from 0 to 1. Default: 0.55."
     )
     trigger: rx.Var[Literal["mount", "hover", "scroll", "loop"]] = field(
-        doc="Determines when the unfold animation starts. Default: 'mount'."
+        doc="When the text unfolds. Loop holds the text, folds it back up and plays again. Default: 'mount'."
+    )
+    loop_delay: rx.Var[int | float] = field(
+        doc="How long the unfolded text holds before folding back up, in seconds. Only applies when trigger is 'loop'. Default: 1.4."
+    )
+    hover_refold: rx.Var[bool] = field(
+        doc="Panels near the cursor fold partly away and ease back open once it passes. Default: false."
+    )
+    refold_radius: rx.Var[int | float] = field(
+        doc="How far from the cursor panels react with hoverRefold, in px. The fold fades out toward the edge. Default: 140."
+    )
+    refold_angle: rx.Var[int | float] = field(
+        doc="How far a panel right under the cursor folds away with hoverRefold, in degrees. Default: 45."
     )
     font_size: rx.Var[int | float | str] = field(
-        doc="Font size applied to the root text. Default: 80."
+        doc="Font size of the text. Numbers are in px. Default: 80."
     )
     font_weight: rx.Var[int | float | str] = field(
-        doc="Font weight applied to the root text. Default: 800."
+        doc="Font weight of the text. Default: 800."
     )
     color: rx.Var[str] = field(
-        doc="Text color of the folded panels. Default: '#f7f2e8'."
+        doc="Color of the text. Follows the surrounding text color by default. Default: 'currentColor'."
     )
 
 
@@ -473,55 +742,70 @@ class FuzzyText(ReactBitsComponent):
     _rb_files = ('FuzzyText.jsx',)
 
     font_size: rx.Var[int | float | str] = field(
-        doc="Specifies the font size of the text. Accepts any valid CSS font-size value or a number (interpreted as pixels). Default: 'clamp(2rem, 8vw, 8rem)'."
+        doc="Font size as any CSS size or a number in px. Responsive sizes are redrawn when the window resizes. Default: 'clamp(2rem, 8vw, 8rem)'."
     )
     font_weight: rx.Var[int | float | str] = field(
-        doc="Specifies the font weight of the text. Default: 900."
+        doc="Font weight of the text. Default: 900."
     )
     font_family: rx.Var[str] = field(
-        doc="Specifies the font family of the text. 'inherit' uses the computed style from the parent. Default: 'inherit'."
+        doc="Font family of the text. 'inherit' uses the font of the surrounding text. Default: 'inherit'."
     )
     color: rx.Var[str] = field(
-        doc="Specifies the text color. Default: '#fff'."
+        doc="Color of the text. Follows the surrounding text color by default, including theme switches. Default: 'currentColor'."
     )
     enable_hover: rx.Var[bool] = field(
-        doc="Enables the hover effect for the fuzzy text. Default: true."
+        doc="Raises the fuzz to the hover intensity while the pointer is over the text, when trigger is 'hover'. Default: true."
     )
     base_intensity: rx.Var[int | float] = field(
-        doc="The fuzz intensity when the text is not hovered. Default: 0.18."
+        doc="How strong the fuzz is at rest. Default: 0.18."
     )
     hover_intensity: rx.Var[int | float] = field(
-        doc="The fuzz intensity when the text is hovered. Default: 0.5."
+        doc="How strong the fuzz is while hovered. With trigger 'always' it is the constant level, with 'click' it sets how hard each burst hits. Default: 0.5."
     )
     fuzz_range: rx.Var[int | float] = field(
-        doc="Maximum pixel displacement for the fuzzy effect. Default: 30."
+        doc="Furthest the strips can shift, in px. Default: 30."
     )
     fps: rx.Var[int | float] = field(
-        doc="Frame rate cap for the animation. Lower values reduce CPU usage. Default: 60."
+        doc="Frame rate cap. Lower values look choppier and use less CPU. Default: 60."
     )
     direction: rx.Var[Literal["horizontal", "vertical", "both"]] = field(
-        doc="The axis/axes for the fuzzy displacement effect. Default: 'horizontal'."
+        doc="Which way the strips shift. Default: 'horizontal'."
     )
     transition_duration: rx.Var[int | float] = field(
-        doc="Number of frames to ease between intensity states for smooth transitions. Default: 0."
+        doc="How many frames the fuzz takes to ease between intensities. 0 switches instantly. Default: 0."
     )
     click_effect: rx.Var[bool] = field(
-        doc="Enables a momentary burst of maximum intensity on click. Default: false."
+        doc="Gives a short burst of full intensity on click when trigger is 'hover' or 'always'. Default: false."
     )
     glitch_mode: rx.Var[bool] = field(
-        doc="Enables periodic random intensity spikes for a glitch effect. Default: false."
+        doc="Adds bursts of full intensity at a regular interval. Default: false."
     )
     glitch_interval: rx.Var[int | float] = field(
-        doc="Milliseconds between glitch bursts when glitchMode is enabled. Default: 2000."
+        doc="Time between glitch bursts, in ms. Default: 2000."
     )
     glitch_duration: rx.Var[int | float] = field(
-        doc="Milliseconds duration of each glitch burst. Default: 200."
+        doc="Length of each glitch burst, in ms. Default: 200."
     )
     gradient: rx.Var[list[str]] = field(
-        doc="Array of colors to create a gradient text effect (e.g. [\"#ff0000\", \"#00ff00\"])."
+        doc="Two or more colors to fill the text with a left to right gradient instead of a single color."
     )
     letter_spacing: rx.Var[int | float] = field(
-        doc="Extra pixels between characters. Default: 0."
+        doc="Extra space between letters, in px. Default: 0."
+    )
+    slice_size: rx.Var[int | float] = field(
+        doc="Thickness of each shifted strip, in px. 1 gives a fine fuzz, larger values tear the text into bands. Default: 1."
+    )
+    trigger: rx.Var[Literal["hover", "always", "click"]] = field(
+        doc="What raises the fuzz. 'hover' reacts to the pointer, 'always' holds the hover intensity, 'click' fires a burst that eases back. Default: 'hover'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the text in as heavy, coarse static that resolves into clean letters the first time it is seen. Default: false."
+    )
+    intro_duration: rx.Var[int | float] = field(
+        doc="How long the intro takes to resolve, in ms. Default: 1400."
+    )
+    color_split: rx.Var[int | float] = field(
+        doc="Splits the text into offset red, green and blue copies that tear apart with the fuzz, from 0 to 1. Dark text splits into print-style cyan, magenta and yellow instead. Default: 0."
     )
 
 
@@ -542,15 +826,48 @@ class GlitchText(ReactBitsComponent):
         doc="Multiplier for the animation speed. Higher values slow down the glitch effect. Default: 0.5."
     )
     enable_shadows: rx.Var[bool] = field(
-        doc="Toggle the colored text shadows on the glitch pseudo-elements. Default: true."
+        doc="Toggle the glitch colors. Without them every mode stays in the text color. Default: true."
     )
     enable_on_hover: rx.Var[bool] = field(
-        doc="If true, the glitch animation is only activated on hover. Default: false."
+        doc="Same as trigger=\"hover\": the glitch only runs while the text is hovered. Default: false."
+    )
+    offset: rx.Var[int | float] = field(
+        doc="How far the glitched slices shift sideways, in px. The colored shadows grow with it. Default: 10."
+    )
+    shadow_colors: rx.Var[list[str]] = field(
+        doc="The two glitch colors: the shadows on the shifted slices, the split channels and the swapped glyphs. Default: ['#ff0000', '#00ffff']."
+    )
+    mode: rx.Var[Literal["slices", "rgb", "scan", "noise"]] = field(
+        doc="Style of glitch. Slices shifts bands of the text sideways, rgb splits it into jittering color channels, scan sweeps a displaced band down through it and noise briefly swaps letters for glyphs. Default: 'slices'."
+    )
+    intensity: rx.Var[int | float] = field(
+        doc="How often and how far it glitches, from 0 (calm) to 1 (constant, wide jolts). Default: 0.5."
+    )
+    skew: rx.Var[int | float] = field(
+        doc="How far the text shears sideways during a jolt, in degrees. Default: 0."
+    )
+    flicker: rx.Var[bool] = field(
+        doc="Adds quick, subtle dips in opacity while it glitches. Default: false."
+    )
+    trigger: rx.Var[Literal["always", "hover", "click"]] = field(
+        doc="When it glitches: all the time, while hovered, or in a short burst on each click. Default: 'always'."
+    )
+    burst_duration: rx.Var[int | float] = field(
+        doc="Length of the burst played on each click with the click trigger, in seconds. Default: 0.6."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the text. Follows the surrounding text color by default. Default: \"currentColor\"."
+    )
+    font_size: rx.Var[int | float | str] = field(
+        doc="Font size of the text. Numbers are in px. Default: \"clamp(2rem, 10vw, 8rem)\"."
+    )
+    font_weight: rx.Var[int | float | str] = field(
+        doc="Font weight of the text. Default: 900."
     )
 
 
 class GradientText(ReactBitsComponent):
-    """Animated gradient sweep across live text with speed and color control.
+    """Living gradients inside your text: a sliding sweep, a drifting mesh or a swinging conic fan.
 
     Docs: https://reactbits.dev/text-animations/gradient-text
     """
@@ -561,30 +878,47 @@ class GradientText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "GradientText"
     _rb_files = ('GradientText.css', 'GradientText.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     colors: rx.Var[list[str]] = field(
-        doc="Array of colors for the gradient effect. Default: ['#5227FF', '#FF9FFC', '#B497CF']."
+        doc="Colors of the gradient, in order. The first color is repeated at the end so loops stay seamless. Default: ['#5227FF', '#FF9FFC', '#B497CF']."
     )
     animation_speed: rx.Var[int | float] = field(
-        doc="Duration of one animation cycle in seconds. Default: 8."
+        doc="Seconds for one full cycle of the animation. Default: 8."
     )
-    show_border: rx.Var[bool] = field(
-        doc="Displays a gradient border around the text. Default: false."
+    variant: rx.Var[Literal["linear", "flow", "conic"]] = field(
+        doc="How the colors move. Linear slides a gradient through the text, flow drifts soft blobs of color around like a living mesh gradient and conic swings colors around the center. Default: 'linear'."
     )
-    direction: rx.Var[Literal["horizontal", "vertical", "diagonal"]] = field(
-        doc="Direction of the gradient animation. Default: 'horizontal'."
+    angle: rx.Var[int | float] = field(
+        doc="Direction of the gradient in degrees. 90 runs left to right, 180 top to bottom. Default: 90."
     )
-    pause_on_hover: rx.Var[bool] = field(
-        doc="Pauses the animation when hovering over the text. Default: false."
+    direction: rx.Var[Any] = field(
+        doc="The `direction` prop."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="How broad the colors are. Higher values show fewer colors at once in longer, calmer bands. Default: 3."
     )
     yoyo: rx.Var[bool] = field(
-        doc="Reverses animation direction at the end instead of looping. Default: true."
+        doc="Eases back and forth instead of scrolling the gradient in one direction forever. Default: true."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="A soft bloom of the gradient colors around the letters, from 0 to 1. Default: 0."
+    )
+    show_border: rx.Var[bool] = field(
+        doc="Wraps the text in a pill with an animated gradient outline that works on any background. Default: false."
+    )
+    border_width: rx.Var[int | float] = field(
+        doc="Thickness of the outline in px. Default: 1.5."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Holds the colors still while the pointer is over the text. Default: false."
+    )
+    follow_pointer: rx.Var[bool] = field(
+        doc="While hovered, the colors are drawn toward the pointer. Default: false."
     )
 
 
 class MaskedHeading(ReactBitsComponent):
-    """A large headline with a drifting colour mesh or image showing through the glyphs, revealed word by word.
+    """A headline with a drifting colour mesh or image showing through, revealed word by word.
 
     Docs: https://reactbits.dev/text-animations/masked-heading
     """
@@ -604,7 +938,7 @@ class MaskedHeading(ReactBitsComponent):
         doc="Element the heading renders as, so it can carry the right semantics. Default: 'h2'."
     )
     media_type: rx.Var[Literal["image", "video"]] = field(
-        doc="Whether the source showing through the letters is an image or a looping muted video. Default: 'image'."
+        doc="Whether the source showing through the letters is an image or a looping muted video. Videos stay paused for people who prefer reduced motion. Default: 'image'."
     )
     src: rx.Var[str] = field(
         doc="Image or video URL."
@@ -621,6 +955,9 @@ class MaskedHeading(ReactBitsComponent):
     drift: rx.Var[int | float] = field(
         doc="Amplitude of the slow idle motion, in px. 0 holds the media still. Default: 18."
     )
+    hover_zoom: rx.Var[int | float] = field(
+        doc="Extra zoom the media eases into while the pointer is over the heading. 0.1 is 10% closer. Default: 0."
+    )
     brightness: rx.Var[int | float] = field(
         doc="Brightness of the media. Default: 1."
     )
@@ -630,14 +967,32 @@ class MaskedHeading(ReactBitsComponent):
     grayscale: rx.Var[bool] = field(
         doc="Render the media in black and white. Default: false."
     )
-    reveal: rx.Var[Literal["rise", "wipe", "fade", "none"]] = field(
-        doc="Entrance style: words rise into place, a wipe sweeps across, or the whole block fades up. Default: 'rise'."
+    tint: rx.Var[str] = field(
+        doc="Colorizes the media in one color while keeping its light and shadow, like a duotone print. Leave empty for the original colors."
+    )
+    spotlight: rx.Var[bool] = field(
+        doc="Dims and desaturates the media except for a soft pool of light that eases after the pointer. Without a pointer, the light wanders slowly across the letters. Default: false."
+    )
+    spotlight_radius: rx.Var[int | float] = field(
+        doc="Radius of the spotlight, in px. Default: 160."
+    )
+    outline: rx.Var[bool] = field(
+        doc="Draws a thin stroke around every letter. It is visible before the entrance, so the media fills the outlines as it arrives. Default: false."
+    )
+    outline_color: rx.Var[str] = field(
+        doc="Color of the outline. Leave empty to follow the surrounding text color."
+    )
+    outline_width: rx.Var[int | float] = field(
+        doc="Thickness of the outline, in px. Default: 1."
+    )
+    reveal: rx.Var[Literal["rise", "scale", "blur", "wipe", "fade", "none"]] = field(
+        doc="Entrance style: words rise into place, letters grow in one after another, the letters draw together while the heading pulls into focus, a wipe sweeps across, or the whole block fades up. Default: 'rise'."
     )
     duration: rx.Var[int | float] = field(
         doc="Entrance duration, in seconds. Default: 1.1."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Delay between words, in seconds. Used by the rise reveal. Default: 0.09."
+        doc="Delay between words, in seconds, for the rise reveal. The scale reveal steps letter by letter at about a third of it. Default: 0.09."
     )
     trigger: rx.Var[Literal["view", "mount", "hover"]] = field(
         doc="When the entrance runs. Default: 'view'."
@@ -682,19 +1037,34 @@ class ParticleText(ReactBitsComponent):
         doc="Pixel sampling step for the offscreen glyph canvas. Lower values create more particles. Default: 4."
     )
     color: rx.Var[str] = field(
-        doc="Primary particle color. Default: '#ffffff'."
+        doc="Particle color at rest. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     highlight_color: rx.Var[str] = field(
-        doc="Secondary color blended through the particle field. Default: '#8b5cf6'."
+        doc="Color particles take on while they fly in or get pushed around. Also colors the glow and the scan line. Default: '#ff5a36'."
+    )
+    highlight_mode: rx.Var[Literal["motion", "gradient"]] = field(
+        doc="Motion lights up particles while they are away from their spot and cools them as they land. Gradient blends the highlight across the text from left to right. Default: 'motion'."
+    )
+    shape: rx.Var[Literal["circle", "square", "line"]] = field(
+        doc="How each particle is drawn. Line draws short strokes that stretch along their motion and settle into an even hatch. Default: 'circle'."
+    )
+    intro: rx.Var[Literal["gather", "rain", "spiral", "scan"]] = field(
+        doc="How the text forms. Gather pulls scattered particles together, rain drops them in from above, spiral swirls them into place, and scan assembles the text behind a sweeping line. Default: 'gather'."
     )
     scatter: rx.Var[int | float] = field(
-        doc="How far particles begin from their final glyph targets. Default: 180."
+        doc="How far particles begin from their final spots in the gather and spiral intros. Default: 180."
     )
     gather_duration: rx.Var[int | float] = field(
-        doc="Milliseconds for particles to converge into the text. Default: 1600."
+        doc="Milliseconds for the intro to form the text. Default: 1600."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Maximum per-particle delay in milliseconds before gathering. Default: 420."
+        doc="Maximum per-particle delay in milliseconds before it starts moving. Default: 420."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking blows the particles away from the click point, then they spring back into the text. Off while trigger is click. Default: true."
+    )
+    burst_strength: rx.Var[int | float] = field(
+        doc="How hard and how wide a click burst pushes. Default: 1."
     )
     pointer_repel: rx.Var[int | float] = field(
         doc="Strength of the cursor pushback. Default: 40."
@@ -706,7 +1076,7 @@ class ParticleText(ReactBitsComponent):
         doc="Subtle resting motion after the text has formed. Default: 0.7."
     )
     trigger: rx.Var[Literal["mount", "hover", "click"]] = field(
-        doc="How the scatter-and-reform sequence can replay after the first formation. Default: 'mount'."
+        doc="When the intro plays again after the first formation: never, on hover, or on click. Default: 'mount'."
     )
     font_size: rx.Var[int | float | str] = field(
         doc="Canvas text size used for glyph sampling. Default: 'clamp(3rem, 12vw, 8rem)'."
@@ -718,7 +1088,7 @@ class ParticleText(ReactBitsComponent):
         doc="Font family used for sampling. Inherit waits for the surrounding font before sampling. Default: 'inherit'."
     )
     glow: rx.Var[bool] = field(
-        doc="Adds a soft particle bloom in the highlight color. Default: true."
+        doc="Adds a soft bloom in the highlight color around highlighted particles. Default: true."
     )
 
 
@@ -737,55 +1107,73 @@ class RotatingText(ReactBitsComponent):
     lib_dependencies: list[str] = ['motion@12.23.21']
 
     texts: rx.Var[list[str]] = field(
-        doc="An array of text strings to be rotated. Default: []."
+        doc="The texts to rotate through. Default: []."
     )
     transition: rx.Var[dict[str, Any]] = field(
-        doc="Transition settings for the animations. Default: { type: 'spring', damping: 25, stiffness: 300 }."
+        doc="Overrides the Motion transition used for every letter. Each effect brings its own by default. Default: -."
     )
     initial: rx.Var[dict[str, Any]] = field(
-        doc="Initial animation state for each element. Default: { y: '100%', opacity: 0 }."
+        doc="Overrides the state each letter enters from. Leave unset to use the effect. Default: -."
     )
     animate: rx.Var[dict[str, Any]] = field(
-        doc="Animation state when elements enter. Default: { y: 0, opacity: 1 }."
+        doc="Overrides the state each letter settles into. Default: -."
     )
     exit: rx.Var[dict[str, Any]] = field(
-        doc="Exit animation state for elements. Default: { y: '-120%', opacity: 0 }."
+        doc="Overrides the state each letter leaves to. Default: -."
     )
-    animate_presence_mode: rx.Var[str] = field(
-        doc="Mode for AnimatePresence; for example, 'wait' to finish exit animations before entering. Default: 'wait'."
+    effect: rx.Var[Literal["slide", "flip", "blur", "scale", "drop"]] = field(
+        doc="How letters swap. Flip rolls them over like a drum, blur dissolves them, scale zooms through and drop lets them fall in with a small bounce. Default: 'slide'."
+    )
+    direction: rx.Var[Literal["up", "down"]] = field(
+        doc="Which way letters travel. Drop always falls from above. Default: 'up'."
+    )
+    highlight: rx.Var[bool] = field(
+        doc="Puts the rotating text on a colored block that smoothly resizes to fit each new text, with a text color picked for contrast. Default: false."
+    )
+    highlight_color: rx.Var[str] = field(
+        doc="Color of the highlight block. Hex or rgb colors also set a readable text color automatically. Default: '#a855f7'."
+    )
+    animate_presence_mode: rx.Var[Literal["wait", "sync"]] = field(
+        doc="'wait' lets the old text leave before the new one enters, 'sync' runs both at once. Default: 'wait'."
     )
     animate_presence_initial: rx.Var[bool] = field(
-        doc="Determines whether the AnimatePresence component should run its initial animation. Default: false."
+        doc="Animates the first text in on mount. Default: false."
     )
     rotation_interval: rx.Var[int | float] = field(
-        doc="The interval (in milliseconds) between text rotations. Default: 2000."
+        doc="Time each text stays on screen, in milliseconds. Default: 2000."
     )
     stagger_duration: rx.Var[int | float] = field(
-        doc="Delay between each character's animation. Default: 0."
+        doc="Delay between letters, in seconds. Default: 0."
     )
     stagger_from: rx.Var[str] = field(
-        doc="Specifies the order from which the stagger starts. Default: 'first'."
+        doc="Which letter moves first. A number starts from that letter, random shuffles the order. Default: 'first'."
     )
     loop: rx.Var[bool] = field(
-        doc="Determines if the rotation should loop back to the first text after the last one. Default: true."
+        doc="Goes back to the first text after the last one. Default: true."
     )
     auto: rx.Var[bool] = field(
-        doc="If true, the text rotation starts automatically. Default: true."
+        doc="Rotates on its own. Turn off to drive it with the ref methods. Default: true."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Holds the current text while the pointer is over it. Default: false."
+    )
+    blur: rx.Var[int | float] = field(
+        doc="Blurs letters as they come and go, in px. The blur effect uses 10 when this is 0. Default: 0."
     )
     split_by: rx.Var[str] = field(
-        doc="Determines how the text is split into animatable elements (e.g., by characters, words, or lines). Default: 'characters'."
+        doc="How each text is split into moving pieces. Any other string is used as the separator. Default: 'characters'."
     )
     main_class_name: rx.Var[str] = field(
-        doc="Additional class names for the main container element."
+        doc="Extra class names for the outer element."
     )
     split_level_class_name: rx.Var[str] = field(
-        doc="Additional class names for the container wrapping each split group (e.g., a word)."
+        doc="Extra class names for each group of letters. Add overflow hidden here for a masked slide."
     )
     element_level_class_name: rx.Var[str] = field(
-        doc="Additional class names for each individual animated element."
+        doc="Extra class names for each moving letter."
     )
-    on_next: rx.EventHandler[lambda new_index: [safe(new_index)]] = field(
-        doc="Callback function invoked when the text rotates to the next item. Handler receives: new_index."
+    on_next: rx.EventHandler[lambda index: [safe(index)]] = field(
+        doc="Called with the new index whenever the text changes. Handler receives: index."
     )
 
 
@@ -804,16 +1192,40 @@ class ScrambledText(ReactBitsComponent):
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
     radius: rx.Var[int | float] = field(
-        doc="The radius around the mouse pointer within which characters will scramble. Default: 100."
+        doc="Distance from the pointer, in px, within which letters react. Default: 100."
     )
     duration: rx.Var[int | float] = field(
-        doc="The duration of the scramble effect on a character. Default: 1.2."
+        doc="How long a letter right under the pointer keeps scrambling, in seconds. Also sets the pace of the intro and the click burst. Default: 1.2."
     )
     speed: rx.Var[int | float] = field(
-        doc="The speed of the scramble animation. Default: 0.5."
+        doc="How often a scrambling letter swaps to a new character. Higher values flicker faster. Default: 0.5."
     )
     scramble_chars: rx.Var[str] = field(
-        doc="The characters used for scrambling. Default: '.:'."
+        doc="The characters shown while a letter is scrambled. Default: '.:'."
+    )
+    scramble_color: rx.Var[str] = field(
+        doc="Color of letters while they are scrambled. Leave empty to keep the text color."
+    )
+    effect: rx.Var[Literal["scramble", "lift", "blur", "magnify"]] = field(
+        doc="What happens to letters near the pointer: they scramble, rise, blur, or swell like a lens. Each one eases in and out with a soft falloff. Default: 'scramble'."
+    )
+    strength: rx.Var[int | float] = field(
+        doc="How far letters lift, how much they blur, or how much they magnify. Default: 1."
+    )
+    trail: rx.Var[int | float] = field(
+        doc="How long lifted, blurred or magnified letters take to settle after the pointer moves on, in seconds. Scrambling uses duration instead. Default: 0.6."
+    )
+    click_burst: rx.Var[bool] = field(
+        doc="Clicking sends a scramble wave outward from the click point, carrying the current effect with it. Default: true."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Decodes the whole text from scrambled characters the first time it scrolls into view. Default: true."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Font of the text. Leave empty to keep the default monospace."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the text. Leave empty to follow the surrounding text color."
     )
 
 
@@ -832,28 +1244,52 @@ class ScrollFloat(ReactBitsComponent):
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
     scroll_container_ref: rx.Var[Any] = field(
-        doc="Optional ref to the scroll container. Defaults to window if not provided. Default: window."
+        doc="Ref to the element that scrolls. Leave it out to use the page. Default: window."
     )
     container_class_name: rx.Var[str] = field(
-        doc="Additional Tailwind classes for the container element."
+        doc="Extra class names for the heading."
     )
     text_class_name: rx.Var[str] = field(
-        doc="Additional Tailwind classes for the text element."
+        doc="Extra class names for the text."
+    )
+    effect: rx.Var[Literal["float", "flip", "scatter", "blur", "wave"]] = field(
+        doc="How the pieces arrive. Float stretches them up out of a slot, flip rolls them in on a drum, scatter assembles them from random spots, blur pulls them into focus and wave makes them swell in on a rolling wave. Default: 'float'."
+    )
+    split_by: rx.Var[Literal["chars", "words"]] = field(
+        doc="Animate each letter on its own or each word as one piece. Default: 'chars'."
+    )
+    direction: rx.Var[Literal["up", "down"]] = field(
+        doc="Whether the pieces come in from below or from above. Default: 'up'."
+    )
+    order: rx.Var[Literal["start", "end", "center", "edges", "random"]] = field(
+        doc="Which pieces go first. The order is fixed, so random looks the same on every visit. Default: 'start'."
+    )
+    from_color: rx.Var[str] = field(
+        doc="Color the pieces start in before they settle into the text color. Keep currentColor for no color change. Default: 'currentColor'."
     )
     animation_duration: rx.Var[int | float] = field(
-        doc="Duration (in seconds) of the animation. Default: 1."
+        doc="Length of each piece's move compared to the stagger. Higher values move the pieces more together. Default: 1."
     )
     ease: rx.Var[str] = field(
-        doc="Easing function used for the animation. Default: 'back.inOut(2)'."
+        doc="Any GSAP ease, such as 'power3.out', 'elastic.out(1, 0.45)' or 'none'. Default: 'back.inOut(2)'."
     )
     scroll_start: rx.Var[str] = field(
-        doc="The scroll trigger start position. Default: 'center bottom+=50%'."
+        doc="Scroll position where the animation starts, in ScrollTrigger syntax. Default: 'center bottom+=50%'."
     )
     scroll_end: rx.Var[str] = field(
-        doc="The scroll trigger end position. Default: 'bottom bottom-=40%'."
+        doc="Scroll position where the pieces settle. Text near the end of the page still settles fully. Default: 'bottom bottom-=40%'."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Delay between the animation start of each character. Default: 0.03."
+        doc="Delay between pieces. Higher values make the text form one piece at a time. Default: 0.03."
+    )
+    distance: rx.Var[int | float] = field(
+        doc="How far the pieces travel, as a percentage of their height. For flip it sets the size of the drum they roll around, for scatter how widely they start apart. Default: 120."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How tall the pieces are stretched while they rise in the float and wave effects. 1 keeps their shape. Default: 2.3."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="Seconds the pieces take to catch up with the scroll. 0 ties them to it directly. Default: 0."
     )
 
 
@@ -872,31 +1308,55 @@ class ScrollReveal(ReactBitsComponent):
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
     scroll_container_ref: rx.Var[Any] = field(
-        doc="Optional ref for the scroll container. If provided, GSAP will use this container for scroll triggers; otherwise, it defaults to the window. Default: window."
+        doc="Ref to the element that scrolls. Leave it out to use the page. Default: window."
     )
     enable_blur: rx.Var[bool] = field(
-        doc="Enables the blur animation effect on the words. Default: true."
+        doc="Starts each piece out of focus and sharpens it as it appears. Default: true."
     )
     base_opacity: rx.Var[int | float] = field(
-        doc="The initial opacity value for the words before the animation. Default: 0.1."
+        doc="Opacity of the pieces before they are revealed, from 0 to 1. Default: 0.1."
     )
     base_rotation: rx.Var[int | float] = field(
-        doc="The starting rotation (in degrees) for the container before it animates to 0. Default: 3."
+        doc="Tilt of the whole block before it levels out, in degrees. 0 keeps it level. Default: 3."
     )
     blur_strength: rx.Var[int | float] = field(
-        doc="The strength of the blur effect (in pixels) applied at the start of the animation. Default: 4."
+        doc="How blurred the pieces start, in px. Default: 4."
+    )
+    base_offset: rx.Var[int | float] = field(
+        doc="How far below its place each piece starts, in px. Pieces rise into place as they appear. Default: 0."
+    )
+    stagger: rx.Var[int | float] = field(
+        doc="Spacing between pieces. Higher values reveal them one at a time instead of in a soft wave. In enter mode it is in seconds. Default: 0.05."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="Seconds the reveal takes to catch up with the scroll. 0 ties it to the scroll directly. Default: 0."
+    )
+    split_by: rx.Var[Literal["words", "chars", "lines"]] = field(
+        doc="What each step of the reveal is. 'lines' groups the words of each rendered line and regroups on resize. Default: 'words'."
+    )
+    effect: rx.Var[Literal["fade", "rise", "flip", "scale"]] = field(
+        doc="How each piece appears. 'fade' brightens in place, 'rise' slides up from behind its own baseline, 'flip' stands up from flat and 'scale' pops up from small. Default: 'fade'."
+    )
+    mode: rx.Var[Literal["scrub", "enter"]] = field(
+        doc="'scrub' ties the reveal to the scroll position, 'enter' plays it once when the text scrolls into view. Default: 'scrub'."
+    )
+    duration: rx.Var[int | float] = field(
+        doc="Seconds each piece takes to appear when mode is 'enter'. Default: 0.8."
+    )
+    highlight_color: rx.Var[str] = field(
+        doc="Accent each word lights up to while it is being revealed, before it settles to the text color. Leave empty for no highlight."
     )
     container_class_name: rx.Var[str] = field(
-        doc="Additional CSS class(es) to apply to the container element."
+        doc="Extra class names for the heading."
     )
     text_class_name: rx.Var[str] = field(
-        doc="Additional CSS class(es) to apply to the text element."
+        doc="Extra class names for the text."
     )
     rotation_end: rx.Var[str] = field(
-        doc="The scroll trigger end point for the container rotation animation. Default: 'bottom bottom'."
+        doc="Scroll position where the block finishes leveling out in scrub mode, in ScrollTrigger syntax. Default: 'bottom bottom'."
     )
     word_animation_end: rx.Var[str] = field(
-        doc="The scroll trigger end point for the word opacity and blur animations. The animation will complete when the bottom of the text reaches the bottom of the container. Default: 'bottom bottom'."
+        doc="Scroll position where every piece is fully revealed in scrub mode. Text near the end of the page still finishes. Default: 'bottom bottom'."
     )
 
 
@@ -947,10 +1407,43 @@ class ScrollVelocity(ReactBitsComponent):
     scroller_style: rx.Var[dict[str, Any]] = field(
         doc="Inline styles for the scroller container."
     )
+    separator: rx.Var[Component | str] = field(
+        doc="Shown between the repeated copies, like a dot or a slash. Empty leaves just a space."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Glides the rows to a stop while the pointer is over them. Default: false."
+    )
+    fade_edges: rx.Var[bool] = field(
+        doc="Softly fades the rows out at the left and right edges. Default: false."
+    )
+    skew_with_velocity: rx.Var[int | float] = field(
+        doc="How far the rows lean into their motion while you scroll or fling them, in degrees at full speed. Eases back to upright when they slow down. Default: 0."
+    )
+    scale_with_velocity: rx.Var[int | float] = field(
+        doc="How much the rows stretch taller at full speed, as a fraction of their height. Negative values squash them instead. Default: 0."
+    )
+    outline_alternate: rx.Var[bool] = field(
+        doc="Draws every other row as outlined text. Default: false."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Extra space between the repeated copies in pixels, split evenly around the separator. Default: 0."
+    )
+    font_size: rx.Var[int | float | str] = field(
+        doc="Size of the row text. Numbers are pixels. Leave it out to use the stylesheet size."
+    )
+    font_weight: rx.Var[int | float | str] = field(
+        doc="Weight of the row text. Leave it out to use the stylesheet weight."
+    )
+    color: rx.Var[str] = field(
+        doc="Text color of the rows. Follows the surrounding text color when left out."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Lets you grab a row to scrub it, then throw it to glide on with inertia. Default: false."
+    )
 
 
 class ShinyText(ReactBitsComponent):
-    """Metallic sheen sweeps across text producing a reflective highlight.
+    """A sheen of light that sweeps across text, from soft bands to chrome-like reflections.
 
     Docs: https://reactbits.dev/text-animations/shiny-text
     """
@@ -961,37 +1454,57 @@ class ShinyText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ShinyText"
     _rb_files = ('ShinyText.css', 'ShinyText.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     text: rx.Var[str] = field(
-        doc="The text to be displayed with the shiny effect. Default: -."
-    )
-    disabled: rx.Var[bool] = field(
-        doc="Disables the shiny effect when set to true. Default: false."
-    )
-    speed: rx.Var[int | float] = field(
-        doc="Duration of one animation cycle in seconds. Default: 2."
+        doc="The text to shine. Children work too. Default: -."
     )
     color: rx.Var[str] = field(
-        doc="The base color of the text. Default: '#b5b5b5'."
+        doc="Base color of the text. Default: '#b5b5b5'."
     )
     shine_color: rx.Var[str] = field(
-        doc="The color of the shine/highlight effect. Default: '#ffffff'."
+        doc="Color of the light passing over it. Default: '#ffffff'."
     )
-    spread: rx.Var[int | float] = field(
-        doc="The angle (in degrees) of the gradient spread. Default: 120."
-    )
-    yoyo: rx.Var[bool] = field(
-        doc="If true, the animation reverses direction instead of looping. Default: false."
-    )
-    pause_on_hover: rx.Var[bool] = field(
-        doc="Pauses the animation when the user hovers over the text. Default: false."
-    )
-    direction: rx.Var[Literal["left", "right"]] = field(
-        doc="The direction the shine moves across the text. Default: 'left'."
+    speed: rx.Var[int | float] = field(
+        doc="Seconds for one sweep across the text. Default: 2."
     )
     delay: rx.Var[int | float] = field(
-        doc="Pause duration (in seconds) between animation cycles. Default: 0."
+        doc="Seconds of rest between sweeps. Default: 0."
+    )
+    angle: rx.Var[int | float] = field(
+        doc="Tilt of the band of light in degrees. 90 is upright, higher leans it forward. Default: 120."
+    )
+    shine_width: rx.Var[int | float] = field(
+        doc="How wide the band of light is, as a percentage of the text. Default: 40."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How gently the band fades at its edges, from 0 for a crisp glint to 1 for a soft sheen. Default: 0.8."
+    )
+    bands: rx.Var[int | float] = field(
+        doc="How many bands of light follow each other, like reflections sliding across chrome. Default: 1."
+    )
+    glow: rx.Var[int | float] = field(
+        doc="A soft bloom of light that travels with the band, from 0 to 1. Default: 0."
+    )
+    direction: rx.Var[Literal["left", "right"]] = field(
+        doc="Which way the light travels. Default: 'left'."
+    )
+    easing: rx.Var[Literal["smooth", "linear", "snappy"]] = field(
+        doc="Feel of each sweep. Smooth glides in and out, linear keeps an even pace and snappy flashes across with a pause between. Default: 'smooth'."
+    )
+    trigger: rx.Var[Literal["loop", "hover", "view"]] = field(
+        doc="When it shines: on a loop, once each time the pointer enters, or once when scrolled into view. Default: 'loop'."
+    )
+    yoyo: rx.Var[bool] = field(
+        doc="Sweeps back and forth instead of always starting from the same side. Default: false."
+    )
+    follow_pointer: rx.Var[bool] = field(
+        doc="While hovered, the light glides after the pointer, then slides off when it leaves. Default: false."
+    )
+    pause_on_hover: rx.Var[bool] = field(
+        doc="Freezes the sweep while the pointer is over the text. Default: false."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Shows plain text with no shine. Default: false."
     )
 
 
@@ -1013,16 +1526,16 @@ class Shuffle(ReactBitsComponent):
         doc="The text content to shuffle."
     )
     shuffle_direction: rx.Var[Literal["left", "right", "up", "down"]] = field(
-        doc="Direction the per-letter strip slides to reveal the final character. Default: 'right'."
+        doc="Direction letters travel. Flip turns around the matching axis. Default: 'right'."
     )
     duration: rx.Var[int | float] = field(
-        doc="Duration (s) of the strip slide per letter. Default: 0.35."
+        doc="Duration (s) of each letter\u2019s shuffle. Default: 0.35."
     )
     max_delay: rx.Var[int | float] = field(
-        doc="Max random delay per strip when animationMode = \"random\". Default: 0."
+        doc="Longest random delay (s) before a letter starts, when animationMode is \"random\". Default: 0."
     )
     ease: rx.Var[Any] = field(
-        doc="GSAP ease for sliding and color tween. Default: 'power3.out'."
+        doc="GSAP ease for the motion and color shift. Back eases make letters overshoot as they land. Default: 'power3.out'."
     )
     threshold: rx.Var[int | float] = field(
         doc="Portion of the element that must enter view before starting. Default: 0.1."
@@ -1037,10 +1550,10 @@ class Shuffle(ReactBitsComponent):
         doc="Text alignment applied via inline style. Default: 'center'."
     )
     shuffle_times: rx.Var[int | float] = field(
-        doc="How many interim scrambled glyphs to scroll past before the final char. Default: 1."
+        doc="How many interim glyphs each letter passes through before it lands. Default: 1."
     )
-    animation_mode: rx.Var[Literal["evenodd", "random"]] = field(
-        doc="Odd/even staggered strips or random per-strip delays. Default: 'evenodd'."
+    animation_mode: rx.Var[Literal["evenodd", "sequence", "center", "random"]] = field(
+        doc="Order the letters start in: odd letters then even ones, left to right, outward from the middle, or after random delays. Default: 'evenodd'."
     )
     loop: rx.Var[bool] = field(
         doc="Repeat the shuffle indefinitely. Default: false."
@@ -1049,25 +1562,40 @@ class Shuffle(ReactBitsComponent):
         doc="Delay (s) between loop repeats. Default: 0."
     )
     stagger: rx.Var[int | float] = field(
-        doc="Stagger (s) for strips in \"evenodd\" mode. Default: 0.03."
+        doc="Delay (s) between letters starting, in every mode except \"random\". Default: 0.03."
     )
     scramble_charset: rx.Var[str] = field(
         doc="Characters to use for interim scrambles; empty keeps original copies."
     )
     color_from: rx.Var[str] = field(
-        doc="Optional starting text color while shuffling."
+        doc="Color each letter starts in, fading to its final color as it lands."
     )
     color_to: rx.Var[str] = field(
-        doc="Optional final text color to tween to."
+        doc="Color each letter fades to as it lands, and keeps afterwards."
     )
     trigger_once: rx.Var[bool] = field(
         doc="Auto-run only on first scroll into view. Default: true."
     )
     respect_reduced_motion: rx.Var[bool] = field(
-        doc="Skip animation if user prefers reduced motion. Default: true."
+        doc="Shows the text right away, without shuffling, if the user prefers reduced motion. Default: true."
     )
     trigger_on_hover: rx.Var[bool] = field(
         doc="Allow re-playing the animation on hover after it completes. Default: true."
+    )
+    effect: rx.Var[Literal["slide", "flip", "blur"]] = field(
+        doc="How each letter cycles: a reel that slides past, a card that flips in 3D through random glyphs, or glyphs that spin in place with motion blur and settle sharp. Default: 'slide'."
+    )
+    hover_radius: rx.Var[int | float] = field(
+        doc="With hover replay on, only letters within this distance (px) of the cursor reshuffle, closer ones longer and through more glyphs. 0 replays the whole text. Default: 0."
+    )
+    motion_blur: rx.Var[bool] = field(
+        doc="Smears the sliding reel along its direction while it moves fast, then lands sharp. Slide effect only. Default: false."
+    )
+    color: rx.Var[str] = field(
+        doc="Text color. Follows the surrounding text color when unset."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color of the interim glyphs while letters are in flight. Settled letters keep the text color."
     )
     on_shuffle_complete: rx.EventHandler[no_args_event_spec] = field(
         doc="Called after a full run completes (and on each loop repeat)."
@@ -1091,7 +1619,7 @@ class SplitFlapText(ReactBitsComponent):
         doc="Phrases to cycle through like a departure board. Default: ['LAUNCH READY', 'SYNC ONLINE', 'SIGNAL LIVE']."
     )
     text: rx.Var[str] = field(
-        doc="Optional single phrase. When set, it takes precedence over words."
+        doc="Optional single phrase. When set, it takes precedence over words, and changing it flips the board."
     )
     flip_duration: rx.Var[int | float] = field(
         doc="Duration, in seconds, of each individual flap turn. Default: 0.12."
@@ -1112,7 +1640,7 @@ class SplitFlapText(ReactBitsComponent):
         doc="Base color of each mechanical tile. Default: '#111827'."
     )
     text_color: rx.Var[str] = field(
-        doc="Color of the glyphs on every flap. Default: '#f8fafc'."
+        doc="Color of the glyphs on every flap. \"currentColor\" follows the surrounding text, handy for the minimal style. Default: '#f8fafc'."
     )
     tile_radius: rx.Var[int | float | str] = field(
         doc="Corner radius for each tile. Default: 8."
@@ -1128,6 +1656,24 @@ class SplitFlapText(ReactBitsComponent):
     )
     pad_to: rx.Var[int | float] = field(
         doc="Fixed tile count used to keep the board width stable. Default: 12."
+    )
+    align: rx.Var[Literal["left", "center", "right"]] = field(
+        doc="Where phrases shorter than the board sit on it. Default: 'left'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Starts the board blank and flips it to the first phrase on mount. Default: true."
+    )
+    glare: rx.Var[int | float] = field(
+        doc="Strength, from 0 to 1, of the soft light sheen that sweeps down each tile as its flap falls. Default: 0."
+    )
+    depth: rx.Var[int | float] = field(
+        doc="How physical the board feels, from 0 (flat) to 1: hinge shadow, flap shading as it turns, the shadow a falling flap casts and the thickness of its edge. Default: 0.5."
+    )
+    order: rx.Var[Literal["left", "right", "center", "random"]] = field(
+        doc="Where the cascade starts: from the left, from the right, out from the middle, or in a random order. Default: 'left'."
+    )
+    tile_style: rx.Var[Literal["board", "minimal"]] = field(
+        doc="Mechanical tiles, or bare characters that flip on their own, split by a hinge line. Default: 'board'."
     )
 
 
@@ -1154,17 +1700,17 @@ class SplitText(ReactBitsComponent):
     duration: rx.Var[int | float] = field(
         doc="Duration of each letter animation (in seconds). Default: 1.25."
     )
-    ease: rx.Var[str] = field(
-        doc="GSAP easing function for the animation. Default: 'power3.out'."
+    ease: rx.Var[Any] = field(
+        doc="GSAP easing for the reveal. Each effect brings its own ease when not set."
     )
     split_type: rx.Var[str] = field(
         doc="Split type: \"chars\", \"words\", \"lines\", or \"words, chars\". Default: 'chars'."
     )
     from_: rx.Var[dict[str, Any]] = field(
-        doc="Initial GSAP properties for each letter/word. Default: { opacity: 0, y: 40 }."
+        doc="Custom starting GSAP properties for each piece, replacing the effect. Defaults to { opacity: 0, y: 40 }."
     )
     to: rx.Var[dict[str, Any]] = field(
-        doc="Target GSAP properties for each letter/word. Default: { opacity: 1, y: 0 }."
+        doc="Custom target GSAP properties for each piece, replacing the effect. Defaults to { opacity: 1, y: 0 }."
     )
     threshold: rx.Var[int | float] = field(
         doc="Intersection threshold to trigger the animation (0-1). Default: 0.1."
@@ -1176,10 +1722,37 @@ class SplitText(ReactBitsComponent):
         doc="Text alignment: 'left', 'center', 'right', etc. Default: 'center'."
     )
     tag_: rx.Var[str] = field(
-        doc="HTML tag to render: \"h1\", \"h2\", \"h3\", \"h4\", \"h5\", \"h6\", \"p\",. Default: 'p'."
+        doc="HTML tag to render: \"h1\", \"h2\", \"h3\", \"h4\", \"h5\", \"h6\", \"p\" or \"span\". Default: 'p'."
+    )
+    stagger_from: rx.Var[Literal["start", "center", "end", "edges", "random"]] = field(
+        doc="Where the stagger starts, so pieces can ripple out from the middle, the ends or in random order. Default: 'start'."
+    )
+    mask: rx.Var[bool] = field(
+        doc="Clips each piece to its own box so it slides out from behind an edge instead of floating in. Default: false."
+    )
+    effect: rx.Var[Literal["rise", "fade", "blur", "flip", "pop", "skew", "wave"]] = field(
+        doc="Reveal style. Rise slides pieces up, fade dissolves them in, blur pulls them into focus, flip swings them up in 3D, pop scales them in with a soft overshoot, skew slides them in leaning and wave lets a crest travel across. Ignored when from or to is set. Default: 'rise'."
+    )
+    trigger: rx.Var[Literal["view", "load", "hover", "click"]] = field(
+        doc="When the reveal plays. View waits until the text scrolls into view, load plays right away, hover and click play it in view and replay it on every hover or click. Default: 'view'."
+    )
+    loop: rx.Var[bool] = field(
+        doc="Animates the pieces out and back in again, over and over. Default: false."
+    )
+    loop_delay: rx.Var[int | float] = field(
+        doc="Pause in seconds between the end of a reveal and the next loop. Default: 1.5."
+    )
+    hover_effect: rx.Var[Literal["none", "lift", "wave"]] = field(
+        doc="Interaction after the reveal. Lift raises the pieces near the cursor with a soft falloff, wave sends a ripple through the text from where the cursor enters. Default: 'none'."
+    )
+    color: rx.Var[str] = field(
+        doc="Text color. Follows the surrounding text color when not set."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Color each piece passes through while it reveals before settling on the text color."
     )
     on_letter_animation_complete: rx.EventHandler[no_args_event_spec] = field(
-        doc="Callback function when all animations complete."
+        doc="Callback function when the first reveal completes."
     )
 
 
@@ -1204,7 +1777,7 @@ class StrokeText(ReactBitsComponent):
         doc="Color used for the drawing outline. Default: '#A78BFA'."
     )
     fill_color: rx.Var[str] = field(
-        doc="Color that floods into the glyphs after the outline draw. Default: '#F8FAFC'."
+        doc="Color that floods into the glyphs after the outline draw. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     stroke_width: rx.Var[int | float] = field(
         doc="Width of the SVG text outline. Default: 1.4."
@@ -1222,27 +1795,144 @@ class StrokeText(ReactBitsComponent):
         doc="GSAP easing used for the outline draw. Default: 'power2.out'."
     )
     trigger: rx.Var[Literal["mount", "hover", "scroll", "loop"]] = field(
-        doc="Chooses when the draw timeline starts. Default: 'mount'."
+        doc="Chooses when the draw timeline starts. Loop draws on, then plays back out before drawing again. Default: 'mount'."
     )
     fill_mode: rx.Var[Literal["fade", "wipe", "none"]] = field(
-        doc="Controls whether fill appears with a fade, left-to-right wipe, or not at all. Default: 'wipe'."
+        doc="Controls whether fill appears with a fade, a directional wipe, or not at all. Default: 'wipe'."
     )
-    font_size: rx.Var[int | float | str] = field(
-        doc="SVG font size before the responsive viewBox scales the wordmark. Default: 128."
+    wipe_from: rx.Var[Literal["left", "right", "top", "bottom"]] = field(
+        doc="Side the wipe fill sweeps in from. Bottom fills the letters like liquid rising. Default: 'left'."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Largest font size in px. The wordmark scales down to fit narrower containers. Default: 128."
     )
     font_weight: rx.Var[int | float | str] = field(
         doc="Weight of the rendered letterforms. Default: 800."
     )
-    letter_spacing: rx.Var[int | float | str] = field(
-        doc="Tracking applied during measurement and rendering. Default: -4."
+    font_family: rx.Var[str] = field(
+        doc="Font family of the letterforms. Inherits the surrounding font by default. Default: 'inherit'."
+    )
+    letter_spacing: rx.Var[int | float] = field(
+        doc="Tracking in px applied during measurement and rendering. Default: -4."
     )
     reverse: rx.Var[bool] = field(
         doc="Draws the stagger from the final character back to the first. Default: false."
     )
+    stroke_style: rx.Var[Literal["solid", "dashed", "dotted"]] = field(
+        doc="Line style of the outline. Dashed and dotted outlines still draw on along each letter. Default: 'solid'."
+    )
+    dash_length: rx.Var[int | float] = field(
+        doc="Length of each dash in px, or the distance between dots for a dotted outline. Default: 10."
+    )
+    marching: rx.Var[bool] = field(
+        doc="Keeps dashes or dots flowing around the letters once they are drawn. Default: false."
+    )
+    hover_redraw: rx.Var[bool] = field(
+        doc="Fades the outline out and draws it again whenever the pointer enters, after the first draw. Default: false."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Adds a soft offset shadow under the filled letters that lifts into place as the fill lands. Default: false."
+    )
+    shadow_color: rx.Var[str] = field(
+        doc="Color of the shadow. Uses the stroke color when left unset. Default: -."
+    )
+
+
+class TechText(ReactBitsComponent):
+    """A wordmark whose letters turn into dashed vector paths under the cursor.
+
+    Docs: https://reactbits.dev/text-animations/tech-text
+    """
+
+    tag = "TechText"
+    alias = "ReactBitsTechText"
+    is_default = True
+    _rb_category = "TextAnimations"
+    _rb_name = "TechText"
+    _rb_files = ('TechText.css', 'TechText.jsx')
+
+    text: rx.Var[str] = field(
+        doc="The wordmark to render. Default: 'React Bits'."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Any font family loaded on the page. Leave empty to inherit the font of the container."
+    )
+    font_weight: rx.Var[int | float] = field(
+        doc="Weight of the wordmark. Default: 600."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Largest font size in px. The wordmark shrinks to fit narrower containers. Default: 150."
+    )
+    letter_spacing: rx.Var[int | float] = field(
+        doc="Extra space between letters, in em. Default: -0.05."
+    )
+    color: rx.Var[str] = field(
+        doc="Colour of the letters and their outlines. Follows the surrounding text colour by default. Default: 'currentColor'."
+    )
+    accent_color: rx.Var[str] = field(
+        doc="Colour of the selection frame, connector, specks and labels. Default: 'currentColor'."
+    )
+    align: rx.Var[Literal["left", "center", "right"]] = field(
+        doc="Where the wordmark sits across the container. Default: 'center'."
+    )
+    reach: rx.Var[int | float] = field(
+        doc="Radius around the pointer where the letters turn into vector outlines, in px. Default: 200."
+    )
+    softness: rx.Var[int | float] = field(
+        doc="How gradually the fill hands over to the outlines. 0 is a hard edge. Default: 0.7."
+    )
+    dash_length: rx.Var[int | float] = field(
+        doc="Length of each outline dash, in px. Default: 4."
+    )
+    dash_gap: rx.Var[int | float] = field(
+        doc="Space between outline dashes, in px. Default: 2."
+    )
+    stroke_width: rx.Var[int | float] = field(
+        doc="Thickness of the outline, in px. Default: 1.5."
+    )
+    line_style: rx.Var[Literal["dashed", "solid"]] = field(
+        doc="How the outlines under the pointer are drawn. Only the outer silhouette is traced either way. Default: 'dashed'."
+    )
+    reveal: rx.Var[Literal["area", "letter", "off"]] = field(
+        doc="Area fades the letters into outlines inside a circle around the pointer. Letter turns only the active letter into its outline. Off keeps every letter solid. Default: 'letter'."
+    )
+    specks: rx.Var[int | float] = field(
+        doc="Tiny squares that blink and respawn around the active letter, seeded per letter. 0 turns them off. Default: 15."
+    )
+    selection: rx.Var[bool] = field(
+        doc="Frame the letter under the pointer. The frame glides from letter to letter. Default: true."
+    )
+    labels: rx.Var[bool] = field(
+        doc="Label the frame with the letter and its size, or with its offset while dragged. Default: true."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Let letters be dragged off the baseline. They spring back home on release. Default: true."
+    )
+    bounce: rx.Var[int | float] = field(
+        doc="How much a released letter overshoots on its way home, from 0 (none) to 1 (very springy). Default: 0.4."
+    )
+    sweep: rx.Var[bool] = field(
+        doc="Sweep the reveal across the wordmark on its own while the pointer is away. Default: true."
+    )
+    speed: rx.Var[int | float] = field(
+        doc="Speed of the idle sweep. Default: 1."
+    )
+    click_kick: rx.Var[bool] = field(
+        doc="Clicking a letter kicks it upward on its spring and sends a ripple through its neighbours, each leaving its outline behind while it moves. Default: true."
+    )
+    intro: rx.Var[Literal["none", "type", "assemble", "metrics"]] = field(
+        doc="Entrance played once the wordmark is in view. Type places each letter as an outline under the selection frame, assemble flies pixel specks into the letters, metrics rules the font lines first and fills the letters zone by zone between them. Default: 'none'."
+    )
+    intro_duration: rx.Var[int | float] = field(
+        doc="Length of the intro, in seconds. Default: 2."
+    )
+    guides: rx.Var[bool] = field(
+        doc="Rule the baseline, x-height, cap height and descender across the wordmark while a letter is active. Default: false."
+    )
 
 
 class TextCursor(ReactBitsComponent):
-    """Make any text element follow your cursor, leaving a trail of copies behind it.
+    """Text or emoji that trails your cursor as stamped copies, a following chain or a ribbon of letters.
 
     Docs: https://reactbits.dev/text-animations/text-cursor
     """
@@ -1253,28 +1943,60 @@ class TextCursor(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "TextCursor"
     _rb_files = ('TextCursor.css', 'TextCursor.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     text: rx.Var[str] = field(
-        doc="The text string to display as the trail. Default: '\u269b\ufe0f'."
+        doc="The text or emoji the trail is made of. Default: 'Hello'."
+    )
+    mode: rx.Var[Literal["stamp", "chain", "ribbon"]] = field(
+        doc="Stamp leaves copies along the path, chain makes copies follow each other like a snake, and ribbon lays the letters along the path. Default: 'stamp'."
     )
     spacing: rx.Var[int | float] = field(
-        doc="The spacing in pixels between each trail point. Default: 100."
-    )
-    follow_mouse_direction: rx.Var[bool] = field(
-        doc="If true, each text rotates to follow the mouse direction. Default: true."
-    )
-    random_float: rx.Var[bool] = field(
-        doc="If true, enables random floating offsets in position and rotation for a dynamic effect. Default: true."
-    )
-    exit_duration: rx.Var[int | float] = field(
-        doc="The duration in seconds for the exit animation of each trail item. Default: 0.5."
-    )
-    removal_interval: rx.Var[int | float] = field(
-        doc="The interval in milliseconds between removing trail items when the mouse stops moving. Default: 30."
+        doc="Distance between copies, in px. In ribbon mode, extra space between letters. Default: 88."
     )
     max_points: rx.Var[int | float] = field(
-        doc="The maximum number of trail points to display. Default: 5."
+        doc="Most copies shown at once in stamp and chain modes. Default: 7."
+    )
+    follow_mouse_direction: rx.Var[bool] = field(
+        doc="Turns the text to face the direction the cursor moves. Default: true."
+    )
+    random_float: rx.Var[bool] = field(
+        doc="Lets stamped copies sway gently, and makes chains and ribbons ripple. Default: true."
+    )
+    exit_duration: rx.Var[int | float] = field(
+        doc="How long a stamped copy takes to shrink away, in seconds. Default: 0.5."
+    )
+    removal_interval: rx.Var[int | float] = field(
+        doc="How quickly the trail pulls back into the cursor once it stops, in ms per copy. Default: 30."
+    )
+    shrink: rx.Var[int | float] = field(
+        doc="How much smaller the trail gets toward its end, from 0 to 1. Default: 0.5."
+    )
+    fade: rx.Var[int | float] = field(
+        doc="How much the trail fades toward its end, from 0 to 1. Default: 0.6."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="Softens the path the trail follows, from 0 to 1. Higher values lag a little behind the cursor. Default: 0.3."
+    )
+    pop_in: rx.Var[bool] = field(
+        doc="Makes new copies pop in with a little overshoot. Default: true."
+    )
+    keep_upright: rx.Var[bool] = field(
+        doc="In stamp mode, keeps copies from turning upside down when the cursor moves left. Default: true."
+    )
+    hide_cursor: rx.Var[bool] = field(
+        doc="Hides the system cursor over the element. Default: false."
+    )
+    color: rx.Var[str] = field(
+        doc="Color of the text. Default: 'currentColor'."
+    )
+    font_size: rx.Var[int | float] = field(
+        doc="Font size of the text, in px. Default: 28."
+    )
+    font_weight: rx.Var[int | float | str] = field(
+        doc="Font weight of the text. Default: 600."
+    )
+    font_family: rx.Var[str] = field(
+        doc="Font family of the text. Default: 'inherit'."
     )
 
 
@@ -1299,7 +2021,7 @@ class TextLoop(ReactBitsComponent):
         doc="Built-in curve the text flows along. Default: 'wave'."
     )
     path: rx.Var[str] = field(
-        doc="Custom SVG path data, drawn in a 1200x400 viewBox. Overrides shape when provided."
+        doc="Custom SVG path data, drawn in a 1200x520 viewBox. Overrides shape when provided."
     )
     speed: rx.Var[int | float] = field(
         doc="Travel speed along the path, in units per second. Default: 90."
@@ -1312,6 +2034,9 @@ class TextLoop(ReactBitsComponent):
     )
     curviness: rx.Var[int | float] = field(
         doc="Amplitude of the wave, or the radius of the closed shapes. Default: 90."
+    )
+    tilt: rx.Var[int | float] = field(
+        doc="Rotates the whole loop, in degrees. A slight tilt on a line turns it into a slanted banner. Default: 0."
     )
     font_size: rx.Var[int | float] = field(
         doc="Font size of the looping text. Default: 46."
@@ -1326,7 +2051,7 @@ class TextLoop(ReactBitsComponent):
         doc="Renders the phrase in uppercase. Default: true."
     )
     color: rx.Var[str] = field(
-        doc="Fill color of the text. Default: '#ffffff'."
+        doc="Fill color of the text. Defaults to white on the ribbon and to the surrounding text color without it. Default: -."
     )
     ribbon: rx.Var[bool] = field(
         doc="Draws a solid band behind the text along the path. Default: true."
@@ -1337,8 +2062,32 @@ class TextLoop(ReactBitsComponent):
     ribbon_width: rx.Var[int | float] = field(
         doc="Thickness of the band behind the text. Default: 86."
     )
+    edge_fade: rx.Var[int | float] = field(
+        doc="Fades the loop out toward the left and right edges, from 0 (hard edges) to 1 (wide, soft fade). Default: 0."
+    )
     pause_on_hover: rx.Var[bool] = field(
-        doc="Pauses the loop while the pointer is over it. Default: true."
+        doc="Eases the loop to a stop while the pointer is over it, and back up to speed when it leaves. Default: true."
+    )
+    cross: rx.Var[bool] = field(
+        doc="Adds a second band crossing the first in an X and running the other way, with a soft shadow where the top band passes over it. Waves weave into a braid, arches into a lens and circles gain a tilted orbit. Default: false."
+    )
+    cross_color: rx.Var[str] = field(
+        doc="Color of the crossing band. Defaults to a pale tint of ribbonColor, and its text picks black or white for contrast. Without a ribbon it colors the crossing text, which is dimmed by default. Default: -."
+    )
+    cross_angle: rx.Var[int | float] = field(
+        doc="Angle between the two bands, in degrees. The pair stays centered on tilt. Default: 16."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Drag the loop to scrub it, or spin it on a circle. A throw keeps its momentum, then eases back to the normal speed. Default: false."
+    )
+    scroll_boost: rx.Var[int | float] = field(
+        doc="How strongly page scrolling pushes the loop. Scrolling down speeds it up, scrolling up slows or reverses it, and it eases back once scrolling stops. 0 turns it off. Default: 0."
+    )
+    outline: rx.Var[bool] = field(
+        doc="Draws the letters as outlines instead of solid fills. Default: false."
+    )
+    outline_width: rx.Var[int | float] = field(
+        doc="Stroke width of the outlined letters. Default: 1.5."
     )
 
 
@@ -1362,34 +2111,55 @@ class TextPressure(ReactBitsComponent):
         doc="Name of the variable font family. Default: 'Roboto Flex'."
     )
     font_url: rx.Var[str] = field(
-        doc="URL for the variable font file (needed). Default: 'https://fonts.googleapis.com/css2?family=Roboto+Flex:ops...."
+        doc="Stylesheet URL that loads the variable font. The font needs width, weight and italic axes. Default: 'https://fonts.googleapis.com/css2?family=Roboto+Flex:ops...."
     )
     width: rx.Var[bool] = field(
-        doc="If true, varies the variable-font \"width\" axis. Default: true."
+        doc="Varies the width axis of the font with pressure. Default: true."
     )
     weight: rx.Var[bool] = field(
-        doc="If true, varies the variable-font \"weight\" axis. Default: true."
+        doc="Varies the weight axis of the font with pressure. Default: true."
     )
     italic: rx.Var[bool] = field(
-        doc="If true, varies the variable-font \"italics\" axis. Default: true."
+        doc="Varies the italic axis of the font with pressure. Default: true."
     )
     alpha: rx.Var[bool] = field(
-        doc="If true, applies an opacity effect based on cursor distance. Default: false."
+        doc="Fades letters out the further they are from the cursor. Default: false."
     )
     flex: rx.Var[bool] = field(
-        doc="Whether the characters are spaced using flex layout. Default: true."
+        doc="Spreads the letters across the full width. Default: true."
     )
     stroke: rx.Var[bool] = field(
-        doc="If true, adds a stroke effect around characters. Default: false."
+        doc="Draws an outline behind each letter. Default: false."
     )
     scale: rx.Var[bool] = field(
-        doc="If true, vertically scales the text to fill its container height. Default: false."
+        doc="Stretches the text vertically to fill the height of its container. Default: false."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="How far the cursor's pull reaches, as a fraction of the text width. Also sets the length of the idle wave. Default: 0.5."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="How softly the letters follow the cursor, from 0 for instant to 1 for a slow, floaty glide. Default: 0.5."
+    )
+    idle: rx.Var[Literal["none", "wave", "pulse"]] = field(
+        doc="What the letters do while the pointer is away. A wave rolls a swell across the word, a pulse makes it breathe in and out. Default: 'none'."
+    )
+    idle_speed: rx.Var[int | float] = field(
+        doc="Speed of the idle wave or pulse. 2 plays it twice as fast. Default: 1."
+    )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a wave of pressure rippling outward through the letters. Default: true."
     )
     text_color: rx.Var[str] = field(
-        doc="The fill color of the text. Default: '#FFFFFF'."
+        doc="Fill color of the text. Follows the surrounding text color by default. Default: 'currentColor'."
+    )
+    pressure_color: rx.Var[str] = field(
+        doc="Letters blend toward this color as they swell under pressure. Leave empty to keep one color."
     )
     stroke_color: rx.Var[str] = field(
-        doc="The stroke color that will be applied to the text when \"stroke\" is set to true. Default: '#FF0000'."
+        doc="Color of the outline when stroke is on. Default: '#FF0000'."
+    )
+    stroke_width: rx.Var[int | float] = field(
+        doc="Width of the outline when stroke is on, in px. About half of it shows around the letters. Default: 3."
     )
     min_font_size: rx.Var[int | float] = field(
         doc="Sets a minimum font-size to avoid overly tiny text on smaller screens. Default: 24."
@@ -1411,55 +2181,79 @@ class TextType(ReactBitsComponent):
     lib_dependencies: list[str] = ['gsap@3.13.0']
 
     text: rx.Var[str | list[str]] = field(
-        doc="Text or array of texts to type out. Default: -."
+        doc="A sentence, or a list of sentences typed one after another. Default: -."
     )
-    as_: rx.Var[rx.Component | str] = field(
-        doc="HTML tag to render the component as. Default: 'div'."
+    as_: rx.Var[Component | str] = field(
+        doc="The element to render, such as h1 or span. Default: 'div'."
     )
     typing_speed: rx.Var[int | float] = field(
-        doc="Speed of typing in milliseconds. Default: 50."
+        doc="Delay between typed characters, in ms. Default: 50."
     )
     initial_delay: rx.Var[int | float] = field(
-        doc="Initial delay before typing starts. Default: 0."
+        doc="Wait before a sentence starts typing, in ms. Default: 0."
     )
     pause_duration: rx.Var[int | float] = field(
-        doc="Time to wait between typing and deleting. Default: 2000."
+        doc="How long a finished sentence stays before it is cleared, in ms. Default: 2000."
     )
     deleting_speed: rx.Var[int | float] = field(
-        doc="Speed of deleting characters. Default: 30."
+        doc="Delay between deleted characters, in ms. In select mode, how fast the highlight grows. Default: 30."
+    )
+    delete_mode: rx.Var[Literal["backspace", "select"]] = field(
+        doc="How a sentence is cleared: erased one character at a time, or highlighted like selected text and then removed at once. Default: 'backspace'."
     )
     loop: rx.Var[bool] = field(
-        doc="Whether to loop through texts array. Default: true."
+        doc="Starts over after the last sentence. When off, the last sentence stays. Default: true."
     )
     show_cursor: rx.Var[bool] = field(
-        doc="Whether to show the cursor. Default: true."
+        doc="Shows a blinking cursor at the typing position. Default: true."
     )
     hide_cursor_while_typing: rx.Var[bool] = field(
-        doc="Hide cursor while typing. Default: false."
+        doc="Fades the cursor out while characters are being typed or cleared. Default: false."
     )
-    cursor_character: rx.Var[rx.Component | str] = field(
-        doc="Character or React node to use as cursor. Default: '|'."
+    cursor_style: rx.Var[Literal["character", "bar", "block", "underscore"]] = field(
+        doc="Shape of the cursor. Bar, block and underscore are drawn to fit the font. Character uses cursorCharacter. Default: 'character'."
+    )
+    cursor_character: rx.Var[Component | str] = field(
+        doc="Character or React node used as the cursor when cursorStyle is character. Default: '|'."
+    )
+    cursor_color: rx.Var[str] = field(
+        doc="Color of the cursor. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     cursor_class_name: rx.Var[str] = field(
-        doc="Optional class name for cursor styling."
+        doc="Extra class names for the cursor."
     )
     cursor_blink_duration: rx.Var[int | float] = field(
-        doc="Animation duration for cursor blinking. Default: 0.5."
+        doc="Half the length of one blink, in seconds. The cursor fades softly and stays solid while typing. Default: 0.5."
+    )
+    cursor_glide: rx.Var[bool] = field(
+        doc="Glides the cursor smoothly to each new position instead of jumping. Default: true."
+    )
+    type_effect: rx.Var[Literal["none", "fade", "blur", "rise"]] = field(
+        doc="How each character appears as it is typed: instantly, fading in, sharpening from a blur, or rising into place. Default: 'none'."
+    )
+    mistakes: rx.Var[int | float] = field(
+        doc="From 0 to 1. How often a wrong key is hit. The typo is noticed after a beat, erased, and corrected, like a person typing. Default: 0."
+    )
+    prefix: rx.Var[str] = field(
+        doc="Static text shown before the typed part, such as \"We build \" in front of rotating words."
+    )
+    prefix_color: rx.Var[str] = field(
+        doc="Color of the prefix. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     text_colors: rx.Var[list[str]] = field(
-        doc="Array of colors for each sentence. Default: []."
+        doc="Colors for the sentences, used in turn. Default: []."
     )
     variable_speed: rx.Var[dict[str, Any]] = field(
-        doc="Random typing speed within range for human-like feel."
+        doc="Types each character after a random delay between min and max ms, for a human feel."
     )
     start_on_visible: rx.Var[bool] = field(
-        doc="Start typing when component is visible in viewport. Default: false."
+        doc="Waits until the text scrolls into view before typing. Default: false."
     )
     reverse_mode: rx.Var[bool] = field(
-        doc="Type backwards (right to left). Default: false."
+        doc="Reveals each sentence from its last character back to its first. Default: false."
     )
     on_sentence_complete: rx.EventHandler[lambda sentence, index: [safe(sentence), safe(index)]] = field(
-        doc="Callback fired after each sentence is finished Handler receives: sentence, index."
+        doc="Called with the sentence and its index each time a sentence is cleared. Handler receives: sentence, index."
     )
 
 
@@ -1481,25 +2275,49 @@ class TrueFocus(ReactBitsComponent):
         doc="The text to display with the focus animation. Default: 'True Focus'."
     )
     separator: rx.Var[str] = field(
-        doc="Optional string used to separate words in the sentence. Default: ' '."
+        doc="String used to split the sentence into words. Default: ' '."
     )
     manual_mode: rx.Var[bool] = field(
-        doc="Disables automatic animation when set to true. Default: false."
+        doc="Moves the focus to the hovered word instead of cycling on its own. Default: false."
+    )
+    focus_style: rx.Var[Literal["brackets", "box", "underline", "highlight"]] = field(
+        doc="How the focused word is marked: corner brackets, a full outline, a bar underneath, or a soft filled block behind the word. Default: 'brackets'."
+    )
+    order: rx.Var[Literal["sequential", "random"]] = field(
+        doc="Moves the focus to the next word in reading order, or to a random other word. Default: 'sequential'."
+    )
+    easing: rx.Var[Literal["smooth", "spring"]] = field(
+        doc="How the frame moves between words: a smooth glide, or a spring that slightly overshoots and settles. Default: 'smooth'."
     )
     blur_amount: rx.Var[int | float] = field(
-        doc="The amount of blur applied to non-active words. Default: 5."
+        doc="Blur on the words that are out of focus, in px. Default: 5."
+    )
+    focus_scale: rx.Var[int | float] = field(
+        doc="Scales up the focused word, for example 1.06. The frame grows with it. Default: 1."
     )
     border_color: rx.Var[str] = field(
-        doc="The color of the focus borders. Default: 'green'."
+        doc="Color of the brackets, box or underline. Default: 'green'."
+    )
+    highlight_color: rx.Var[str] = field(
+        doc="Color of the block in the highlight style, drawn softly so the text stays readable. Uses the border color when not set."
     )
     glow_color: rx.Var[str] = field(
-        doc="The color of the glowing effect on the borders. Default: 'rgba(0, 255, 0, 0.6)'."
+        doc="Color of a soft glow around the brackets, box or underline. No glow by default. Default: 'transparent'."
     )
     animation_duration: rx.Var[int | float] = field(
-        doc="The duration of the animation for each word. Default: 0.5."
+        doc="How long the frame takes to move to the next word, in seconds. Default: 0.5."
     )
     pause_between_animations: rx.Var[int | float] = field(
-        doc="Time to pause between focusing on each word (in auto mode). Default: 1."
+        doc="How long the focus rests on each word before moving on, in seconds. Default: 1."
+    )
+    corner_size: rx.Var[int | float] = field(
+        doc="Length of each corner bracket, in px. Default: 16."
+    )
+    border_width: rx.Var[int | float] = field(
+        doc="Thickness of the brackets, box or underline, in px. Default: 3."
+    )
+    unfocused_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the words that are out of focus, from 0 to 1. Default: 1."
     )
 
 
@@ -1515,25 +2333,45 @@ class VariableProximity(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "VariableProximity"
     _rb_files = ('VariableProximity.css', 'VariableProximity.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
 
     label: rx.Var[str] = field(
         doc="The text content to display."
     )
     from_font_variation_settings: rx.Var[str] = field(
-        doc="The starting variation settings. Default: 'wght' 400, 'opsz' 9."
+        doc="The variation settings letters rest at, away from the cursor. Default: \"'wght' 400, 'opsz' 9\"."
     )
     to_font_variation_settings: rx.Var[str] = field(
-        doc="The variation settings to reach at cursor proximity. Default: 'wght' 800, 'opsz' 40."
+        doc="The variation settings to reach at cursor proximity. Default: \"'wght' 1000, 'opsz' 40\"."
     )
     container_ref: rx.Var[Any] = field(
-        doc="Reference to container for relative calculations."
+        doc="Optional element around the text. Letters skip their distance checks while the cursor is farther than the radius from it."
     )
     radius: rx.Var[int | float] = field(
         doc="Proximity radius to influence the effect. Default: 50."
     )
     falloff: rx.Var[Literal["linear", "exponential", "gaussian"]] = field(
         doc="Type of falloff for the effect. Default: 'linear'."
+    )
+    smoothing: rx.Var[int | float] = field(
+        doc="How gently letters ease toward their new settings, from 0 (instant) to 1 (a slow, trailing wake). Default: 0.2."
+    )
+    from_color: rx.Var[str] = field(
+        doc="Color letters rest at. Leave unset to keep the text color."
+    )
+    to_color: rx.Var[str] = field(
+        doc="Color letters shift toward as the cursor gets close. Leave unset to keep the text color."
+    )
+    scale: rx.Var[int | float] = field(
+        doc="Size a letter grows to right under the cursor. 1 keeps letters at their normal size. Default: 1."
+    )
+    lift: rx.Var[int | float] = field(
+        doc="How far, in em, a letter right under the cursor rises. Default: 0."
+    )
+    idle_wave: rx.Var[bool] = field(
+        doc="While the cursor is away, a gentle wave of weight travels across the text. It fades out as the cursor comes near. Default: false."
+    )
+    font_size: rx.Var[int | float | str] = field(
+        doc="Font size of the text. Numbers are pixels. Inherits the surrounding size when unset."
     )
 
 
@@ -1552,10 +2390,10 @@ class WarpText(ReactBitsComponent):
     lib_dependencies: list[str] = ['ogl@1.0.11']
 
     text: rx.Var[str] = field(
-        doc="The headline text rendered into the WebGL texture. Default: 'Bend the moment'."
+        doc="The headline text rendered into the WebGL texture. Use \\n for line breaks. Default: 'Bend the moment'."
     )
     color: rx.Var[str] = field(
-        doc="Text fill color before the glass refraction pass. Default: '#f8f5ff'."
+        doc="Text fill color before the glass refraction pass. Follows the surrounding text color by default. Default: 'currentColor'."
     )
     warp_strength: rx.Var[int | float] = field(
         doc="Amount of ambient glass distortion at rest. Default: 0.08."
@@ -1575,11 +2413,26 @@ class WarpText(ReactBitsComponent):
     refraction: rx.Var[int | float] = field(
         doc="Subtle RGB channel split for the glass edge. Default: 0.018."
     )
+    chromatic: rx.Var[int | float] = field(
+        doc="Color fringing inside the lens and click ripples, like light splitting through real glass. 0 is off, 1 is strong. Default: 0."
+    )
     ripple: rx.Var[bool] = field(
         doc="Adds a soft ripple to the pointer lens. Default: true."
     )
+    click_ripple: rx.Var[bool] = field(
+        doc="Clicking sends a shockwave ring through the text that bends the letters as it passes and fades out. Default: true."
+    )
+    idle_drift: rx.Var[int | float] = field(
+        doc="How strongly the lens keeps wandering over the text while the cursor is away, from 0 (it fades out) to 1 (a full-strength lens roaming across the words). Default: 0.2."
+    )
+    lens: rx.Var[Literal["bulge", "pinch", "swirl"]] = field(
+        doc="How the cursor bends the text: magnify it, pull it inward or twist it around the pointer. Default: 'bulge'."
+    )
+    intro: rx.Var[bool] = field(
+        doc="Fades the text in from a strong warp that settles once it first comes into view. Default: true."
+    )
     font_size: rx.Var[int | float | str] = field(
-        doc="Canvas raster font size. Numbers are pixels. Default: 'clamp(3rem, 10vw, 9rem)'."
+        doc="Canvas raster font size. Numbers are pixels. The text shrinks to fit the container. Default: 'clamp(3rem, 10vw, 9rem)'."
     )
     font_weight: rx.Var[int | float | str] = field(
         doc="Font weight used when rasterising the text texture. Default: 800."
@@ -1620,6 +2473,7 @@ shuffle = Shuffle.create
 split_flap_text = SplitFlapText.create
 split_text = SplitText.create
 stroke_text = StrokeText.create
+tech_text = TechText.create
 text_cursor = TextCursor.create
 text_loop = TextLoop.create
 text_pressure = TextPressure.create

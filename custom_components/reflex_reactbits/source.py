@@ -29,7 +29,7 @@ from pathlib import Path
 logger = logging.getLogger("reflex_reactbits")
 
 #: Commit of DavidHDev/react-bits the wrappers were generated from.
-PINNED_REF = "5fc9addb5b2362043332ad6d403bb436f2596318"
+PINNED_REF = "963f4d21dca65326a470956c42b7b467804f3c14"  # React Bits 2.0
 
 #: Directory (inside the app's ``assets/``) that receives the component sources.
 ASSETS_SUBDIR = "reactbits"
@@ -38,77 +38,37 @@ RAW_URL = "https://raw.githubusercontent.com/DavidHDev/react-bits/{ref}/{path}"
 
 # Files a component loads from the React Bits site's public/ folder at runtime.
 # They are copied next to the component and imported with Vite's ``?url``.
-EXTRA_FILES: dict[tuple[str, str], dict[str, str]] = {
-    ("Components", "FluidGlass"): {
-        "lens.glb": "public/assets/3d/lens.glb",
-        "cube.glb": "public/assets/3d/cube.glb",
-        "bar.glb": "public/assets/3d/bar.glb",
-    },
-}
+# React Bits 2.0 builds its 3D geometry procedurally (FluidGlass, Lanyard), so
+# no component needs one today.
+EXTRA_FILES: dict[tuple[str, str], dict[str, str]] = {}
 
 _TEXT_SUFFIXES = {".js", ".jsx", ".css", ".ts", ".tsx", ".json"}
 
-# Small, surgical patches so the plain JS-CSS variant runs inside a Reflex app
-# (which has no react-router, Chakra UI or Tailwind by default).
-PATCHES: dict[tuple[str, str], list[tuple[str, str]]] = {
-    # Ballpit renders its own <canvas> through a React ref, so React keeps and
-    # reuses that DOM node across remounts. forceContextLoss() loses the context
-    # of that canvas permanently: on the next mount getContext() hands back the
-    # same lost context, gl.getShaderPrecisionFormat() returns null and three.js
-    # throws "Cannot read properties of null (reading 'precision')" while
-    # building WebGLCapabilities. dispose() alone already frees the GPU
-    # resources, and reusing the live context avoids leaking one per remount.
-    ("Backgrounds", "Ballpit.jsx"): [
-        (
-            "    this.renderer.dispose();\n    this.renderer.forceContextLoss();\n",
-            "    this.renderer.dispose();\n",
-        ),
-    ],
-    # Hyperspeed loads its SMAA assets asynchronously and then calls init().
-    # If the component unmounts during that window (React StrictMode remounts
-    # every effect in dev), the cleanup already ran dispose(), which calls
-    # renderer.forceContextLoss(). The pending promise then initialises a dead
-    # App: postprocessing reads renderer.getContext().getContextAttributes(),
-    # which is null on a lost context, and throws "can't access property alpha".
-    ("Backgrounds", "Hyperspeed.jsx"): [
-        (
-            "      init() {\n        this.initPasses();",
-            "      init() {\n        if (this.disposed) return;\n        this.initPasses();",
-        ),
-    ],
-    ("TextAnimations", "BlurText.jsx"): [
-        (
-            'className="inline-block will-change-[transform,filter,opacity]"',
-            "style={{ display: 'inline-block', willChange: 'transform, filter, opacity' }}",
-        ),
-    ],
-    ("Components", "PillNav.jsx"): [
-        ("import { Link } from 'react-router-dom';\n", ""),
-        ("<Link", "<a"),
-        ("</Link>", "</a>"),
-        (" to={", " href={"),
-    ],
-    ("Components", "ElasticSlider.jsx"): [
-        ("import { Icon } from '@chakra-ui/react';\n", ""),
-        ("<Icon as={RiVolumeDownFill} />", "<RiVolumeDownFill />"),
-        ("<Icon as={RiVolumeUpFill} />", "<RiVolumeUpFill />"),
-    ],
-    ("Components", "Lanyard.jsx"): [
-        ("from './card.glb';", "from './card.glb?url';"),
-    ],
-    ("Components", "FluidGlass.jsx"): [
-        (
-            "import * as THREE from 'three';\n",
-            "import * as THREE from 'three';\n"
-            "import lensGlb from './lens.glb?url';\n"
-            "import cubeGlb from './cube.glb?url';\n"
-            "import barGlb from './bar.glb?url';\n",
-        ),
-        ('glb="/assets/3d/lens.glb"', "glb={lensGlb}"),
-        ('glb="/assets/3d/cube.glb"', "glb={cubeGlb}"),
-        ('glb="/assets/3d/bar.glb"', "glb={barGlb}"),
-    ],
-}
+# Small, surgical patches so the plain JS-CSS variant runs inside a Reflex app.
+# React Bits 2.0 no longer imports react-router, Chakra UI or Tailwind classes,
+# so the per-file patches the 1.x sources needed are gone.
+PATCHES: dict[tuple[str, str], list[tuple[str, str]]] = {}
+
+# Patches applied to every component file that renders its own ``<canvas>``.
+#
+# React StrictMode (on by default in Reflex dev mode) runs each effect's cleanup
+# and then the effect again while keeping the same DOM nodes. The 2.0 WebGL
+# components end their cleanup with WEBGL_lose_context.loseContext(); a canvas
+# only ever owns one context, so on the second run getContext() hands back that
+# lost context, every shader fails to compile and the component renders blank
+# or frozen (seen in Firefox; Chromium happens to recover the context).
+# The cleanup already deletes the buffers, programs and textures it created, so
+# dropping the forced loss only leaves the (empty) context to the GC.
+CANVAS_PATCHES: list[tuple[str, str]] = [
+    (
+        "if (!gl.isContextLost()) gl.getExtension('WEBGL_lose_context')?.loseContext();",
+        "/* reflex-reactbits: context kept for StrictMode remounts */",
+    ),
+    (
+        "gl.getExtension('WEBGL_lose_context')?.loseContext();",
+        "/* reflex-reactbits: context kept for StrictMode remounts */",
+    ),
+]
 
 
 def app_assets_dir() -> Path:
@@ -123,14 +83,15 @@ def component_dir(category: str, name: str, assets_dir: Path | None = None) -> P
 
 def _apply_patches(category: str, file: str, data: bytes) -> bytes:
     patches = PATCHES.get((category, file))
-    if not patches:
-        return data
     text = data.decode("utf-8")
-    for old, new in patches:
+    if "<canvas" in text:
+        for old, new in CANVAS_PATCHES:
+            text = text.replace(old, new)
+    for old, new in patches or ():
         if old not in text:
             # The patch anchors on upstream code at PINNED_REF. A miss means the
             # vendored file keeps an import or a call the wrappers do not expect
-            # (for instance a dependency listed in DROPPED_DEPS, which is then
+            # (for instance a dependency the generator dropped, which is then
             # never installed), so say so here rather than fail later in Vite.
             logger.warning(
                 "React Bits patch for %s/%s no longer matches upstream and was skipped; "
@@ -182,6 +143,24 @@ def backend_only() -> bool:
     return os.environ.get("REFLEX_BACKEND_ONLY", "").lower() in {"1", "true", "yes"}
 
 
+#: File, next to a component's copied source, that records the React Bits ref
+#: it was copied from. Copies made before 0.2.0 have none: they are 1.x sources.
+REF_MARKER = ".reactbits-ref"
+
+_warned_stale: set[tuple[str, str]] = set()
+
+
+def resolve_ref(ref: str | None = None) -> str:
+    """The React Bits ref to copy from: explicit, then ``REACTBITS_REF``, then the pinned one."""
+    return ref or os.environ.get("REACTBITS_REF") or PINNED_REF
+
+
+def vendored_ref(category: str, name: str, assets_dir: Path | None = None) -> str | None:
+    """Return the React Bits ref a component's copied source came from, if recorded."""
+    marker = component_dir(category, name, assets_dir) / REF_MARKER
+    return marker.read_text().strip() if marker.exists() else None
+
+
 def ensure_component_source(
     category: str,
     name: str,
@@ -203,11 +182,19 @@ def ensure_component_source(
 
     Returns:
         The list of files written during this call.
+
+    Existing files are kept even when they come from another React Bits ref (an
+    upgrade of this package does not touch them), but that case is logged once
+    per component, because wrappers generated for one React Bits release do not
+    match the props of another.
     """
     target = component_dir(category, name, assets_dir)
-    ref = ref or os.environ.get("REACTBITS_REF") or PINNED_REF
+    ref = resolve_ref(ref)
+    all_files = [*files, *EXTRA_FILES.get((category, name), {})]
+    previous = vendored_ref(category, name, assets_dir)
+    kept = [f for f in all_files if (target / f).exists() and not force]
     written: list[Path] = []
-    for file in [*files, *EXTRA_FILES.get((category, name), {})]:
+    for file in all_files:
         dest = target / file
         if dest.exists() and not force:
             continue
@@ -222,6 +209,16 @@ def ensure_component_source(
         tmp.write_bytes(data)
         tmp.replace(dest)
         written.append(dest)
+    if not kept:
+        (target / REF_MARKER).write_text(ref + "\n")
+    elif previous != ref and (category, name) not in _warned_stale:
+        _warned_stale.add((category, name))
+        logger.warning(
+            "reflex-reactbits: %s keeps the React Bits source it copied earlier (%s), but "
+            "this version of the wrappers was generated from %s, so props may not match. "
+            "Run `reactbits add %s --force` to replace it (local edits are lost).",
+            target, previous[:10] if previous else "React Bits 1.x", ref[:10], name,
+        )
     if written:
         logger.info("reflex-reactbits: added %s/%s to %s", category, name, target)
     return written

@@ -6,7 +6,10 @@ const ROOT = process.argv[2];
 const OUT = process.argv[3];
 const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
 const { componentMetadata } = await import(path.join(ROOT, 'src/constants/Information.js'));
-const IMPLEMENTATIONS = { Antigravity: 'AntigravityInner', GradualBlur: 'DEFAULT_CONFIG' };
+// Components whose props are destructured somewhere other than the exported
+// symbol (an inner component, or a config object merged with the props).
+// React Bits 2.0 destructures every prop in the component itself.
+const IMPLEMENTATIONS = {};
 
 const walk = (node, visit) => { visit(node); ts.forEachChild(node, c => walk(c, visit)); };
 

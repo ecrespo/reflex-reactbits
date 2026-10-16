@@ -10,15 +10,15 @@ from typing import Any, Literal
 
 import reflex as rx
 from reflex.event import no_args_event_spec
-from reflex_base.components.component import field
+from reflex_base.components.component import Component, field
 
 from .base import ReactBitsComponent, safe
 
-__all__ = ['BellToggle', 'BranchedMenu', 'CallChip', 'CodeSlots', 'CometDial', 'DodgeField', 'FolderFloat', 'FuseButton', 'GlideSelect', 'HoldButton', 'JellyRadio', 'LatticeLoader', 'PeekRating', 'PromptBar', 'PulseHeart', 'RefineFrame', 'RubberSegment', 'ScrubField', 'SlideCommit', 'SlingButton', 'SloshGauge', 'SpringCheck', 'SquishSwitch', 'StatusMark', 'SwipeRow', 'SwipeToast', 'ThoughtLine', 'VoicePill', 'WakeSlider', 'WarmTooltip', 'WarmTooltipGroup', 'bell_toggle', 'branched_menu', 'call_chip', 'code_slots', 'comet_dial', 'dodge_field', 'folder_float', 'fuse_button', 'glide_select', 'hold_button', 'jelly_radio', 'lattice_loader', 'peek_rating', 'prompt_bar', 'pulse_heart', 'refine_frame', 'rubber_segment', 'scrub_field', 'slide_commit', 'sling_button', 'slosh_gauge', 'spring_check', 'squish_switch', 'status_mark', 'swipe_row', 'swipe_toast', 'thought_line', 'voice_pill', 'wake_slider', 'warm_tooltip', 'warm_tooltip_group']
+__all__ = ['BellToggle', 'BranchedMenu', 'CallChip', 'CodeSlots', 'CometDial', 'DodgeField', 'FlipCard', 'FolderFloat', 'FuseButton', 'GlideSelect', 'HoldButton', 'JellyRadio', 'LatticeLoader', 'PaperCrumple', 'PeekRating', 'PromptBar', 'PulseHeart', 'RefineFrame', 'RubberSegment', 'ScrubField', 'Shredder', 'SlideCommit', 'SlingButton', 'SloshGauge', 'SpringCheck', 'SquishSwitch', 'StatusMark', 'SwipeRow', 'SwipeToast', 'TearTicket', 'ThoughtLine', 'VoicePill', 'WakeSlider', 'WarmTooltip', 'WarmTooltipGroup', 'bell_toggle', 'branched_menu', 'call_chip', 'code_slots', 'comet_dial', 'dodge_field', 'flip_card', 'folder_float', 'fuse_button', 'glide_select', 'hold_button', 'jelly_radio', 'lattice_loader', 'paper_crumple', 'peek_rating', 'prompt_bar', 'pulse_heart', 'refine_frame', 'rubber_segment', 'scrub_field', 'shredder', 'slide_commit', 'sling_button', 'slosh_gauge', 'spring_check', 'squish_switch', 'status_mark', 'swipe_row', 'swipe_toast', 'tear_ticket', 'thought_line', 'voice_pill', 'wake_slider', 'warm_tooltip', 'warm_tooltip_group']
 
 
 class BellToggle(ReactBitsComponent):
-    """Pill toggle that answers a press at three tempos: the bell rings on damped keyframes, the label blur-crossfades, and the pill unfurls to the longer label through a clip-path on a critically damped spring. The pressed state is the receipt.
+    """Pill toggle where a press rings the bell, crossfades the label and unfurls the pill.
 
     Docs: https://reactbits.dev/micro/bell-toggle
     """
@@ -37,7 +37,7 @@ class BellToggle(ReactBitsComponent):
     on_label: rx.Var[str] = field(
         doc="The face after the yes press. The pill reserves the width of the longer label; only the visible part changes, so neighbours never shift. Default: \"You'll be notified\"."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Replaces the bell. Adjust ringPivot for a glyph that hangs elsewhere."
     )
     label: rx.Var[str] = field(
@@ -115,7 +115,7 @@ class BellToggle(ReactBitsComponent):
 
 
 class BranchedMenu(ReactBitsComponent):
-    """Collapsible menu whose sections unfold into a trunk with a curved branch to each child, and an accent line that travels down the trunk and around the curve to whatever you pick, while a marker glides to the open section.
+    """Collapsible menu that branches each section from a trunk and traces a line to your pick.
 
     Docs: https://reactbits.dev/micro/branched-menu
     """
@@ -182,7 +182,7 @@ class BranchedMenu(ReactBitsComponent):
 
 
 class CallChip(ReactBitsComponent):
-    """Inline tool-call chip whose fill wipes across while a live ms counter ticks, completing with a green wash on success or stopping short and shaking red with a retry glyph on error.
+    """Tool-call chip whose fill wipes across as a live timer ticks, ending green or shaking red.
 
     Docs: https://reactbits.dev/micro/call-chip
     """
@@ -195,7 +195,7 @@ class CallChip(ReactBitsComponent):
     _rb_files = ('CallChip.css', 'CallChip.jsx')
     lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10']
 
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="The tool glyph. It rolls out when the call resolves. Default: 'terminal'."
     )
     name: rx.Var[str] = field(
@@ -249,7 +249,7 @@ class CallChip(ReactBitsComponent):
 
 
 class CodeSlots(ReactBitsComponent):
-    """One-time-code input where a hidden overlay input owns focus, paste and SMS autofill while each slot lands its digit on one spring: the fill swells from the centre, the digit rises and the caret glides; a wrong code drains the slots in a cascade, a right one merges them into a single accent wash.
+    """One-time code input whose digits spring into their slots, with paste and SMS autofill.
 
     Docs: https://reactbits.dev/micro/code-slots
     """
@@ -334,7 +334,7 @@ class CodeSlots(ReactBitsComponent):
 
 
 class CometDial(ReactBitsComponent):
-    """Tick-ring dial you flick by angle: the reading launches on a spring and a velocity-driven comet streaks behind the lit head, trailing the direction of travel and vanishing at rest.
+    """Tick-ring dial you flick by angle, with a comet that streaks behind the lit head.
 
     Docs: https://reactbits.dev/micro/comet-dial
     """
@@ -413,7 +413,7 @@ class CometDial(ReactBitsComponent):
 
 
 class DodgeField(ReactBitsComponent):
-    """Wrapper that makes any child flee the pointer inside a bounded field, dodges once per approach, then relents after a few tries and glides home.
+    """Wrapper that makes any child dodge the pointer until it relents and glides home.
 
     Docs: https://reactbits.dev/micro/dodge-field
     """
@@ -482,8 +482,105 @@ class DodgeField(ReactBitsComponent):
     )
 
 
+class FlipCard(ReactBitsComponent):
+    """Two-faced card that flips in 3D on a click, drag or flick and settles on a spring.
+
+    Docs: https://reactbits.dev/micro/flip-card
+    """
+
+    tag = "FlipCard"
+    alias = "ReactBitsFlipCard"
+    is_default = True
+    _rb_category = "Micro"
+    _rb_name = "FlipCard"
+    _rb_files = ('FlipCard.css', 'FlipCard.jsx')
+    lib_dependencies: list[str] = ['motion@12.23.21']
+
+    front: rx.Var[Component | str] = field(
+        doc="Content of the front face."
+    )
+    back: rx.Var[Component | str] = field(
+        doc="Content of the back face."
+    )
+    flipped: rx.Var[bool] = field(
+        doc="Controlled state: true shows the back. Omit it to let the card manage itself. Default: -."
+    )
+    default_flipped: rx.Var[bool] = field(
+        doc="Start on the back face. Default: false."
+    )
+    axis: rx.Var[Literal["y", "x"]] = field(
+        doc="y turns the card sideways and drags horizontally. x turns it over the top and drags vertically. Default: 'y'."
+    )
+    flip_on_click: rx.Var[bool] = field(
+        doc="A press without movement flips the card. Default: true."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Drag to turn the card by hand. On release it springs to the nearest face, carrying the flick velocity. Default: true."
+    )
+    drag_distance: rx.Var[int | float] = field(
+        doc="Pixels of drag for a half turn. 0 uses the card width, or its height on the x axis. Default: 0."
+    )
+    tilt: rx.Var[bool] = field(
+        doc="The card leans toward the cursor on hover. Default: true."
+    )
+    tilt_max: rx.Var[int | float] = field(
+        doc="Largest tilt angle in degrees. Default: 12."
+    )
+    glare: rx.Var[bool] = field(
+        doc="A soft sheen that follows the cursor. Default: true."
+    )
+    glare_opacity: rx.Var[int | float] = field(
+        doc="Strength of the sheen at its centre. Default: 0.22."
+    )
+    hover_scale: rx.Var[int | float] = field(
+        doc="Lift while hovered or held. Default: 1.03."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="Viewing distance in px. Smaller is more dramatic. Default: 1100."
+    )
+    stiffness: rx.Var[int | float] = field(
+        doc="Stiffness of the flip spring. Default: 170."
+    )
+    damping: rx.Var[int | float] = field(
+        doc="Damping of the flip spring. Lower overshoots more. Default: 20."
+    )
+    width: rx.Var[int | float] = field(
+        doc="Card width in px, capped at the parent. Default: 300."
+    )
+    height: rx.Var[int | float] = field(
+        doc="Card height in px. Default: 400."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius in px. Default: 22."
+    )
+    background: rx.Var[str] = field(
+        doc="Surface of both faces. Default: '#27272a'."
+    )
+    color: rx.Var[str] = field(
+        doc="Text colour of both faces. Default: '#f5f5f5'."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="A soft shadow beneath the card that narrows as it turns edge on. Default: true."
+    )
+    shadow_color: rx.Var[str] = field(
+        doc="Shadow colour. Default: '#000000'."
+    )
+    shadow_opacity: rx.Var[int | float] = field(
+        doc="Shadow strength. Default: 0.45."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Dimmed, flat and inert. Default: false."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name. The face is carried by aria-pressed. Default: 'Flip card'."
+    )
+    on_flip_change: rx.EventHandler[lambda flipped: [safe(flipped)]] = field(
+        doc="Fires when a click, drag, flick or key lands on the other face. Handler receives: flipped."
+    )
+
+
 class FolderFloat(ReactBitsComponent):
-    """Folder that opens on hover or press: the flap tilts toward you, a paper edge rises, and its notes spring out from behind the flap into a floating cloud to pick from, then sink back when the folder closes.
+    """Folder whose notes spring out into a floating cloud when it opens on hover or press.
 
     Docs: https://reactbits.dev/micro/folder-float
     """
@@ -580,7 +677,7 @@ class FolderFloat(ReactBitsComponent):
 
 
 class FuseButton(ReactBitsComponent):
-    """Action button whose done state carries its own undo on a burning fuse: press, the label crossfades to Undo, a hairline burns for the undo window, and Undo or Escape runs it back.
+    """Action button whose done state carries an undo on a burning fuse.
 
     Docs: https://reactbits.dev/micro/fuse-button
     """
@@ -602,7 +699,7 @@ class FuseButton(ReactBitsComponent):
     done_label: rx.Var[str] = field(
         doc="Shown with a check once the fuse burns out and settle is stay; announced to screen readers on arm. Default: 'Archived'."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="The idle glyph; an archive icon when omitted."
     )
     color: rx.Var[str] = field(
@@ -662,7 +759,7 @@ class FuseButton(ReactBitsComponent):
 
 
 class GlideSelect(ReactBitsComponent):
-    """Select chip whose menu pops out of its own corner and whose single hover highlight glides between rows, remembering where you left it so re-entry slides from there instead of blinking in.
+    """Select chip whose menu pops from its corner and whose highlight glides between rows.
 
     Docs: https://reactbits.dev/micro/glide-select
     """
@@ -738,7 +835,7 @@ class GlideSelect(ReactBitsComponent):
 
 
 class HoldButton(ReactBitsComponent):
-    """Hold-to-confirm button whose liquid fill rises while pressed, snaps back on an early release and swaps its label through a blur when the hold completes.
+    """Hold-to-confirm button whose liquid fill rises while pressed and snaps back if you let go.
 
     Docs: https://reactbits.dev/micro/hold-button
     """
@@ -750,13 +847,13 @@ class HoldButton(ReactBitsComponent):
     _rb_name = "HoldButton"
     _rb_files = ('HoldButton.css', 'HoldButton.jsx')
 
-    done_label: rx.Var[rx.Component | str] = field(
+    done_label: rx.Var[Component | str] = field(
         doc="Label that blurs in when the hold completes. Default: 'Deleted'."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Optional icon rendered before the idle label."
     )
-    done_icon: rx.Var[rx.Component | str] = field(
+    done_icon: rx.Var[Component | str] = field(
         doc="Optional icon rendered before the done label."
     )
     background_color: rx.Var[str] = field(
@@ -813,7 +910,7 @@ class HoldButton(ReactBitsComponent):
 
 
 class JellyRadio(ReactBitsComponent):
-    """Radio group of labelled chips where the chosen one swells wide-then-tall on two springs and barges its neighbours outward with a travelling stagger, so a selection reads as a force moving through the row.
+    """Radio group of chips where the chosen one swells and barges its neighbours outward.
 
     Docs: https://reactbits.dev/micro/jelly-radio
     """
@@ -889,7 +986,7 @@ class JellyRadio(ReactBitsComponent):
 
 
 class LatticeLoader(ReactBitsComponent):
-    """Inline agent-status row: a 3x3 or 4x4 lattice whose cells brighten in a phase-offset wave beside a verb and a live stopwatch, resolving into a check or a cross when the task ends.
+    """Agent status row with a lattice of cells that brighten in a wave beside a live stopwatch.
 
     Docs: https://reactbits.dev/micro/lattice-loader
     """
@@ -960,8 +1057,123 @@ class LatticeLoader(ReactBitsComponent):
     )
 
 
+class PaperCrumple(ReactBitsComponent):
+    """An image that crumples into a textured 3D sheet while you hold and drag it.
+
+    Docs: https://reactbits.dev/micro/paper-crumple
+    """
+
+    tag = "PaperCrumple"
+    alias = "ReactBitsPaperCrumple"
+    is_default = True
+    _rb_category = "Micro"
+    _rb_name = "PaperCrumple"
+    _rb_files = ('PaperCrumple.css', 'PaperCrumple.jsx')
+    lib_dependencies: list[str] = ['three@0.180.0']
+
+    src: rx.Var[str] = field(
+        doc="Required image URL. PNG transparency is preserved. Remote image servers must allow CORS. Default: -."
+    )
+    alt: rx.Var[str] = field(
+        doc="Image description used by the fallback and the accessible hold control. Default: 'Crumplable image'."
+    )
+    back_src: rx.Var[str] = field(
+        doc="Optional image printed on the reverse. Otherwise the back uses paperColor."
+    )
+    width: rx.Var[int | float] = field(
+        doc="Unfolded paper width in pixels. Scales down to fit the stage with a 24px inset. Default: 320."
+    )
+    height: rx.Var[int | float] = field(
+        doc="Unfolded paper height in pixels. Determines the sheet aspect ratio. Default: 400."
+    )
+    scene_height: rx.Var[int | float] = field(
+        doc="Height of the full-width stage in pixels, including space to drag. Default: 560."
+    )
+    image_fit: rx.Var[Literal["cover", "contain"]] = field(
+        doc="Cover crops the texture; contain keeps the entire image and leaves unused space transparent. Default: 'cover'."
+    )
+    release_behavior: rx.Var[Literal["stay", "restore", "creased"]] = field(
+        doc="Freeze the current crumple, unfold completely, or unfold with lasting crease relief. Default: 'restore'."
+    )
+    crumple_amount: rx.Var[int | float] = field(
+        doc="Maximum fold amount while held, from 0 (flat) to 1 (fully crumpled). Default: 0.85."
+    )
+    crumple_duration: rx.Var[int | float] = field(
+        doc="Approximate settling time in seconds while holding. 0 makes the change immediate. Default: 0.55."
+    )
+    release_duration: rx.Var[int | float] = field(
+        doc="Approximate unfolding time in seconds. Another press can interrupt it. Default: 0.4."
+    )
+    fold_count: rx.Var[int | float] = field(
+        doc="Number of crease guides in the paper solver, from 3 to 16. Each seed produces a different arrangement. Default: 6."
+    )
+    fold_sharpness: rx.Var[int | float] = field(
+        doc="Blend from rounded wrinkles (0) to angular creases (1). Default: 0.6."
+    )
+    wrinkle_depth: rx.Var[int | float] = field(
+        doc="Compression depth, from 0 to 2. Higher values produce a tighter wad and stronger residual folds. Default: 0.65."
+    )
+    crease_strength: rx.Var[int | float] = field(
+        doc="Residual relief from 0 to 1 for the creased release mode. Longer holds leave stronger creases. Default: 0.18."
+    )
+    paper_color: rx.Var[str] = field(
+        doc="Color of the unprinted back of the sheet. Default: '#f4f0e8'."
+    )
+    roughness: rx.Var[int | float] = field(
+        doc="Material roughness, from smooth (0) to matte (1). Default: 0.92."
+    )
+    paper_texture: rx.Var[int | float] = field(
+        doc="Fine paper-grain bump strength, from 0 to 1. Default: 0.08."
+    )
+    light_intensity: rx.Var[int | float] = field(
+        doc="Strength of the directional light that reveals folds. Default: 1.8."
+    )
+    light_angle: rx.Var[int | float] = field(
+        doc="Direction of the key light in degrees. 0 shines from above. Default: -35."
+    )
+    shadow: rx.Var[bool] = field(
+        doc="Enable self-shadowing and a soft drop shadow behind the paper. Default: true."
+    )
+    shadow_opacity: rx.Var[int | float] = field(
+        doc="Opacity of the cast and drop shadows, from 0 to 1. Default: 0.08."
+    )
+    draggable: rx.Var[bool] = field(
+        doc="Move the sheet while held. The grabbed material point follows the pointer. Default: true."
+    )
+    drag_rotation: rx.Var[int | float] = field(
+        doc="Maximum tilt in degrees while dragging. 0 disables tilt. Default: 10."
+    )
+    drag_radius: rx.Var[int | float] = field(
+        doc="Maximum resting offset on each axis, in pixels. The stage also bounds the resting position. Default: 180."
+    )
+    return_to_origin: rx.Var[bool] = field(
+        doc="Restore and creased modes return to the center. Stay mode leaves the paper where it was dropped. Default: true."
+    )
+    rotation: rx.Var[int | float] = field(
+        doc="Initial sheet rotation in degrees. Default: 0."
+    )
+    seed: rx.Var[int | float] = field(
+        doc="Seed for a repeatable arrangement of folds and paper grain. Default: 7."
+    )
+    detail: rx.Var[int | float] = field(
+        doc="Simulation detail, clamped to 32\u201396. Higher values add smaller folds and take longer to prepare. Default: 64."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Disable pointer and keyboard input and finish any active hold. Default: false."
+    )
+    reset_key: rx.Var[int | float | str] = field(
+        doc="Change this value to reset the position, crumple and accumulated creases immediately. Default: 0."
+    )
+    on_state_change: rx.EventHandler[lambda state: [safe(state)]] = field(
+        doc="Reports holding, then the selected release state: flat, crumpled or creased. Handler receives: state."
+    )
+    on_error: rx.EventHandler[lambda error: [safe(error)]] = field(
+        doc="Called if WebGL initialization or image loading fails. The original image remains as a fallback. Handler receives: error."
+    )
+
+
 class PeekRating(ReactBitsComponent):
-    """Star rating you can try before you commit: sweeping the row lifts a trailing wave of stars up to the pointer while a tip hops along with the label; a click commits with a pop.
+    """Star rating that lifts a wave of stars up to the pointer, then commits with a pop on click.
 
     Docs: https://reactbits.dev/micro/peek-rating
     """
@@ -986,7 +1198,7 @@ class PeekRating(ReactBitsComponent):
     shape: rx.Var[Literal["star", "heart", "bolt"]] = field(
         doc="Built-in glyph shape. Default: 'star'."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Custom glyph that replaces the built-in shape."
     )
     labels: rx.Var[list[str]] = field(
@@ -1043,7 +1255,7 @@ class PeekRating(ReactBitsComponent):
 
 
 class PromptBar(ReactBitsComponent):
-    """Chat composer with an @ sources menu, a / commands menu, a model picker, dictation and attachments, whose send tile charges to ink the moment there is something to send and morphs its arrow into a stop square while busy.
+    """Chat composer with @ sources, / commands, a model picker, dictation and attachments.
 
     Docs: https://reactbits.dev/micro/prompt-bar
     """
@@ -1092,6 +1304,9 @@ class PromptBar(ReactBitsComponent):
     spark_color: rx.Var[str] = field(
         doc="The wash, the sparks and the slider at the top effort. Default: '#b39dff'."
     )
+    spark_boost: rx.Var[int | float] = field(
+        doc="How strongly typing drives the sparks at the top effort: they rise faster, grow and glow brighter with typing speed, and flash on each keystroke. No sparks are added. 0 keeps them calm. Default: 1."
+    )
     width: rx.Var[int | float] = field(
         doc="Field width in px, capped at the parent. Default: 400."
     )
@@ -1131,7 +1346,7 @@ class PromptBar(ReactBitsComponent):
 
 
 class PulseHeart(ReactBitsComponent):
-    """Like button that contracts to a dot, flips colour at its smallest frame and pulses back while the count swaps one glyph.
+    """Like button that contracts to a dot, flips colour and pulses back as the count ticks over.
 
     Docs: https://reactbits.dev/micro/pulse-heart
     """
@@ -1156,7 +1371,7 @@ class PulseHeart(ReactBitsComponent):
     show_count: rx.Var[bool] = field(
         doc="Shows the count; off collapses the pill to a circle. Default: true."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Built-in glyph, or a custom element. Default: 'heart'."
     )
     idle_outline: rx.Var[bool] = field(
@@ -1207,7 +1422,7 @@ class PulseHeart(ReactBitsComponent):
 
 
 class RefineFrame(ReactBitsComponent):
-    """Reserved-aspect frame that walks any media through queued, generating, refining and complete without layout shift: each stage is one blur, saturate, scale and opacity tween, a soft band sweeps while it works, a chip reports the stage, and an error dims the picture behind a retry pill.
+    """Media frame that steps an image through generation stages without any layout shift.
 
     Docs: https://reactbits.dev/micro/refine-frame
     """
@@ -1262,7 +1477,7 @@ class RefineFrame(ReactBitsComponent):
 
 
 class RubberSegment(ReactBitsComponent):
-    """Segmented control with a rubber thumb: taps stretch it across the gap and squash it onto the target, and you can grab, drag and flick it between slots.
+    """Segmented control whose rubber thumb stretches across the gap and squashes into place.
 
     Docs: https://reactbits.dev/micro/rubber-segment
     """
@@ -1332,7 +1547,7 @@ class RubberSegment(ReactBitsComponent):
 
 
 class ScrubField(ReactBitsComponent):
-    """Number chip you drag to scrub: the value follows the hand, pushes past the range on a rubber band, and a click without moving opens it for typing.
+    """Number chip you drag to scrub, with rubber-band limits and click to type.
 
     Docs: https://reactbits.dev/micro/scrub-field
     """
@@ -1410,8 +1625,92 @@ class ScrubField(ReactBitsComponent):
     )
 
 
+class Shredder(ReactBitsComponent):
+    """A list with a paper shredder at the bottom that cuts dragged rows into curling strips.
+
+    Docs: https://reactbits.dev/micro/shredder
+    """
+
+    tag = "Shredder"
+    alias = "ReactBitsShredder"
+    is_default = True
+    _rb_category = "Micro"
+    _rb_name = "Shredder"
+    _rb_files = ('Shredder.css', 'Shredder.jsx')
+
+    items: rx.Var[list[Any]] = field(
+        doc="Rows to render, top to bottom. Each item needs a unique id. Default: []."
+    )
+    render_item: rx.Var[Any] = field(
+        doc="Renders one row. A snapshot of the rendered row is what gets cut into strips, so plain markup, inline images and inline SVG all work. Default: -. Pass a JS function with rx.Var('(...) => ...')."
+    )
+    width: rx.Var[int | float] = field(
+        doc="Width of the whole machine in pixels. Default: 340."
+    )
+    height: rx.Var[int | float] = field(
+        doc="Total height. The rows stack up from the slit, which sits above the fall zone at the bottom. Default: 460."
+    )
+    inset: rx.Var[int | float] = field(
+        doc="Horizontal inset of the rows from the edges. The slit is 6px wider than the rows on each side. Default: 14."
+    )
+    gap: rx.Var[int | float] = field(
+        doc="Space between rows in pixels. Default: 10."
+    )
+    slit_height: rx.Var[int | float] = field(
+        doc="Thickness of the slit. It is always a full pill. Default: 4."
+    )
+    fall_height: rx.Var[int | float] = field(
+        doc="Height of the zone under the slit where the strips fall and fade out. Default: 140."
+    )
+    feed_speed: rx.Var[int | float] = field(
+        doc="Roller speed in pixels per second. The first pull is faster and eases into it. Default: 180."
+    )
+    bite: rx.Var[int | float] = field(
+        doc="How far a row has to be pushed into the slit before the rollers grab it, in pixels. Default: 18."
+    )
+    auto_feed: rx.Var[bool] = field(
+        doc="Grab the row as soon as it is pushed in far enough, even while it is still held. Off, it feeds only on release over the slit. Default: true."
+    )
+    strip_width: rx.Var[int | float] = field(
+        doc="Target width of each strip in pixels. The row is cut into equal columns. Default: 10."
+    )
+    curl: rx.Var[int | float] = field(
+        doc="How much the strips curl and wave as they come out. 0 keeps them straight. Default: 1."
+    )
+    auto_animate: rx.Var[bool] = field(
+        doc="Plays through the rows on its own, bottom to top, then brings them back and starts over. Keep the rows in your list while it runs; onShred still fires. Default: false."
+    )
+    loop: rx.Var[bool] = field(
+        doc="Once the last row has been shredded, bring them all back. Keep the rows in your list while it is on. Default: false."
+    )
+    loop_after_delete: rx.Var[bool] = field(
+        doc="After a row is shredded it comes back a moment later at a random spot, so the list never runs dry. Keep the rows in your list while it is on. Default: false."
+    )
+    drag_tilt: rx.Var[int | float] = field(
+        doc="Maximum lean in degrees while a row is dragged sideways. Default: 6."
+    )
+    lift: rx.Var[int | float] = field(
+        doc="Scale of a row while it is held. Default: 1.02."
+    )
+    slit_color: rx.Var[str] = field(
+        doc="Colour of the slit. Default: '#3f3f46'."
+    )
+    color: rx.Var[str] = field(
+        doc="Text colour inherited by the rows. Default: '#f5f5f5'."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Rows cannot be dragged or shredded. Default: false."
+    )
+    on_shred: rx.EventHandler[lambda item: [safe(item)]] = field(
+        doc="Called the moment a row has gone through the rollers. Remove the item from your list here, unless loop, loopAfterDelete or autoAnimate is on. Handler receives: item."
+    )
+    on_reorder: rx.EventHandler[lambda items: [safe(items)]] = field(
+        doc="Called with the items in their new order after a row is dropped somewhere else in the list. Handler receives: items."
+    )
+
+
 class SlideCommit(ReactBitsComponent):
-    """Slide-to-confirm handle that plants with a spinner while your action runs, unfurls into a done pill on success and springs home with a squash and shake on failure.
+    """Slide-to-confirm handle that spins while your action runs and unfurls into a done pill.
 
     Docs: https://reactbits.dev/micro/slide-commit
     """
@@ -1424,13 +1723,13 @@ class SlideCommit(ReactBitsComponent):
     _rb_files = ('SlideCommit.css', 'SlideCommit.jsx')
     lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
 
-    label: rx.Var[rx.Component | str] = field(
+    label: rx.Var[Component | str] = field(
         doc="The instruction centred in the pill; the capsule wipes it as you drag. Default: 'Slide to pay'."
     )
-    done_label: rx.Var[rx.Component | str] = field(
+    done_label: rx.Var[Component | str] = field(
         doc="The words beside the check once confirmed. Default: 'Paid'."
     )
-    error_label: rx.Var[rx.Component | str] = field(
+    error_label: rx.Var[Component | str] = field(
         doc="Replaces the instruction, in the danger colour, after a rejected promise. Default: 'Payment failed'."
     )
     track_color: rx.Var[str] = field(
@@ -1469,7 +1768,7 @@ class SlideCommit(ReactBitsComponent):
     disabled: rx.Var[bool] = field(
         doc="Dims the control and ignores input. Default: false."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="Replaces the arrow in the handle."
     )
     on_confirm: rx.EventHandler[no_args_event_spec] = field(
@@ -1484,7 +1783,7 @@ class SlideCommit(ReactBitsComponent):
 
 
 class SlingButton(ReactBitsComponent):
-    """Send button you pull back like a slingshot: the band stretches, a power arc arms it, and releasing fires the action with the flick's velocity.
+    """Send button you pull back like a slingshot and release to fire.
 
     Docs: https://reactbits.dev/micro/sling-button
     """
@@ -1531,7 +1830,13 @@ class SlingButton(ReactBitsComponent):
         doc="Bounce of the return spring. 0 stops dead. Default: 0.2."
     )
     flight: rx.Var[int | float] = field(
-        doc="How far the dot flies, in pixels. Default: 120."
+        doc="How far the lead particle flies, in pixels. The rest scatter around that distance. Default: 120."
+    )
+    particles: rx.Var[int | float] = field(
+        doc="How many particles a launch throws. Each gets a random angle, reach, size, drift, speed and delay. 1 is a single dot, 0 is none. Default: 14."
+    )
+    spread: rx.Var[int | float] = field(
+        doc="The cone the burst fans across, in degrees, centred on the launch direction. Default: 60."
     )
     axis: rx.Var[Literal["any", "horizontal", "vertical"]] = field(
         doc="Free pull, or one axis with a little give across it. Default: 'any'."
@@ -1551,7 +1856,7 @@ class SlingButton(ReactBitsComponent):
 
 
 class SloshGauge(ReactBitsComponent):
-    """Tank gauge whose liquid chases the value with mass, tilts with its own speed and splashes against the top when it slams full; optionally a vertical slider.
+    """Tank gauge whose liquid chases the value, tilts as it moves and splashes when it fills.
 
     Docs: https://reactbits.dev/micro/slosh-gauge
     """
@@ -1617,7 +1922,7 @@ class SloshGauge(ReactBitsComponent):
 
 
 class SpringCheck(ReactBitsComponent):
-    """Checkbox row where a single spring fills the box, draws the tick, strikes the label and dims the words in one press.
+    """Checkbox row where one spring fills the box, draws the tick and strikes through the label.
 
     Docs: https://reactbits.dev/micro/spring-check
     """
@@ -1630,7 +1935,7 @@ class SpringCheck(ReactBitsComponent):
     _rb_files = ('SpringCheck.css', 'SpringCheck.jsx')
     lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', 'motion@12.23.21']
 
-    label: rx.Var[rx.Component | str] = field(
+    label: rx.Var[Component | str] = field(
         doc="The words beside the box; the strike-through is exactly their width. Default: 'Ship the build'."
     )
     checked: rx.Var[bool] = field(
@@ -1681,7 +1986,7 @@ class SpringCheck(ReactBitsComponent):
 
 
 class SquishSwitch(ReactBitsComponent):
-    """Drag-scrubbable switch whose thumb stretches by how fast it moves, flips at the midpoint and squashes against the track end on a flick.
+    """Switch whose thumb stretches with speed and squashes against the end when you flick it.
 
     Docs: https://reactbits.dev/micro/squish-switch
     """
@@ -1751,7 +2056,7 @@ class SquishSwitch(ReactBitsComponent):
 
 
 class StatusMark(ReactBitsComponent):
-    """A 20px status glyph for agent task lists that morphs in place from a dashed idle ring to a spinning or real-progress arc, then draws a check or a cross, with an optional label strike.
+    """Agent task status glyph that morphs from an idle ring to a progress arc, then a check.
 
     Docs: https://reactbits.dev/micro/status-mark
     """
@@ -1770,7 +2075,7 @@ class StatusMark(ReactBitsComponent):
     progress: rx.Var[int | float] = field(
         doc="0 to 1 while running. Leave it out for an indeterminate spinning arc."
     )
-    label: rx.Var[rx.Component | str] = field(
+    label: rx.Var[Component | str] = field(
         doc="Text beside the glyph. It dims and gets struck."
     )
     color: rx.Var[str] = field(
@@ -1815,7 +2120,7 @@ class StatusMark(ReactBitsComponent):
 
 
 class SwipeRow(ReactBitsComponent):
-    """List row that swipes open to reveal actions, snaps by flick velocity, and deletes on a full swipe that stretches the action colour across the row.
+    """List row that swipes open to reveal actions and deletes on a full swipe.
 
     Docs: https://reactbits.dev/micro/swipe-row
     """
@@ -1897,7 +2202,7 @@ class SwipeRow(ReactBitsComponent):
 
 
 class SwipeToast(ReactBitsComponent):
-    """Single toast that rises through its bottom edge, swipes down to dismiss on a flick or a distance, and burns a thin fuse for exactly its remaining time; hover pauses it and an inline mode keeps it inside any container.
+    """Toast that swipes down to dismiss and burns a thin fuse for its remaining time.
 
     Docs: https://reactbits.dev/micro/swipe-toast
     """
@@ -1910,16 +2215,16 @@ class SwipeToast(ReactBitsComponent):
     _rb_files = ('SwipeToast.css', 'SwipeToast.jsx')
     lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
 
-    title: rx.Var[rx.Component | str] = field(
+    title: rx.Var[Component | str] = field(
         doc="The first line. Default: 'File archived'."
     )
-    description: rx.Var[rx.Component | str] = field(
+    description: rx.Var[Component | str] = field(
         doc="The dimmer second line. Empty hides it."
     )
-    icon: rx.Var[rx.Component | str] = field(
+    icon: rx.Var[Component | str] = field(
         doc="An 18px icon before the text."
     )
-    action_label: rx.Var[rx.Component | str] = field(
+    action_label: rx.Var[Component | str] = field(
         doc="The inverted button. Empty hides it."
     )
     open: rx.Var[bool] = field(
@@ -1975,8 +2280,129 @@ class SwipeToast(ReactBitsComponent):
     )
 
 
+class TearTicket(ReactBitsComponent):
+    """Ticket whose perforated stub tears off by hand, fibre by fibre, and drops away.
+
+    Docs: https://reactbits.dev/micro/tear-ticket
+    """
+
+    tag = "TearTicket"
+    alias = "ReactBitsTearTicket"
+    is_default = True
+    _rb_category = "Micro"
+    _rb_name = "TearTicket"
+    _rb_files = ('TearTicket.css', 'TearTicket.jsx')
+    lib_dependencies: list[str] = ['motion@12.23.21']
+
+    stub: rx.Var[Component | str] = field(
+        doc="Content of the tear-off stub."
+    )
+    image: rx.Var[str] = field(
+        doc="Artwork behind the body. It shifts against the tilt for parallax and turns grey once used."
+    )
+    image_alt: rx.Var[str] = field(
+        doc="Alt text for the artwork."
+    )
+    scrim: rx.Var[bool] = field(
+        doc="A fade from the paper colour up over the artwork, so text stays readable on busy images. Default: true."
+    )
+    image_radius: rx.Var[int | float] = field(
+        doc="Corner radius of the artwork panel, in px. Set it to the ticket radius minus 8 to stay concentric. Default: 8."
+    )
+    orientation: rx.Var[Literal["horizontal", "vertical"]] = field(
+        doc="Horizontal puts the stub on the right. Vertical puts the artwork on top and the stub at the bottom. Default: 'horizontal'."
+    )
+    torn: rx.Var[bool] = field(
+        doc="Controlled state. Set it back to false to restore the stub. Default: -."
+    )
+    default_torn: rx.Var[bool] = field(
+        doc="Start already used. Default: false."
+    )
+    width: rx.Var[int | float] = field(
+        doc="Ticket width in px. It scales down to fit a narrower parent. Default: 460."
+    )
+    height: rx.Var[int | float] = field(
+        doc="Ticket height in px. Default: 250."
+    )
+    stub_size: rx.Var[int | float] = field(
+        doc="Size of the stub along the ticket, in px: its width when horizontal, its height when vertical. Default: 150."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Outer corner radius in px. Default: 16."
+    )
+    holes: rx.Var[int | float] = field(
+        doc="Perforation holes along the tear line. Default: 12."
+    )
+    hole_size: rx.Var[int | float] = field(
+        doc="Hole diameter in px. Default: 6."
+    )
+    notch: rx.Var[int | float] = field(
+        doc="Radius of the notches at both ends of the tear line. Default: 3."
+    )
+    roughness: rx.Var[int | float] = field(
+        doc="Optional jitter of the torn line between holes, in px. 0 keeps the edge perfectly straight and symmetrical. Default: 0."
+    )
+    tear_angle: rx.Var[int | float] = field(
+        doc="Degrees of pull at which the last bridge gives way and the stub comes free. Default: 30."
+    )
+    stretch: rx.Var[int | float] = field(
+        doc="How far a paper bridge stretches before it snaps, in px. Bridges far from the hinge reach it first. Default: 30."
+    )
+    resistance: rx.Var[int | float] = field(
+        doc="How much the intact fibres hold the stub back, 0 to 1. The pull eases as bridges give way, so the paper fights hardest at the start. Default: 0.45."
+    )
+    rotate: rx.Var[int | float] = field(
+        doc="A resting tilt of the whole ticket in the page plane, in degrees. Default: 4."
+    )
+    tilt: rx.Var[bool] = field(
+        doc="The ticket leans toward the cursor in 3D. Default: true."
+    )
+    tilt_max: rx.Var[int | float] = field(
+        doc="Largest tilt angle in degrees. Default: 9."
+    )
+    tilt_reach: rx.Var[int | float] = field(
+        doc="How far beyond the ticket the pointer still steers the tilt, in px. The tilt tracks the whole page. Default: 260."
+    )
+    parallax: rx.Var[int | float] = field(
+        doc="How far the artwork travels against the tilt, in px. Default: 6."
+    )
+    perspective: rx.Var[int | float] = field(
+        doc="Viewing distance in px. Default: 1000."
+    )
+    background: rx.Var[str] = field(
+        doc="Paper colour, also used by the fibres. Default: '#27272a'."
+    )
+    color: rx.Var[str] = field(
+        doc="Text colour. Default: '#f5f5f5'."
+    )
+    border: rx.Var[bool] = field(
+        doc="A hairline drawn along the cut edge of each piece, following every hole and notch. Default: true."
+    )
+    border_color: rx.Var[str] = field(
+        doc="Colour of that hairline. Empty derives a faint tint of the text colour."
+    )
+    border_width: rx.Var[int | float] = field(
+        doc="Thickness of the hairline in px. Default: 1."
+    )
+    stub_background: rx.Var[str] = field(
+        doc="Stub paper colour. Empty follows background."
+    )
+    recenter: rx.Var[bool] = field(
+        doc="Once the stub is gone, the remaining ticket glides over to sit centred in its original box. Default: true."
+    )
+    disabled: rx.Var[bool] = field(
+        doc="Dimmed and inert. Default: false."
+    )
+    aria_label: rx.Var[str] = field(
+        doc="Accessible name of the stub. Enter or Space tears it. Default: 'Tear off the stub'."
+    )
+    on_tear: rx.EventHandler[no_args_event_spec] = field(
+        doc="Fires once the stub has come free and gone."
+    )
+
+
 class ThoughtLine(ReactBitsComponent):
-    """Reasoning-trace header: a glyph and a label breathe beside a live clock while steps appear beneath, then the line settles on one beat into "Thought for 4.2s" through a blur crossfade and the trace folds into it.
+    """Reasoning trace header with a live clock that folds its steps into one line when done.
 
     Docs: https://reactbits.dev/micro/thought-line
     """
@@ -1998,7 +2424,7 @@ class ThoughtLine(ReactBitsComponent):
     render_label: rx.Var[Any] = field(
         doc="Wraps either string, for a sheen or a link. Inline content only. Default: -. Pass a JS function with rx.Var('(...) => ...')."
     )
-    glyph: rx.Var[rx.Component | str] = field(
+    glyph: rx.Var[Component | str] = field(
         doc="The mark that breathes and dims. Default: 'sparkle'."
     )
     steps: rx.Var[list[str]] = field(
@@ -2055,7 +2481,7 @@ class ThoughtLine(ReactBitsComponent):
 
 
 class VoicePill(ReactBitsComponent):
-    """Mic button that swells into a tinted capsule of level-driven equalizer bars and an elapsed clock while held or toggled, then relaxes back into the mic on release; simulated voice by default, real microphone as an opt-in.
+    """Mic button that swells into a capsule of live equalizer bars and a timer while recording.
 
     Docs: https://reactbits.dev/micro/voice-pill
     """
@@ -2140,7 +2566,7 @@ class VoicePill(ReactBitsComponent):
 
 
 class WakeSlider(ReactBitsComponent):
-    """Range slider drawn as thin bars with no thumb: drag speed raises a wake that trails behind the handle and flattens again at rest.
+    """Thumbless range slider of thin bars where drag speed raises a wake behind the handle.
 
     Docs: https://reactbits.dev/micro/wake-slider
     """
@@ -2222,7 +2648,7 @@ class WakeSlider(ReactBitsComponent):
 
 
 class WarmTooltip(ReactBitsComponent):
-    """Tooltip group with one shared delay: the first label waits and pops from its trigger, then siblings open instantly while the group is warm, with an optional velocity lean.
+    """Tooltip group where the first label waits, then its siblings open instantly while warm.
 
     Docs: https://reactbits.dev/micro/warm-tooltip
     """
@@ -2235,10 +2661,10 @@ class WarmTooltip(ReactBitsComponent):
     _rb_files = ('WarmTooltip.css', 'WarmTooltip.jsx')
     lib_dependencies: list[str] = ['motion@12.23.21']
 
-    content: rx.Var[rx.Component | str] = field(
+    content: rx.Var[Component | str] = field(
         doc="The label. Keep it to a few words. Default: -."
     )
-    shortcut: rx.Var[rx.Component | str] = field(
+    shortcut: rx.Var[Component | str] = field(
         doc="Optional keyboard shortcut, drawn as a keycap beside the label."
     )
     side: rx.Var[Literal["top", "bottom", "left", "right"]] = field(
@@ -2309,18 +2735,21 @@ call_chip = CallChip.create
 code_slots = CodeSlots.create
 comet_dial = CometDial.create
 dodge_field = DodgeField.create
+flip_card = FlipCard.create
 folder_float = FolderFloat.create
 fuse_button = FuseButton.create
 glide_select = GlideSelect.create
 hold_button = HoldButton.create
 jelly_radio = JellyRadio.create
 lattice_loader = LatticeLoader.create
+paper_crumple = PaperCrumple.create
 peek_rating = PeekRating.create
 prompt_bar = PromptBar.create
 pulse_heart = PulseHeart.create
 refine_frame = RefineFrame.create
 rubber_segment = RubberSegment.create
 scrub_field = ScrubField.create
+shredder = Shredder.create
 slide_commit = SlideCommit.create
 sling_button = SlingButton.create
 slosh_gauge = SloshGauge.create
@@ -2329,6 +2758,7 @@ squish_switch = SquishSwitch.create
 status_mark = StatusMark.create
 swipe_row = SwipeRow.create
 swipe_toast = SwipeToast.create
+tear_ticket = TearTicket.create
 thought_line = ThoughtLine.create
 voice_pill = VoicePill.create
 wake_slider = WakeSlider.create
