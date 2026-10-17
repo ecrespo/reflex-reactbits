@@ -756,7 +756,7 @@ class ColorBends(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "ColorBends"
     _rb_files = ('ColorBends.css', 'ColorBends.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
+    lib_dependencies: list[str] = ['three@0.186.1']
 
     rotation: rx.Var[int | float] = field(
         doc="Base rotation angle in degrees. Default: 90."
@@ -2345,7 +2345,7 @@ class Hyperspeed(ReactBitsComponent):
     _rb_category = "Backgrounds"
     _rb_name = "Hyperspeed"
     _rb_files = ('Hyperspeed.css', 'Hyperspeed.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
+    lib_dependencies: list[str] = ['three@0.186.1']
 
     curve: rx.Var[Literal["straight", "gentle", "winding", "hills", "racing", "deep"]] = field(
         doc="Shape of the road. Switching between curves morphs the road smoothly. Default: 'winding'."
