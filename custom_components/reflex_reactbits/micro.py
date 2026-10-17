@@ -14,7 +14,7 @@ from reflex_base.components.component import Component, field
 
 from .base import ReactBitsComponent, safe
 
-__all__ = ['BellToggle', 'BranchedMenu', 'CallChip', 'CodeSlots', 'CometDial', 'DodgeField', 'FlipCard', 'FolderFloat', 'FuseButton', 'GlideSelect', 'HoldButton', 'JellyRadio', 'LatticeLoader', 'PaperCrumple', 'PeekRating', 'PromptBar', 'PulseHeart', 'RefineFrame', 'RubberSegment', 'ScrubField', 'Shredder', 'SlideCommit', 'SlingButton', 'SloshGauge', 'SpringCheck', 'SquishSwitch', 'StatusMark', 'SwipeRow', 'SwipeToast', 'TearTicket', 'ThoughtLine', 'VoicePill', 'WakeSlider', 'WarmTooltip', 'WarmTooltipGroup', 'bell_toggle', 'branched_menu', 'call_chip', 'code_slots', 'comet_dial', 'dodge_field', 'flip_card', 'folder_float', 'fuse_button', 'glide_select', 'hold_button', 'jelly_radio', 'lattice_loader', 'paper_crumple', 'peek_rating', 'prompt_bar', 'pulse_heart', 'refine_frame', 'rubber_segment', 'scrub_field', 'shredder', 'slide_commit', 'sling_button', 'slosh_gauge', 'spring_check', 'squish_switch', 'status_mark', 'swipe_row', 'swipe_toast', 'tear_ticket', 'thought_line', 'voice_pill', 'wake_slider', 'warm_tooltip', 'warm_tooltip_group']
+__all__ = ['BellToggle', 'BranchedMenu', 'CallChip', 'CodeSlots', 'CometDial', 'DodgeField', 'FlipCard', 'FlyingButton', 'FolderFloat', 'FuseButton', 'GlideSelect', 'HoldButton', 'JellyRadio', 'LatticeLoader', 'PaperCrumple', 'PeekRating', 'PromptBar', 'PulseHeart', 'RefineFrame', 'RubberSegment', 'ScrubField', 'Shredder', 'SlideCommit', 'SlingButton', 'SloshGauge', 'SpringCheck', 'SquishSwitch', 'StatusMark', 'SwipeRow', 'SwipeToast', 'TearTicket', 'ThoughtLine', 'VoicePill', 'WakeSlider', 'WarmTooltip', 'WarmTooltipGroup', 'bell_toggle', 'branched_menu', 'call_chip', 'code_slots', 'comet_dial', 'dodge_field', 'flip_card', 'flying_button', 'folder_float', 'fuse_button', 'glide_select', 'hold_button', 'jelly_radio', 'lattice_loader', 'paper_crumple', 'peek_rating', 'prompt_bar', 'pulse_heart', 'refine_frame', 'rubber_segment', 'scrub_field', 'shredder', 'slide_commit', 'sling_button', 'slosh_gauge', 'spring_check', 'squish_switch', 'status_mark', 'swipe_row', 'swipe_toast', 'tear_ticket', 'thought_line', 'voice_pill', 'wake_slider', 'warm_tooltip', 'warm_tooltip_group']
 
 
 class BellToggle(ReactBitsComponent):
@@ -576,6 +576,75 @@ class FlipCard(ReactBitsComponent):
     )
     on_flip_change: rx.EventHandler[lambda flipped: [safe(flipped)]] = field(
         doc="Fires when a click, drag, flick or key lands on the other face. Handler receives: flipped."
+    )
+
+
+class FlyingButton(ReactBitsComponent):
+    """Button that fires its thrusters on hover, lifts off on a WebGL smoke plume and lands back in its own cloud.
+
+    Docs: https://reactbits.dev/micro/flying-button
+    """
+
+    tag = "FlyingButton"
+    alias = "ReactBitsFlyingButton"
+    is_default = True
+    _rb_category = "Micro"
+    _rb_name = "FlyingButton"
+    _rb_files = ('FlyingButton.css', 'FlyingButton.jsx')
+
+    theme: rx.Var[Literal["dark", "light"]] = field(
+        doc="Shades the smoke for a dark or a light page and picks the matching default colours. Default: 'dark'."
+    )
+    size: rx.Var[Literal["small", "medium", "large", "extra-large"]] = field(
+        doc="Button size. The pods, jets, flames and smoke scale with it. Default: 'medium'."
+    )
+    radius: rx.Var[int | float] = field(
+        doc="Corner radius in pixels. Fully rounded when unset."
+    )
+    altitude: rx.Var[int | float] = field(
+        doc="How high the button climbs, in pixels. Capped by the container height. Default: 170."
+    )
+    hover_time: rx.Var[int | float] = field(
+        doc="Seconds it hovers at altitude before it comes back down and lands. Default: 2.4."
+    )
+    jets: rx.Var[int | float] = field(
+        doc="Number of exhaust jets under the button, from 1 to 4. Default: 2."
+    )
+    thrusters: rx.Var[bool] = field(
+        doc="Shows thruster pods under the button. Off, the jets fire straight out of its underside. Default: true."
+    )
+    trigger: rx.Var[Literal["hover", "click"]] = field(
+        doc="Whether hovering or clicking starts the flight. Touch always starts it on tap. With the ramp on, a click starts the ride instead. Default: 'hover'."
+    )
+    carry_cursor: rx.Var[bool] = field(
+        doc="Carries the cursor up with the button while you hover it, and sets it back down on landing. Default: true."
+    )
+    ramp: rx.Var[bool] = field(
+        doc="Adds a loop ramp on the right. A click drives the button up the wall and along the ceiling, then it flips off the end, lands and rolls back. Default: false."
+    )
+    ramp_color: rx.Var[str] = field(
+        doc="Ramp colour. Defaults to a raised surface for the theme."
+    )
+    smoke: rx.Var[int | float] = field(
+        doc="How much smoke the jets and the ground blast put out. Default: 1."
+    )
+    turbulence: rx.Var[int | float] = field(
+        doc="How much the smoke curls and billows. Default: 1."
+    )
+    wobble: rx.Var[int | float] = field(
+        doc="Strength of the gusts the flight controller fights while it hovers. 0 flies dead steady. Default: 1."
+    )
+    thrust_color: rx.Var[str] = field(
+        doc="Colour of the jet flames and the light they cast. Defaults to a pale blue for the theme."
+    )
+    smoke_color: rx.Var[str] = field(
+        doc="Base colour of the smoke. Its shadows are derived from it."
+    )
+    button_color: rx.Var[str] = field(
+        doc="Button fill. Defaults to dark grey on dark pages and near black on light ones."
+    )
+    text_color: rx.Var[str] = field(
+        doc="Label colour."
     )
 
 
@@ -2736,6 +2805,7 @@ code_slots = CodeSlots.create
 comet_dial = CometDial.create
 dodge_field = DodgeField.create
 flip_card = FlipCard.create
+flying_button = FlyingButton.create
 folder_float = FolderFloat.create
 fuse_button = FuseButton.create
 glide_select = GlideSelect.create

@@ -70170,5 +70170,316 @@
    },
    "children": null
   }
+ },
+ {
+  "key": "Micro/FlyingButton",
+  "category": "Micro",
+  "name": "FlyingButton",
+  "description": "Button that fires its thrusters on hover, lifts off on a WebGL smoke plume and lands back in its own cloud.",
+  "docsUrl": "https://reactbits.dev/micro/flying-button",
+  "tags": [
+   "button",
+   "hover",
+   "webgl",
+   "smoke",
+   "fluid",
+   "physics",
+   "cursor",
+   "flight"
+  ],
+  "files": [
+   "FlyingButton.css",
+   "FlyingButton.jsx"
+  ],
+  "isDefault": true,
+  "rest": false,
+  "hasChildren": true,
+  "sourceProps": [
+   {
+    "name": "onClick",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "theme",
+    "default": "dark",
+    "defaultText": "'dark'",
+    "kind": "str"
+   },
+   {
+    "name": "size",
+    "default": "medium",
+    "defaultText": "'medium'",
+    "kind": "str"
+   },
+   {
+    "name": "radius",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "altitude",
+    "default": 170,
+    "defaultText": "170",
+    "kind": "number"
+   },
+   {
+    "name": "hoverTime",
+    "default": 2.4,
+    "defaultText": "2.4",
+    "kind": "number"
+   },
+   {
+    "name": "jets",
+    "default": 2,
+    "defaultText": "2",
+    "kind": "number"
+   },
+   {
+    "name": "thrusters",
+    "default": true,
+    "defaultText": "true",
+    "kind": "bool"
+   },
+   {
+    "name": "trigger",
+    "default": "hover",
+    "defaultText": "'hover'",
+    "kind": "str"
+   },
+   {
+    "name": "carryCursor",
+    "default": true,
+    "defaultText": "true",
+    "kind": "bool"
+   },
+   {
+    "name": "ramp",
+    "default": false,
+    "defaultText": "false",
+    "kind": "bool"
+   },
+   {
+    "name": "rampColor",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "smoke",
+    "default": 1,
+    "defaultText": "1",
+    "kind": "number"
+   },
+   {
+    "name": "turbulence",
+    "default": 1,
+    "defaultText": "1",
+    "kind": "number"
+   },
+   {
+    "name": "wobble",
+    "default": 1,
+    "defaultText": "1",
+    "kind": "number"
+   },
+   {
+    "name": "thrustColor",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "smokeColor",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "buttonColor",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "textColor",
+    "defaultText": null,
+    "kind": null
+   },
+   {
+    "name": "className",
+    "default": "",
+    "defaultText": "''",
+    "kind": "str"
+   },
+   {
+    "name": "style",
+    "defaultText": null,
+    "kind": null
+   }
+  ],
+  "table": [
+   {
+    "name": "children",
+    "type": "ReactNode",
+    "default": "\"Take off\"",
+    "description": "The button label."
+   },
+   {
+    "name": "onClick",
+    "type": "(event) => void",
+    "default": "-",
+    "description": "Called on click, including clicks while it is in the air. Dragging the flying button moves it instead, and it lands wherever you let go."
+   },
+   {
+    "name": "theme",
+    "type": "\"dark\" | \"light\"",
+    "default": "\"dark\"",
+    "description": "Shades the smoke for a dark or a light page and picks the matching default colours."
+   },
+   {
+    "name": "size",
+    "type": "\"small\" | \"medium\" | \"large\" | \"extra-large\"",
+    "default": "\"medium\"",
+    "description": "Button size. The pods, jets, flames and smoke scale with it."
+   },
+   {
+    "name": "radius",
+    "type": "number",
+    "default": "undefined",
+    "description": "Corner radius in pixels. Fully rounded when unset."
+   },
+   {
+    "name": "altitude",
+    "type": "number",
+    "default": "170",
+    "description": "How high the button climbs, in pixels. Capped by the container height."
+   },
+   {
+    "name": "hoverTime",
+    "type": "number",
+    "default": "2.4",
+    "description": "Seconds it hovers at altitude before it comes back down and lands."
+   },
+   {
+    "name": "jets",
+    "type": "number",
+    "default": "2",
+    "description": "Number of exhaust jets under the button, from 1 to 4."
+   },
+   {
+    "name": "thrusters",
+    "type": "boolean",
+    "default": "true",
+    "description": "Shows thruster pods under the button. Off, the jets fire straight out of its underside."
+   },
+   {
+    "name": "trigger",
+    "type": "\"hover\" | \"click\"",
+    "default": "\"hover\"",
+    "description": "Whether hovering or clicking starts the flight. Touch always starts it on tap. With the ramp on, a click starts the ride instead."
+   },
+   {
+    "name": "carryCursor",
+    "type": "boolean",
+    "default": "true",
+    "description": "Carries the cursor up with the button while you hover it, and sets it back down on landing."
+   },
+   {
+    "name": "smoke",
+    "type": "number",
+    "default": "1",
+    "description": "How much smoke the jets and the ground blast put out."
+   },
+   {
+    "name": "turbulence",
+    "type": "number",
+    "default": "1",
+    "description": "How much the smoke curls and billows."
+   },
+   {
+    "name": "wobble",
+    "type": "number",
+    "default": "1",
+    "description": "Strength of the gusts the flight controller fights while it hovers. 0 flies dead steady."
+   },
+   {
+    "name": "ramp",
+    "type": "boolean",
+    "default": "false",
+    "description": "Adds a loop ramp on the right. A click drives the button up the wall and along the ceiling, then it flips off the end, lands and rolls back."
+   },
+   {
+    "name": "thrustColor",
+    "type": "string",
+    "default": "undefined",
+    "description": "Colour of the jet flames and the light they cast. Defaults to a pale blue for the theme."
+   },
+   {
+    "name": "smokeColor",
+    "type": "string",
+    "default": "undefined",
+    "description": "Base colour of the smoke. Its shadows are derived from it."
+   },
+   {
+    "name": "buttonColor",
+    "type": "string",
+    "default": "undefined",
+    "description": "Button fill. Defaults to dark grey on dark pages and near black on light ones."
+   },
+   {
+    "name": "textColor",
+    "type": "string",
+    "default": "undefined",
+    "description": "Label colour."
+   },
+   {
+    "name": "rampColor",
+    "type": "string",
+    "default": "undefined",
+    "description": "Ramp colour. Defaults to a raised surface for the theme."
+   },
+   {
+    "name": "className",
+    "type": "string",
+    "default": "\"\"",
+    "description": "Extra classes for the root."
+   },
+   {
+    "name": "style",
+    "type": "CSSProperties",
+    "default": "undefined",
+    "description": "Inline styles for the root."
+   }
+  ],
+  "npm": [],
+  "demoDeps": [],
+  "calls": {
+   "onClick": [
+    [
+     "e"
+    ],
+    [
+     "e"
+    ]
+   ]
+  },
+  "example": {
+   "props": {
+    "theme": "dark",
+    "size": "medium",
+    "altitude": 170,
+    "hoverTime": 2.4,
+    "jets": 2,
+    "thrusters": true,
+    "trigger": "hover",
+    "carryCursor": true,
+    "smoke": 1,
+    "turbulence": 1,
+    "wobble": 1,
+    "ramp": false,
+    "thrustColor": "#8ec5ff",
+    "smokeColor": "#eef1f6"
+   },
+   "children": [
+    "Take off"
+   ]
+  }
  }
 ]

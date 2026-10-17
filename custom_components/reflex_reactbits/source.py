@@ -29,7 +29,16 @@ from pathlib import Path
 logger = logging.getLogger("reflex_reactbits")
 
 #: Commit of DavidHDev/react-bits the wrappers were generated from.
-PINNED_REF = "963f4d21dca65326a470956c42b7b467804f3c14"  # React Bits 2.0
+PINNED_REF = "310fc737fadcaa149a4e06fb088fc95332dc8bfb"  # React Bits 2.0 + FlyingButton (2026-10-16)
+
+#: Earlier refs whose sources are byte-identical to PINNED_REF for every component
+#: they contain (``git diff --stat <ref> PINNED_REF -- src/content`` only adds
+#: files). Copies made from them are current, so bumping the pin for a new
+#: component does not flag every vendored one as stale. Empty this set when a new
+#: pin changes the source of a component that already existed.
+COMPATIBLE_REFS = frozenset({
+    "963f4d21dca65326a470956c42b7b467804f3c14",  # React Bits 2.0
+})
 
 #: Directory (inside the app's ``assets/``) that receives the component sources.
 ASSETS_SUBDIR = "reactbits"
@@ -155,6 +164,11 @@ def resolve_ref(ref: str | None = None) -> str:
     return ref or os.environ.get("REACTBITS_REF") or PINNED_REF
 
 
+def is_current_ref(vendored: str | None, ref: str) -> bool:
+    """Whether a copy made from ``vendored`` matches the sources at ``ref``."""
+    return vendored == ref or (ref == PINNED_REF and vendored in COMPATIBLE_REFS)
+
+
 def vendored_ref(category: str, name: str, assets_dir: Path | None = None) -> str | None:
     """Return the React Bits ref a component's copied source came from, if recorded."""
     marker = component_dir(category, name, assets_dir) / REF_MARKER
@@ -211,7 +225,7 @@ def ensure_component_source(
         written.append(dest)
     if not kept:
         (target / REF_MARKER).write_text(ref + "\n")
-    elif previous != ref and (category, name) not in _warned_stale:
+    elif not is_current_ref(previous, ref) and (category, name) not in _warned_stale:
         _warned_stale.add((category, name))
         logger.warning(
             "reflex-reactbits: %s keeps the React Bits source it copied earlier (%s), but "

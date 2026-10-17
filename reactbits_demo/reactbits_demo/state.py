@@ -213,3 +213,33 @@ class ShredderDemo(rx.State):
         self.shredded = []
         # Remount: Shredder keeps its own row order, seeded from the first items.
         self.generation += 1
+
+
+class FlightDemo(rx.State):
+    """FlyingButton driven by Reflex state: props are vars and every click reaches the backend."""
+
+    theme: str = "dark"
+    trigger: str = "hover"
+    jets: int = 2
+    ramp: bool = False
+    launches: int = 0
+
+    @rx.event
+    def set_theme(self, value: str):
+        self.theme = value
+
+    @rx.event
+    def set_trigger(self, value: str):
+        self.trigger = value
+
+    @rx.event
+    def set_jets(self, value: str):
+        self.jets = int(value)
+
+    @rx.event
+    def set_ramp(self, value: bool):
+        self.ramp = value
+
+    @rx.event
+    def launch(self):
+        self.launches += 1

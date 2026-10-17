@@ -22,6 +22,7 @@ __all__ = [
     "CometDial",
     "DodgeField",
     "FlipCard",
+    "FlyingButton",
     "FolderFloat",
     "FuseButton",
     "GlideSelect",
@@ -57,6 +58,7 @@ __all__ = [
     "comet_dial",
     "dodge_field",
     "flip_card",
+    "flying_button",
     "folder_float",
     "fuse_button",
     "glide_select",
@@ -494,6 +496,62 @@ class FlipCard(ReactBitsComponent):
         on_unmount: Optional[EventType[()]] = None,
         **props,
     ) -> "FlipCard":
+        """Copy the component source into the app (once) and create the component."""
+        ...
+
+class FlyingButton(ReactBitsComponent):
+    @classmethod
+    def create(
+        cls,
+        *children,
+        theme: Literal["dark", "light"] | Var[Literal["dark", "light"]] | None = None,
+        size: Literal["extra-large", "large", "medium", "small"]
+        | Var[Literal["extra-large", "large", "medium", "small"]]
+        | None = None,
+        radius: Var[float | int] | float | int | None = None,
+        altitude: Var[float | int] | float | int | None = None,
+        hover_time: Var[float | int] | float | int | None = None,
+        jets: Var[float | int] | float | int | None = None,
+        thrusters: Var[bool] | bool | None = None,
+        trigger: Literal["click", "hover"] | Var[Literal["click", "hover"]] | None = None,
+        carry_cursor: Var[bool] | bool | None = None,
+        ramp: Var[bool] | bool | None = None,
+        ramp_color: Var[str] | str | None = None,
+        smoke: Var[float | int] | float | int | None = None,
+        turbulence: Var[float | int] | float | int | None = None,
+        wobble: Var[float | int] | float | int | None = None,
+        thrust_color: Var[str] | str | None = None,
+        smoke_color: Var[str] | str | None = None,
+        button_color: Var[str] | str | None = None,
+        text_color: Var[str] | str | None = None,
+        style: Sequence[Mapping[str, Any]]
+        | Mapping[str, Any]
+        | Var[Mapping[str, Any]]
+        | Breakpoints
+        | None = None,
+        key: Any | None = None,
+        id: Any | None = None,
+        ref: Var | None = None,
+        class_name: Any | None = None,
+        custom_attrs: dict[str, Any | Var] | None = None,
+        on_blur: Optional[EventType[()]] = None,
+        on_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_context_menu: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_double_click: Optional[EventType[()] | EventType[PointerEventInfo]] = None,
+        on_focus: Optional[EventType[()]] = None,
+        on_mount: Optional[EventType[()]] = None,
+        on_mouse_down: Optional[EventType[()]] = None,
+        on_mouse_enter: Optional[EventType[()]] = None,
+        on_mouse_leave: Optional[EventType[()]] = None,
+        on_mouse_move: Optional[EventType[()]] = None,
+        on_mouse_out: Optional[EventType[()]] = None,
+        on_mouse_over: Optional[EventType[()]] = None,
+        on_mouse_up: Optional[EventType[()]] = None,
+        on_scroll: Optional[EventType[()]] = None,
+        on_scroll_end: Optional[EventType[()]] = None,
+        on_unmount: Optional[EventType[()]] = None,
+        **props,
+    ) -> "FlyingButton":
         """Copy the component source into the app (once) and create the component."""
         ...
 
@@ -2109,6 +2167,7 @@ code_slots = CodeSlots.create
 comet_dial = CometDial.create
 dodge_field = DodgeField.create
 flip_card = FlipCard.create
+flying_button = FlyingButton.create
 folder_float = FolderFloat.create
 fuse_button = FuseButton.create
 glide_select = GlideSelect.create

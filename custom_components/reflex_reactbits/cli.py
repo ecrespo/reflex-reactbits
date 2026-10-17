@@ -20,6 +20,7 @@ from .source import (
     PINNED_REF,
     component_dir,
     ensure_component_source,
+    is_current_ref,
     remove_component_source,
     resolve_ref,
     vendored_ref,
@@ -85,7 +86,7 @@ def cmd_add(args: argparse.Namespace) -> int:
         )
         where = component_dir(e["category"], e["name"], assets)
         state = "added" if written else "present"
-        if vendored_ref(e["category"], e["name"], assets) != resolve_ref(args.ref):
+        if not is_current_ref(vendored_ref(e["category"], e["name"], assets), resolve_ref(args.ref)):
             state = "stale"  # copied from another React Bits ref; --force replaces it
         print(f"{e['name']:<24} {state:<11} {where}")
     return 0
