@@ -104,7 +104,7 @@ class BlurText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "BlurText"
     _rb_files = ('BlurText.jsx',)
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     text: rx.Var[str] = field(
         doc="The text content to animate."
@@ -183,7 +183,7 @@ class CircularText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "CircularText"
     _rb_files = ('CircularText.css', 'CircularText.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     text: rx.Var[str] = field(
         doc="The text laid out around the ring. End it with a separator for a seamless loop."
@@ -250,7 +250,7 @@ class CountUp(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "CountUp"
     _rb_files = ('CountUp.jsx',)
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     to: rx.Var[int | float] = field(
         doc="The target number to count up to. Default: \u2014."
@@ -380,7 +380,7 @@ class DecryptedText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "DecryptedText"
     _rb_files = ('DecryptedText.jsx',)
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     text: rx.Var[str] = field(
         doc="The text to decrypt. Default: -."
@@ -667,7 +667,7 @@ class FoldText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "FoldText"
     _rb_files = ('FoldText.css', 'FoldText.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="The text to split and fold into place. Line breaks are kept. Default: 'Design unfolds'."
@@ -929,7 +929,7 @@ class MaskedHeading(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "MaskedHeading"
     _rb_files = ('MaskedHeading.css', 'MaskedHeading.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="Heading copy. Default: 'Designed in the details'."
@@ -1104,7 +1104,7 @@ class RotatingText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "RotatingText"
     _rb_files = ('RotatingText.css', 'RotatingText.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     texts: rx.Var[list[str]] = field(
         doc="The texts to rotate through. Default: []."
@@ -1189,7 +1189,7 @@ class ScrambledText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ScrambledText"
     _rb_files = ('ScrambledText.css', 'ScrambledText.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     radius: rx.Var[int | float] = field(
         doc="Distance from the pointer, in px, within which letters react. Default: 100."
@@ -1241,7 +1241,7 @@ class ScrollFloat(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ScrollFloat"
     _rb_files = ('ScrollFloat.css', 'ScrollFloat.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     scroll_container_ref: rx.Var[Any] = field(
         doc="Ref to the element that scrolls. Leave it out to use the page. Default: window."
@@ -1305,7 +1305,7 @@ class ScrollReveal(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ScrollReveal"
     _rb_files = ('ScrollReveal.css', 'ScrollReveal.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     scroll_container_ref: rx.Var[Any] = field(
         doc="Ref to the element that scrolls. Leave it out to use the page. Default: window."
@@ -1372,7 +1372,7 @@ class ScrollVelocity(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "ScrollVelocity"
     _rb_files = ('ScrollVelocity.css', 'ScrollVelocity.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     scroll_container_ref: rx.Var[Any] = field(
         doc="Optional ref for a custom scroll container to track scroll position."
@@ -1520,7 +1520,7 @@ class Shuffle(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "Shuffle"
     _rb_files = ('Shuffle.css', 'Shuffle.jsx')
-    lib_dependencies: list[str] = ['@gsap/react@2.1.2', 'gsap@3.13.0']
+    lib_dependencies: list[str] = ['@gsap/react@2.1.2', 'gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="The text content to shuffle."
@@ -1689,7 +1689,7 @@ class SplitText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "SplitText"
     _rb_files = ('SplitText.jsx',)
-    lib_dependencies: list[str] = ['@gsap/react@2.1.2', 'gsap@3.13.0']
+    lib_dependencies: list[str] = ['@gsap/react@2.1.2', 'gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="The text content to animate."
@@ -1768,7 +1768,7 @@ class StrokeText(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "StrokeText"
     _rb_files = ('StrokeText.css', 'StrokeText.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="The heading copy rendered as measured SVG glyphs. Default: DEFAULT_TEXT."
@@ -2012,7 +2012,7 @@ class TextLoop(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "TextLoop"
     _rb_files = ('TextLoop.css', 'TextLoop.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     text: rx.Var[str] = field(
         doc="The phrase repeated along the curve. Default: 'React \u2726 Bits'."
@@ -2178,7 +2178,7 @@ class TextType(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "TextType"
     _rb_files = ('TextType.css', 'TextType.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     text: rx.Var[str | list[str]] = field(
         doc="A sentence, or a list of sentences typed one after another. Default: -."
@@ -2269,7 +2269,7 @@ class TrueFocus(ReactBitsComponent):
     _rb_category = "TextAnimations"
     _rb_name = "TrueFocus"
     _rb_files = ('TrueFocus.css', 'TrueFocus.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     sentence: rx.Var[str] = field(
         doc="The text to display with the focus animation. Default: 'True Focus'."
