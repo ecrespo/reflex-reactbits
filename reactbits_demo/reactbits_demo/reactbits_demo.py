@@ -9,11 +9,19 @@
 
 from __future__ import annotations
 
+from importlib.metadata import version
+
 import reflex as rx
 import reflex_reactbits as rb
 
-from .examples import build_preview, preview_height, python_source
-from .state import EventLog, Nav, Playground, ShredderDemo
+from .examples import (
+    LOGGED_TRIGGERS,
+    build_preview,
+    flying_button_demo,
+    preview_height,
+    python_source,
+)
+from .state import EventLog, FlightDemo, Nav, Playground, ShredderDemo
 
 CATEGORY_INFO = {
     "TextAnimations": ("text-animations", "Text Animations", "type"),
@@ -30,6 +38,8 @@ NEW_IN_2 = ["CircularCarousel", "CrystalizedBall", "DitherVeil", "ElectricLogo",
             "FluxLines", "GradientASCII", "HoloCard", "MicroSlats", "PaperCrumple", "PatternWaves", "Shredder",
             "TearTicket", "TechText"]
 MOVED_IN_2 = ["Antigravity", "MagicRings", "MagnetLines"]
+# Added to React Bits after the 2.0 release (up to PINNED_REF).
+NEW_SINCE_2 = ["FlyingButton"]
 BY_NAME = {e["name"]: e for e in ENTRIES}
 
 
@@ -39,7 +49,7 @@ def slug(entry: dict) -> str:
 
 NAV_ITEMS = [
     {"label": e["name"], "href": f"/c/{slug(e)}", "category": CATEGORY_INFO[e["category"]][1],
-     "new": "new" if e["name"] in NEW_IN_2 else ""}
+     "new": "new" if e["name"] in NEW_SINCE_2 else "2.0" if e["name"] in NEW_IN_2 else ""}
     for e in sorted(ENTRIES, key=lambda e: (list(CATEGORY_INFO).index(e["category"]), e["name"]))
 ]
 
@@ -98,7 +108,7 @@ def sidebar() -> rx.Component:
                     lambda item: rx.link(
                         rx.hstack(
                             rx.text(item["label"], size="2"),
-                            rx.cond(item["new"] != "", rx.badge("2.0", size="1", color_scheme="grass", variant="soft")),
+                            rx.cond(item["new"] != "", rx.badge(item["new"], size="1", color_scheme="grass", variant="soft")),
                             rx.spacer(),
                             rx.text(item["category"], size="1", color=rx.color("gray", 9), white_space="nowrap"),
                             width="100%",
@@ -320,6 +330,13 @@ def playground() -> rx.Component:
                 rb.slide_commit(label="Slide to confirm", on_confirm=Playground.on_slide_confirm),
             ),
             panel(
+                "FlyingButton ← state",
+                rx.box(flying_button_demo(), height="360px", width="100%", position="relative", border_radius="12px",
+                       overflow="hidden", background="#060010"),
+                description="Theme, trigger, jets and the ramp are state vars; each click runs FlightDemo.launch "
+                            "on the backend.",
+            ),
+            panel(
                 "Stepper events",
                 rb.stepper(
                     rb.step(rx.heading("Step 1", size="4"), rx.text("Events go to the Reflex backend.")),
@@ -367,7 +384,7 @@ def new_component_card(entry: dict) -> rx.Component:
 
 def whats_new() -> rx.Component:
     return layout(
-        rx.hstack(rx.heading("What's new in React Bits 2.0", size="8"), rx.badge("reflex-reactbits 0.2.0", color_scheme="grass"),
+        rx.hstack(rx.heading("What's new in React Bits 2.0", size="8"), rx.badge(f"reflex-reactbits {version('reflex-reactbits')}", color_scheme="grass"),
                   align="center", spacing="3", wrap="wrap"),
         rx.text(
             "React Bits 2.0 reworked most components, added new ones and dropped a lot of npm dependencies. "
@@ -400,6 +417,16 @@ def whats_new() -> rx.Component:
             spacing="4",
             width="100%",
         ),
+        rx.heading("Added since 2.0 (reflex-reactbits 0.2.1)", size="6", margin_top="1.5em", margin_bottom="0.25em"),
+        rx.text("React Bits keeps shipping components after the 2.0 release; these come with the pinned commit.",
+                size="2", color=rx.color("gray", 10), margin_bottom="0.5em"),
+        rx.grid(
+            *[new_component_card(BY_NAME[n]) for n in NEW_SINCE_2],
+            columns=rx.breakpoints(initial="1", lg="2"),
+            spacing="4",
+            width="100%",
+        ),
+        rx.text("FlyingButton launches handled on the backend: ", rx.code(FlightDemo.launches), size="2", margin_top="1em"),
         rx.cond(
             ShredderDemo.shredded.length() > 0,
             rx.text("Shredded on the backend: ", rx.code(ShredderDemo.shredded.join(", ")), size="2", margin_top="1em"),
@@ -512,7 +539,7 @@ def component_page(entry: dict):
                                 ),
                                 rx.text(
                                     "Interact with the component: its events are handled by a Reflex event handler and listed here."
-                                    if any(p["type"] == "event" for p in entry["props"])
+                                    if entry["name"] in LOGGED_TRIGGERS or any(p["type"] == "event" for p in entry["props"])
                                     else "This component exposes no callbacks.",
                                     size="1", color=rx.color("gray", 9), margin_top="0.5em",
                                 ),
