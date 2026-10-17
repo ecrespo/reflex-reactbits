@@ -30,7 +30,7 @@ def test_every_component_renders(entry):
 
 def test_catalog_counts():
     main = [e for e in rb.CATALOG if not e.get("sub")]
-    assert len(main) == 217
+    assert len(main) == 218
     assert {e["category"] for e in main} == {"TextAnimations", "Animations", "Components", "Backgrounds", "Micro"}
 
 
@@ -263,6 +263,28 @@ def test_cli_add_reports_stale_copies(tmp_path, monkeypatch, capsys):
     assert cli.main(["add", "Silk", "--force", "--assets-dir", str(assets)]) == 0
     assert "added" in capsys.readouterr().out
 
+
+
+def test_copies_from_a_compatible_ref_are_current(tmp_path, monkeypatch, caplog, capsys):
+    """Bumping PINNED_REF for a new component must not flag the untouched ones as stale."""
+    from reflex_reactbits import cli
+
+    assets = _fake_repo(tmp_path, monkeypatch)
+    old_ref = next(iter(source.COMPATIBLE_REFS))
+    copy = assets / "reactbits" / "Backgrounds" / "Silk"
+    copy.mkdir(parents=True)
+    (copy / "Silk.jsx").write_text("export default () => null;\n")
+    (copy / "Silk.css").write_text(".silk{}")
+    (copy / source.REF_MARKER).write_text(old_ref + "\n")
+    with caplog.at_level("WARNING", logger="reflex_reactbits"):
+        assert source.ensure_component_source("Backgrounds", "Silk", ("Silk.css", "Silk.jsx"), assets_dir=assets) == []
+    assert "--force" not in caplog.text
+    assert cli.main(["add", "Silk", "--assets-dir", str(assets)]) == 0
+    out = capsys.readouterr().out
+    assert "present" in out and "stale" not in out
+    # Asking for another ref explicitly still reports the copy as stale.
+    assert cli.main(["add", "Silk", "--ref", "main", "--assets-dir", str(assets)]) == 0
+    assert "stale" in capsys.readouterr().out
 
 def _plain(value):
     """Docs examples mark JSX values as {"$jsx": ...}; a string is a valid ReactNode."""

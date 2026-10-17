@@ -34694,6 +34694,165 @@
   "module": "micro"
  },
  {
+  "class": "FlyingButton",
+  "factory": "flying_button",
+  "category": "Micro",
+  "name": "FlyingButton",
+  "description": "Button that fires its thrusters on hover, lifts off on a WebGL smoke plume and lands back in its own cloud.",
+  "docs_url": "https://reactbits.dev/micro/flying-button",
+  "npm": [],
+  "props": [
+   {
+    "name": "theme",
+    "js": "theme",
+    "type": "Literal[\"dark\", \"light\"]",
+    "default": "'dark'",
+    "description": "Shades the smoke for a dark or a light page and picks the matching default colours."
+   },
+   {
+    "name": "size",
+    "js": "size",
+    "type": "Literal[\"small\", \"medium\", \"large\", \"extra-large\"]",
+    "default": "'medium'",
+    "description": "Button size. The pods, jets, flames and smoke scale with it."
+   },
+   {
+    "name": "radius",
+    "js": "radius",
+    "type": "int | float",
+    "default": "undefined",
+    "description": "Corner radius in pixels. Fully rounded when unset."
+   },
+   {
+    "name": "altitude",
+    "js": "altitude",
+    "type": "int | float",
+    "default": "170",
+    "description": "How high the button climbs, in pixels. Capped by the container height."
+   },
+   {
+    "name": "hover_time",
+    "js": "hoverTime",
+    "type": "int | float",
+    "default": "2.4",
+    "description": "Seconds it hovers at altitude before it comes back down and lands."
+   },
+   {
+    "name": "jets",
+    "js": "jets",
+    "type": "int | float",
+    "default": "2",
+    "description": "Number of exhaust jets under the button, from 1 to 4."
+   },
+   {
+    "name": "thrusters",
+    "js": "thrusters",
+    "type": "bool",
+    "default": "true",
+    "description": "Shows thruster pods under the button. Off, the jets fire straight out of its underside."
+   },
+   {
+    "name": "trigger",
+    "js": "trigger",
+    "type": "Literal[\"hover\", \"click\"]",
+    "default": "'hover'",
+    "description": "Whether hovering or clicking starts the flight. Touch always starts it on tap. With the ramp on, a click starts the ride instead."
+   },
+   {
+    "name": "carry_cursor",
+    "js": "carryCursor",
+    "type": "bool",
+    "default": "true",
+    "description": "Carries the cursor up with the button while you hover it, and sets it back down on landing."
+   },
+   {
+    "name": "ramp",
+    "js": "ramp",
+    "type": "bool",
+    "default": "false",
+    "description": "Adds a loop ramp on the right. A click drives the button up the wall and along the ceiling, then it flips off the end, lands and rolls back."
+   },
+   {
+    "name": "ramp_color",
+    "js": "rampColor",
+    "type": "str",
+    "default": "undefined",
+    "description": "Ramp colour. Defaults to a raised surface for the theme."
+   },
+   {
+    "name": "smoke",
+    "js": "smoke",
+    "type": "int | float",
+    "default": "1",
+    "description": "How much smoke the jets and the ground blast put out."
+   },
+   {
+    "name": "turbulence",
+    "js": "turbulence",
+    "type": "int | float",
+    "default": "1",
+    "description": "How much the smoke curls and billows."
+   },
+   {
+    "name": "wobble",
+    "js": "wobble",
+    "type": "int | float",
+    "default": "1",
+    "description": "Strength of the gusts the flight controller fights while it hovers. 0 flies dead steady."
+   },
+   {
+    "name": "thrust_color",
+    "js": "thrustColor",
+    "type": "str",
+    "default": "undefined",
+    "description": "Colour of the jet flames and the light they cast. Defaults to a pale blue for the theme."
+   },
+   {
+    "name": "smoke_color",
+    "js": "smokeColor",
+    "type": "str",
+    "default": "undefined",
+    "description": "Base colour of the smoke. Its shadows are derived from it."
+   },
+   {
+    "name": "button_color",
+    "js": "buttonColor",
+    "type": "str",
+    "default": "undefined",
+    "description": "Button fill. Defaults to dark grey on dark pages and near black on light ones."
+   },
+   {
+    "name": "text_color",
+    "js": "textColor",
+    "type": "str",
+    "default": "undefined",
+    "description": "Label colour."
+   }
+  ],
+  "example": {
+   "props": {
+    "theme": "dark",
+    "size": "medium",
+    "altitude": 170,
+    "hover_time": 2.4,
+    "jets": 2,
+    "thrusters": true,
+    "trigger": "hover",
+    "carry_cursor": true,
+    "smoke": 1,
+    "turbulence": 1,
+    "wobble": 1,
+    "ramp": false,
+    "thrust_color": "#8ec5ff",
+    "smoke_color": "#eef1f6"
+   },
+   "children": [
+    "Take off"
+   ]
+  },
+  "module": "micro"
+ },
+ {
   "class": "FolderFloat",
   "factory": "folder_float",
   "category": "Micro",

@@ -18,7 +18,7 @@ import reflex_reactbits as rb
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import VarData
 
-from .state import EventLog, ShredderDemo
+from .state import EventLog, FlightDemo, ShredderDemo
 
 ICONS = ["house", "archive", "user", "settings", "star", "heart", "bell", "camera", "music", "globe"]
 # Local placeholder images (assets/demo/img1..12.jpg) so previews work offline.
@@ -37,7 +37,9 @@ TALL = {"ScrollStack": "600px", "Masonry": "640px", "ChromaGrid": "700px", "Lany
         "FlyingPosters": "600px", "InfiniteMenu": "600px", "DomeGallery": "600px", "CardNav": "520px", "Stepper": "560px",
         "ScrollReveal": "460px", "ScrollFloat": "460px", "ScrollVelocity": "360px", "BubbleMenu": "520px",
         # React Bits 2.0 additions with a fixed size bigger than their category's box.
-        "FlipCard": "480px", "PaperCrumple": "600px", "Shredder": "560px", "TearTicket": "360px", "HoloCard": "600px"}
+        "FlipCard": "480px", "PaperCrumple": "600px", "Shredder": "560px", "TearTicket": "360px", "HoloCard": "600px",
+        # Added after 2.0: needs room above the button to climb into.
+        "FlyingButton": "480px"}
 
 
 def _materialize(value: Any, counter: list[int]) -> Any:
@@ -287,6 +289,41 @@ def _shredder(**events) -> rx.Component:
     )
 
 
+# FlyingButton forwards on_click (a built-in trigger), so it has no event props of
+# its own: the click is wired by hand to the backend and to the event log.
+def flying_button_demo(**events) -> rx.Component:
+    return rx.vstack(
+        rx.hstack(
+            rx.select(["dark", "light"], value=FlightDemo.theme, on_change=FlightDemo.set_theme, size="1"),
+            rx.select(["hover", "click"], value=FlightDemo.trigger, on_change=FlightDemo.set_trigger, size="1"),
+            rx.select(["1", "2", "3", "4"], value=FlightDemo.jets.to_string(), on_change=FlightDemo.set_jets, size="1"),
+            rx.hstack(rx.switch(checked=FlightDemo.ramp, on_change=FlightDemo.set_ramp, size="1"),
+                      rx.text("ramp", size="1"), align="center", spacing="1"),
+            rx.text("launches: ", rx.code(FlightDemo.launches), size="1"),
+            align="center", spacing="3", wrap="wrap", padding="12px 56px 0 12px",
+        ),
+        rx.text(
+            rx.cond(FlightDemo.ramp, "Click the button to ride the ramp.",
+                    rx.cond(FlightDemo.trigger == "hover",
+                            "Hover to take off: the button carries your cursor up, so click without moving the mouse.",
+                            "Click the button to take off.")),
+            size="1", color=rx.color("gray", 10), padding_x="12px", align_self="start",
+        ),
+        rx.box(
+            rb.flying_button(
+                "Take off",
+                theme=FlightDemo.theme, trigger=FlightDemo.trigger, jets=FlightDemo.jets, ramp=FlightDemo.ramp,
+                altitude=170, hover_time=2.4, smoke=1, turbulence=1, wobble=1,
+                on_click=[FlightDemo.launch, EventLog.log("on_click", [])],
+                **events,
+            ),
+            flex="1", min_height="0", width="100%",
+            background=rx.cond(FlightDemo.theme == "light", "#f4f4f5", "transparent"),
+        ),
+        spacing="2", height="100%", width="100%",
+    )
+
+
 def _fade(factory, **kwargs):
     return _wrap_content(factory, **kwargs)
 
@@ -314,7 +351,11 @@ OVERRIDES: dict[str, Callable[..., rx.Component]] = {
     "HoloCard": _holo_card,
     "ElectricLogo": _electric_logo,
     "Shredder": _shredder,
+    "FlyingButton": flying_button_demo,
 }
+
+# Components whose preview logs a built-in trigger (not listed in their props).
+LOGGED_TRIGGERS = {"FlyingButton"}
 
 
 def _event_props(entry: dict) -> dict[str, Callable]:

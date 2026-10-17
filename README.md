@@ -2,7 +2,7 @@
 
 [Reflex](https://reflex.dev) wrappers for **[React Bits](https://reactbits.dev)** — the
 open-source collection of animated, interactive and customizable React components by
-David Haz. Every one of the **217 React Bits 2.0 components** (plus 5 sub-components) is
+David Haz. Every one of the **218 React Bits 2.0 components** (plus 5 sub-components) is
 available as a typed Python component: text animations, animations, UI components,
 animated WebGL backgrounds and the new *Micro* interactions.
 
@@ -139,7 +139,7 @@ docs URL, npm deps) at runtime.
 
 **Backgrounds (64):** `acid_squares`, `aero_shards`, `antigravity`, `aurora`, `balatro`, `ballpit`, `beams`, `color_bends`, `crt_warp`, `dark_veil`, `dither`, `dot_field`, `dot_grid`, `evil_eye`, `faulty_terminal`, `ferrofluid`, `floating_lines`, `flux_lines`, `galaxy`, `ghost_fibers`, `gradient_ascii`, `gradient_blinds`, `gradient_waves`, `grainient`, `grid_distortion`, `grid_motion`, `grid_scan`, `hyperspeed`, `iridescence`, `letter_glitch`, `light_pillar`, `light_rays`, `light_tunnel`, `lightfall`, `lightning`, `line_waves`, `liquid_chrome`, `liquid_ether`, `magic_rings`, `magnet_lines`, `micro_slats`, `molten_metal`, `orb`, `particles`, `pattern_waves`, `pixel_blast`, `pixel_snow`, `plasma`, `plasma_wave`, `prism`, `prismatic_burst`, `radar`, `ripple_grid`, `scanner`, `shape_grid`, `shape_waves`, `side_rays`, `silk`, `sliced_waves`, `soft_aurora`, `threads`, `topography`, `waves`, `web_threads`
 
-**Micro interactions (34 + 1 sub-component):** `bell_toggle`, `branched_menu`, `call_chip`, `code_slots`, `comet_dial`, `dodge_field`, `flip_card`, `folder_float`, `fuse_button`, `glide_select`, `hold_button`, `jelly_radio`, `lattice_loader`, `paper_crumple`, `peek_rating`, `prompt_bar`, `pulse_heart`, `refine_frame`, `rubber_segment`, `scrub_field`, `shredder`, `slide_commit`, `sling_button`, `slosh_gauge`, `spring_check`, `squish_switch`, `status_mark`, `swipe_row`, `swipe_toast`, `tear_ticket`, `thought_line`, `voice_pill`, `wake_slider`, `warm_tooltip`, `warm_tooltip_group`
+**Micro interactions (35 + 1 sub-component):** `bell_toggle`, `branched_menu`, `call_chip`, `code_slots`, `comet_dial`, `dodge_field`, `flip_card`, `flying_button`, `folder_float`, `fuse_button`, `glide_select`, `hold_button`, `jelly_radio`, `lattice_loader`, `paper_crumple`, `peek_rating`, `prompt_bar`, `pulse_heart`, `refine_frame`, `rubber_segment`, `scrub_field`, `shredder`, `slide_commit`, `sling_button`, `slosh_gauge`, `spring_check`, `squish_switch`, `status_mark`, `swipe_row`, `swipe_toast`, `tear_ticket`, `thought_line`, `voice_pill`, `wake_slider`, `warm_tooltip`, `warm_tooltip_group`
 
 Full docs, previews and prop descriptions for each component live at
 [reactbits.dev](https://reactbits.dev).
@@ -170,6 +170,9 @@ python scripts/generate_wrappers.py scripts/components.json /tmp/react-bits
 ```
 
 Update `PINNED_REF` in `custom_components/reflex_reactbits/source.py` to the new commit.
+If `git diff --stat <old> <new> -- src/content` only adds files (new components), add the
+old commit to `COMPATIBLE_REFS` next to it, so copies apps already vendored from it are not
+reported as stale; if any existing component changed, empty that set instead.
 
 ## Development
 
@@ -202,10 +205,10 @@ given pull request introduces.
 
 ```bash
 # 1. bump the version
-$EDITOR pyproject.toml          # [project] version = "0.2.0"
+$EDITOR pyproject.toml          # [project] version = "0.2.1"
 
 # 2. tag it; the tag must match that version or release.yml stops
-git tag v0.2.0 && git push origin v0.2.0
+git tag v0.2.1 && git push origin v0.2.1
 ```
 
 The tag triggers `release.yml`, which builds, creates the GitHub release with the
