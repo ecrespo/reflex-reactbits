@@ -29,7 +29,7 @@ class BellToggle(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "BellToggle"
     _rb_files = ('BellToggle.css', 'BellToggle.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     off_label: rx.Var[str] = field(
         doc="The face at rest. Its width sets how far the pill is clipped. Default: 'Notify me'."
@@ -260,7 +260,7 @@ class CodeSlots(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "CodeSlots"
     _rb_files = ('CodeSlots.css', 'CodeSlots.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     length: rx.Var[int | float] = field(
         doc="Number of slots. Default: 6."
@@ -345,7 +345,7 @@ class CometDial(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "CometDial"
     _rb_files = ('CometDial.css', 'CometDial.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     value: rx.Var[int | float] = field(
         doc="Controlled value. A change from outside launches the reading on the tap spring."
@@ -424,7 +424,7 @@ class DodgeField(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "DodgeField"
     _rb_files = ('DodgeField.css', 'DodgeField.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     taunts: rx.Var[list[str]] = field(
         doc="Labels for the built-in pill: the first at rest, then one per dodge, the last once it relents. Default: DEFAULT_TAUNTS."
@@ -494,7 +494,7 @@ class FlipCard(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "FlipCard"
     _rb_files = ('FlipCard.css', 'FlipCard.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     front: rx.Var[Component | str] = field(
         doc="Content of the front face."
@@ -990,7 +990,7 @@ class JellyRadio(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "JellyRadio"
     _rb_files = ('JellyRadio.css', 'JellyRadio.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     items: rx.Var[list[Any]] = field(
         doc="The chips. A string is both value and label. Default: DEFAULT_ITEMS."
@@ -1138,7 +1138,7 @@ class PaperCrumple(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "PaperCrumple"
     _rb_files = ('PaperCrumple.css', 'PaperCrumple.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
+    lib_dependencies: list[str] = ['three@0.186.1']
 
     src: rx.Var[str] = field(
         doc="Required image URL. PNG transparency is preserved. Remote image servers must allow CORS. Default: -."
@@ -1335,7 +1335,7 @@ class PromptBar(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "PromptBar"
     _rb_files = ('PromptBar.css', 'PromptBar.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     placeholder: rx.Var[str] = field(
         doc="Shown while the field is empty. Default: 'Ask anything'."
@@ -1557,7 +1557,7 @@ class RubberSegment(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "RubberSegment"
     _rb_files = ('RubberSegment.css', 'RubberSegment.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     items: rx.Var[list[Any]] = field(
         doc="The slots, in order. A string is both value and label. Default: -."
@@ -1627,7 +1627,7 @@ class ScrubField(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "ScrubField"
     _rb_files = ('ScrubField.css', 'ScrubField.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     label: rx.Var[str] = field(
         doc="The field name. Drag anywhere on the chip to scrub; click without moving to type. Default: 'Radius'."
@@ -1790,7 +1790,7 @@ class SlideCommit(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SlideCommit"
     _rb_files = ('SlideCommit.css', 'SlideCommit.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     label: rx.Var[Component | str] = field(
         doc="The instruction centred in the pill; the capsule wipes it as you drag. Default: 'Slide to pay'."
@@ -1863,7 +1863,7 @@ class SlingButton(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SlingButton"
     _rb_files = ('SlingButton.css', 'SlingButton.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     pad_color: rx.Var[str] = field(
         doc="The pad fill. Default: '#f5f5f5'."
@@ -2002,7 +2002,7 @@ class SpringCheck(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SpringCheck"
     _rb_files = ('SpringCheck.css', 'SpringCheck.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', 'motion@14.3.0']
 
     label: rx.Var[Component | str] = field(
         doc="The words beside the box; the strike-through is exactly their width. Default: 'Ship the build'."
@@ -2066,7 +2066,7 @@ class SquishSwitch(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SquishSwitch"
     _rb_files = ('SquishSwitch.css', 'SquishSwitch.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     checked: rx.Var[bool] = field(
         doc="Controlled state. Leave it out to let the switch keep its own."
@@ -2136,7 +2136,7 @@ class StatusMark(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "StatusMark"
     _rb_files = ('StatusMark.css', 'StatusMark.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     status: rx.Var[Literal["pending", "running", "done", "failed", "cancelled"]] = field(
         doc="The lifecycle state. Every change morphs the glyph in place. Default: 'pending'."
@@ -2200,7 +2200,7 @@ class SwipeRow(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SwipeRow"
     _rb_files = ('SwipeRow.css', 'SwipeRow.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     actions: rx.Var[list[Any]] = field(
         doc="The drawer, outermost first. Each has id, label, an optional icon, an optional color for secondary actions, dismiss to fold the row when pressed, and onSelect. The first is the full-swipe action and always folds the row. Default: DEFAULT_ACTIONS."
@@ -2282,7 +2282,7 @@ class SwipeToast(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "SwipeToast"
     _rb_files = ('SwipeToast.css', 'SwipeToast.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     title: rx.Var[Component | str] = field(
         doc="The first line. Default: 'File archived'."
@@ -2361,7 +2361,7 @@ class TearTicket(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "TearTicket"
     _rb_files = ('TearTicket.css', 'TearTicket.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     stub: rx.Var[Component | str] = field(
         doc="Content of the tear-off stub."
@@ -2482,7 +2482,7 @@ class ThoughtLine(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "ThoughtLine"
     _rb_files = ('ThoughtLine.css', 'ThoughtLine.jsx')
-    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@12.23.21']
+    lib_dependencies: list[str] = ['@hugeicons/core-free-icons@4.3.3', '@hugeicons/react@1.1.10', 'motion@14.3.0']
 
     label: rx.Var[str] = field(
         doc="The working line. It breathes, and it is the spoken text. Default: 'Thinking\u2026'."
@@ -2646,7 +2646,7 @@ class WakeSlider(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "WakeSlider"
     _rb_files = ('WakeSlider.css', 'WakeSlider.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     value: rx.Var[int | float] = field(
         doc="Controlled value."
@@ -2728,7 +2728,7 @@ class WarmTooltip(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "WarmTooltip"
     _rb_files = ('WarmTooltip.css', 'WarmTooltip.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     content: rx.Var[Component | str] = field(
         doc="The label. Keep it to a few words. Default: -."
@@ -2792,7 +2792,7 @@ class WarmTooltipGroup(ReactBitsComponent):
     _rb_category = "Micro"
     _rb_name = "WarmTooltip"
     _rb_files = ('WarmTooltip.css', 'WarmTooltip.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     delay: rx.Var[int | float] = field(doc="Open delay in ms.")
     warm_window: rx.Var[int | float] = field(doc="How long (ms) the group stays warm.")

@@ -29,7 +29,7 @@ class AccordionGallery(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "AccordionGallery"
     _rb_files = ('AccordionGallery.css', 'AccordionGallery.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     items: rx.Var[list[Any]] = field(
         doc="The panels to render. Each needs an image, and optionally a label, link and alt text. Default: DEFAULT_ITEMS."
@@ -295,7 +295,7 @@ class BubbleMenu(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "BubbleMenu"
     _rb_files = ('BubbleMenu.css', 'BubbleMenu.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     logo: rx.Var[Component | str] = field(
         doc="Logo content shown in the central bubble (string src or JSX). Default: \u2014."
@@ -1090,7 +1090,7 @@ class DepthCarousel(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "DepthCarousel"
     _rb_files = ('DepthCarousel.css', 'DepthCarousel.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     items: rx.Var[list[Any]] = field(
         doc="Slides to display. Pass image URLs or objects with an image URL and alt text. Default: DEFAULT_ITEMS."
@@ -2385,7 +2385,7 @@ class Lanyard(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Lanyard"
     _rb_files = ('Lanyard.css', 'Lanyard.jsx')
-    lib_dependencies: list[str] = ['three@0.180.0']
+    lib_dependencies: list[str] = ['three@0.186.1']
 
     front_image: rx.Var[str] = field(
         doc="Image URL printed on the front of the card. Any size or aspect works."
@@ -2676,7 +2676,7 @@ class ModelViewer(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "ModelViewer"
     _rb_files = ('ModelViewer.jsx',)
-    lib_dependencies: list[str] = ['@react-three/drei@10.7.6', '@react-three/fiber@9.3.0', 'three@0.180.0']
+    lib_dependencies: list[str] = ['@react-three/drei@10.7.9', '@react-three/fiber@9.8.2', 'three@0.186.1']
 
     url: rx.Var[str] = field(
         doc="URL of the model. Supports glb, gltf, fbx and obj. Default: -."
@@ -2770,7 +2770,7 @@ class MorphSlider(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "MorphSlider"
     _rb_files = ('MorphSlider.css', 'MorphSlider.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0', 'ogl@1.0.11']
+    lib_dependencies: list[str] = ['gsap@3.15.0', 'ogl@1.0.11']
 
     items: rx.Var[list[Any]] = field(
         doc="Slides to morph between. Each item is an image URL with an optional caption. Default: DEFAULT_ITEMS."
@@ -3452,7 +3452,7 @@ class Stack(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "Stack"
     _rb_files = ('Stack.css', 'Stack.jsx')
-    lib_dependencies: list[str] = ['motion@12.23.21']
+    lib_dependencies: list[str] = ['motion@14.3.0']
 
     cards: rx.Var[list[Any]] = field(
         doc="The cards in the stack, top first. Images fill the card automatically, any other content works too. Default: four sample photos."
@@ -3519,7 +3519,7 @@ class StaggeredMenu(ReactBitsComponent):
     _rb_category = "Components"
     _rb_name = "StaggeredMenu"
     _rb_files = ('StaggeredMenu.css', 'StaggeredMenu.jsx')
-    lib_dependencies: list[str] = ['gsap@3.13.0']
+    lib_dependencies: list[str] = ['gsap@3.15.0']
 
     position: rx.Var[Literal["left", "right"]] = field(
         doc="Anchor position for the menu panel (left or right side). Default: 'right'."

@@ -49,8 +49,11 @@ bundle. So this package ships only the Python side:
    app at `assets/reactbits/<Category>/<Name>/` — the same thing `npx shadcn add` does in
    a React project. The files are pinned to the React Bits commit these wrappers were
    generated from.
-3. Reflex imports that file client-side only (`NoSSRComponent`) and installs the exact npm
-   versions React Bits is locked to (`motion`, `gsap`, `ogl`, `three`, ...).
+3. Reflex imports that file client-side only (`NoSSRComponent`) and installs exact npm
+   versions: the ones React Bits is locked to (`ogl`, `matter-js`, Hugeicons, ...), except
+   for `motion` 14, `three` 0.186 (with `@react-three/fiber` 9.8 and `@react-three/drei`
+   10.7) and `gsap` 3.15, which are newer than React Bits' lockfile (see `DEP_VERSIONS` in
+   `scripts/generate_wrappers.py`).
 
 The copied files belong to your app: **edit them freely**, they are never overwritten.
 Commit them if you want reproducible offline builds.
@@ -60,10 +63,12 @@ Sources are resolved from `REACTBITS_SOURCE_DIR` (a local clone of
 GitHub raw files at `REACTBITS_REF` (defaults to the pinned commit).
 
 React Bits 2.0 no longer needs React Router, Chakra UI or Tailwind, so the sources are
-copied as-is with one exception: components that render their own `<canvas>` keep their
-WebGL context on unmount instead of calling `loseContext()`. React StrictMode (on in Reflex
+copied as-is with two exceptions. Components that render their own `<canvas>` keep their
+WebGL context on unmount instead of calling `loseContext()`: React StrictMode (on in Reflex
 dev mode) re-runs effects on the same canvas, and a lost context would leave the component
-frozen or blank.
+frozen or blank. And `color_bends` and `paper_crumple` move off three.js APIs deprecated
+after r180 (`THREE.Clock` → `THREE.Timer`, `PCFSoftShadowMap` → `PCFShadowMap`), so the
+newer `three` does not log deprecation warnings.
 
 Each copy records the React Bits commit it came from in `.reactbits-ref`. When a newer
 version of this package is generated from another commit, existing copies are **not**
@@ -205,10 +210,10 @@ given pull request introduces.
 
 ```bash
 # 1. bump the version
-$EDITOR pyproject.toml          # [project] version = "0.2.1"
+$EDITOR pyproject.toml          # [project] version = "0.2.2"
 
 # 2. tag it; the tag must match that version or release.yml stops
-git tag v0.2.1 && git push origin v0.2.1
+git tag v0.2.2 && git push origin v0.2.2
 ```
 
 The tag triggers `release.yml`, which builds, creates the GitHub release with the
