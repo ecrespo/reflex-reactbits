@@ -35,7 +35,7 @@ def index():
 pip install reflex-reactbits      # or: uv add reflex-reactbits
 ```
 
-Requires `reflex>=0.9`.
+Requires Python 3.11+ and `reflex>=0.10` (tested with Reflex 0.10.0).
 
 ## How it works (and why the JS is not bundled)
 
@@ -84,6 +84,16 @@ reactbits add BlurText Aurora             # copy sources into ./assets/reactbits
 reactbits add --all                       # vendor all components (offline / CI builds)
 reactbits remove Aurora
 ```
+
+## Upgrading to 0.3.0 (Reflex 0.10)
+
+0.3.0 targets Reflex 0.10 and changes no component API:
+
+* The minimum Reflex version is now `reflex>=0.10.0`; upgrade your app with
+  `uv add "reflex>=0.10"` (or `pip install -U reflex`).
+* Python 3.10 is no longer supported, because Reflex 0.10 requires Python 3.11 or newer.
+* The pinned JS dependencies are unchanged: `motion` 14, `three` 0.186 and `gsap` 3.15
+  (from 0.2.2).
 
 ## Upgrading from 0.1.x (React Bits 1.x → 2.0)
 
@@ -195,8 +205,14 @@ Three workflows run in `.github/workflows/`:
 
 | Workflow | Runs on | What it checks |
 | --- | --- | --- |
-| `quality.yml` | push and PR to `main`/`develop` | `ruff check`; `pytest` on Python 3.10-3.13; builds the sdist and wheel, runs `twine check`, and fails if any React Bits source slipped into the distribution or into git |
+| `quality.yml` | push and PR to `main`/`develop` | `ruff check`; `pytest` on Python 3.11-3.13 (with Node 24 for the sanitizer test); builds the sdist and wheel, runs `twine check`, and fails if any React Bits source slipped into the distribution or into git |
 | `security.yml` | push, PR, and weekly | `pip-audit` on the dependency tree, `bandit` over the hand-written modules, `gitleaks` over the full history, CodeQL, and a dependency review on PRs |
+| `release.yml` | a `v*` tag, or manually | Rebuilds, refuses a tag that disagrees with the version in `pyproject.toml`, publishes a GitHub release and uploads to PyPI |
+
+Every action the workflows use runs on the Node 24 runtime (`actions/checkout@v7`,
+`actions/setup-python@v7`, `actions/setup-node@v7`, `actions/upload-artifact@v7`,
+`actions/download-artifact@v8`, `github/codeql-action@v4`, `gitleaks/gitleaks-action@v3`,
+`softprops/action-gh-release@v3`, ...), since GitHub removed Node 20 from its runners.
 
 The dependency-review job needs GitHub's dependency graph to be provisioned for the
 repository, which it is not yet: until you enable it at *Settings → Code security →
@@ -204,16 +220,17 @@ Dependency graph*, that job reports "not supported on this repository" and is ma
 `continue-on-error` so it cannot block a merge. Drop that line once it is on. Vulnerable
 dependencies are caught by `pip-audit` regardless; the job only adds the diff of what a
 given pull request introduces.
-| `release.yml` | a `v*` tag, or manually | Rebuilds, refuses a tag that disagrees with the version in `pyproject.toml`, publishes a GitHub release and uploads to PyPI |
 
 ## Releasing
 
 ```bash
 # 1. bump the version
-$EDITOR pyproject.toml          # [project] version = "0.2.2"
+$EDITOR pyproject.toml          # [project] version = "0.3.0"
 
-# 2. tag it; the tag must match that version or release.yml stops
-git tag v0.2.2 && git push origin v0.2.2
+# 2. merge the release PR from develop into main, then tag main;
+#    the tag must match that version or release.yml stops
+git checkout main && git pull
+git tag v0.3.0 && git push origin v0.3.0
 ```
 
 The tag triggers `release.yml`, which builds, creates the GitHub release with the
